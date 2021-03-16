@@ -5,6 +5,7 @@
   "main": "source/server.ts",
   "scripts": {
     "build": "rmdir /S build/ | prettier --write source/ | tsc",
+    "dev": "nodemon ./source/server.ts",
     "manual-console": "rm -r build/ | prettier --write source/ | tsc"
   },
   "repository": {
