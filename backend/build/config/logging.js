@@ -39,5 +39,5 @@ exports.default = {
     info: info,
     warn: warn,
     error: error,
-    debug: debug
+    debug: debug,
 };
