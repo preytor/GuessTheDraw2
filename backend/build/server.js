@@ -7,9 +7,19 @@ var http_1 = __importDefault(require("http"));
 var express_1 = __importDefault(require("express"));
 var logging_1 = __importDefault(require("./config/logging"));
 var config_1 = __importDefault(require("./config/config"));
+var mongoose_1 = __importDefault(require("mongoose"));
 var sample_1 = __importDefault(require("./routes/sample"));
+var user_1 = __importDefault(require("./routes/user"));
 var NAMESPACE = "Server";
 var router = express_1.default();
+/** Connect to Mongo */
+mongoose_1.default.connect(config_1.default.mongo.url, config_1.default.mongo.options)
+    .then(function (result) {
+    logging_1.default.info(NAMESPACE, "Connected to mongoDB!");
+})
+    .catch(function (error) {
+    logging_1.default.error(NAMESPACE, error.message, error);
+});
 /** Logging the request */
 router.use(function (req, res, next) {
     logging_1.default.info(NAMESPACE, "METHOD - [" + req.method + "], URL - [" + req.url + "], IP - [" + req.socket.remoteAddress + "]");
@@ -33,6 +43,7 @@ router.use(function (req, res, next) {
 });
 /** Routes */
 router.use("/sample", sample_1.default);
+router.use("/users", user_1.default);
 /** Error Handling */
 router.use(function (req, res, next) {
     var error = new Error("not found");
