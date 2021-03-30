@@ -4,6 +4,8 @@ import bcryptjs from "bcryptjs";
 import mongoose from "mongoose";
 import User from "../models/user";
 import signJWT from "../functions/signJWT";
+import config from "../config/config";
+import jwt from "jsonwebtoken";
 
 const NAMESPACE = "Users";
 
@@ -16,7 +18,7 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const register = (req: Request, res: Response, next: NextFunction) => {
-  let { username, password } = req.body;
+  let { username, email, password } = req.body;
 
   bcryptjs.hash(password, 10, (hashError, hash) => {
     if (hashError) {
@@ -29,20 +31,34 @@ const register = (req: Request, res: Response, next: NextFunction) => {
     const _user = new User({
       _id: new mongoose.Types.ObjectId(),
       username,
+      email,
       password: hash,
     });
+
+    const accessToken = jwt.sign({ username: _user.id },
+      config.server.token.secret,{ 
+        expiresIn: config.server.token.expireTime,
+      }
+    );
+
+    const dataUser = {
+      username: _user.username,
+      email: _user.email,
+      accessToken: accessToken,
+      expiresIn: config.server.token.expireTime
+    }
 
     return _user
       .save()
       .then((user) => {
         return res.status(201).json({
-          user,
+          dataUser
         });
       })
       .catch((error) => {
         return res.status(500).json({
           message: error.message,
-          error,
+          error
         });
       });
   });

@@ -58,7 +58,7 @@ router.use((req, res, next) => {
 
 /** Routes */
 router.use("/sample", sampleRoutes);
-router.use("/users", userRoutes);
+router.use(userRoutes);
 
 /** Error Handling */
 router.use((req, res, next) => {
