@@ -48,10 +48,10 @@ router.use((req, res, next) => {
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
 
-  if (req.method == "OPTIONS") {
+/*  if (req.method == "OPTIONS") {  //if uncomment this it throws a CORS error
     res.header("Access-Control-Allow-Methods", "GET PATCH DELETE POST PUT");
     return res.status(200).json({});
-  }
+  }*/
 
   next();
 });

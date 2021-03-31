@@ -65,9 +65,9 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = (req: Request, res: Response, next: NextFunction) => {
-  let { username, password } = req.body;
+  let { email, password } = req.body;
 
-  User.find({ username })
+  User.find({ "email": email })
     .exec()
     .then((users) => {
       if (users.length !== 1) {

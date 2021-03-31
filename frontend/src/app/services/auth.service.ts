@@ -8,7 +8,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  AUTH_SERVER: string = 'http://localhost:3000';
+  AUTH_SERVER: string = 'http://localhost:3000';  //the backend server
   authSubject = new BehaviorSubject(false);
   private token: string | null | undefined;
   constructor(private httpClient: HttpClient) { }
