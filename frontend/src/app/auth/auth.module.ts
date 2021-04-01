@@ -6,16 +6,20 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from '../services/auth.service';
+import { GameRoomComponent } from './game-room/game-room.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { RankingComponent } from './ranking/ranking.component';
 
+import { PrivateSitesGuard } from '../private-sites.guard';
 
 @NgModule({
-  declarations: [RegisterComponent, LoginComponent],
+  declarations: [RegisterComponent, LoginComponent, GameRoomComponent, UserSettingsComponent, RankingComponent],
   imports: [
     CommonModule,
     FormsModule,
     AuthRoutingModule,
     HttpClientModule
   ],
-  providers:[AuthService]
+  providers:[AuthService, PrivateSitesGuard]
 })
 export class AuthModule { }

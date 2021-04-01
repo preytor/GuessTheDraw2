@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 import { User } from '../models/user';
+import { loginUser } from '../models/loginUser';
+import { registerUser } from '../models/registerUser';
 import { JwtResponse } from '../models/jwt-response';
+
 import { tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -13,6 +17,19 @@ export class AuthService {
   private token: string | null | undefined;
   constructor(private httpClient: HttpClient) { }
 
+  signIn(loginUser: loginUser){
+    return this.httpClient.post(`${this.AUTH_SERVER}/login`, loginUser);
+  }
+
+  signUp(registerUser: registerUser){
+    return this.httpClient.post(`${this.AUTH_SERVER}/register`, registerUser);
+  }
+
+  isLogged(): boolean{  //ask the server for the token of the user and return the token, then compare it with the one at local storage
+    return localStorage.getItem('token') ? true : false;
+  }
+
+  //old stuff
   register(user: User):Observable<JwtResponse> {
     return this.httpClient.post<JwtResponse>(
       `${this.AUTH_SERVER}/register`, user

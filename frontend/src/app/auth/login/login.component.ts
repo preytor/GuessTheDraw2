@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { fromEventPattern } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user';
 
 @Component({
   selector: 'app-login',
@@ -11,14 +9,25 @@ import { User } from '../../models/user';
 })
 export class LoginComponent implements OnInit {
 
+  loginUser = {
+    email: "",
+    password: ""
+  } 
+
   constructor(private AuthService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  onLogin(form: any): void {
-    this.AuthService.login(form.value).subscribe(res => {
-      this.router.navigateByUrl('/register');
-    })
+  signIn(){
+    this.AuthService.signIn(this.loginUser)
+    .subscribe(
+      res => {
+        console.log(res),
+        localStorage.setItem('token', Object(res)["token"]);
+        this.router.navigateByUrl('/register'); //just testing here a bit
+      },
+      err => console.log(err)
+    );
   }
 }

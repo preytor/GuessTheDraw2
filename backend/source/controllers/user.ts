@@ -93,9 +93,9 @@ const login = (req: Request, res: Response, next: NextFunction) => {
               });
             } else if (token) {
               return res.status(200).json({
-                message: "Auth successful",
-                token,
-                user: users[0],
+                //message: "Auth successful",
+                token//,
+                //user: users[0],
               });
             }
           });

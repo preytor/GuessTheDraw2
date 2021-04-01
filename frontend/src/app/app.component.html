@@ -1,1 +1,12 @@
-<router-outlet></router-outlet>
+<nav class="header">
+    <a href="./index.html" class="logo">Guess the Draw</a>
+    <div class="header-right">
+        <a routerLink="/ranking" routerLinkActive="active">Ranking</a>
+        <a routerLink="/register" routerLinkActive="active">Register</a>
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+    </div>
+</nav>
+
+<div class="container">
+    <router-outlet></router-outlet>
+</div> 
