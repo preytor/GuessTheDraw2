@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { User } from '../models/user';
 import { loginUser } from '../models/loginUser';
@@ -15,8 +16,9 @@ export class AuthService {
   AUTH_SERVER: string = 'http://localhost:3000';  //the backend server
   authSubject = new BehaviorSubject(false);
   private token: string | null | undefined;
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private Router: Router) { }
 
+  
   signIn(loginUser: loginUser){
     return this.httpClient.post(`${this.AUTH_SERVER}/login`, loginUser);
   }
@@ -27,6 +29,15 @@ export class AuthService {
 
   isLogged(): boolean{  //ask the server for the token of the user and return the token, then compare it with the one at local storage
     return localStorage.getItem('token') ? true : false;
+  }
+
+  getToken(){
+    return localStorage.getItem('token');
+  }
+
+  logOut(){
+    localStorage.removeItem('token');
+    this.Router.navigate(['/register']);
   }
 
   //old stuff
@@ -58,7 +69,7 @@ export class AuthService {
     );
   }
 
-  logout(): void{
+  logoutOld(): void{
     this.token = '';
     localStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("EXPIRES_IN");
@@ -70,7 +81,7 @@ export class AuthService {
     this.token = token;
   }
 
-  private getToken(): string {
+  private getTokenOld(): string {
     if(!this.token){
       this.token = localStorage.getItem("ACCESS_TOKEN");
     }

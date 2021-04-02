@@ -5,15 +5,20 @@ import { HttpClientModule } from '@angular/common/http';
 import { AuthRoutingModule } from './auth-routing.module';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+
 import { AuthService } from '../services/auth.service';
+
 import { GameRoomComponent } from './game-room/game-room.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { RankingComponent } from './ranking/ranking.component';
 
 import { PrivateSitesGuard } from '../private-sites.guard';
+import { MainMenuComponent } from './main-menu/main-menu.component';
+import { CreateRoomComponent } from './create-room/create-room.component';
+import { BrowseRoomsComponent } from './browse-rooms/browse-rooms.component';
 
 @NgModule({
-  declarations: [RegisterComponent, LoginComponent, GameRoomComponent, UserSettingsComponent, RankingComponent],
+  declarations: [RegisterComponent, LoginComponent, GameRoomComponent, UserSettingsComponent, RankingComponent, MainMenuComponent, CreateRoomComponent, BrowseRoomsComponent],
   imports: [
     CommonModule,
     FormsModule,

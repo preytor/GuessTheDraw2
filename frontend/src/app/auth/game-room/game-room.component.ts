@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-game-room',
@@ -7,9 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GameRoomComponent implements OnInit {
 
-  constructor() { }
+  roomUsers = [];
+
+  constructor(private GameService: GameService, private Router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  getRoomUsers(roomID: number){
+    this.GameService.getRoomUsers(roomID)
+    .subscribe(
+      res => {
+        console.log(res)
+        this.roomUsers = res.roomUsers;
+      },
+      err => console.log(err)
+    )
   }
 
 }

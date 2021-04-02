@@ -4,7 +4,11 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { PrivateSitesGuard } from './private-sites.guard';
+import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { TokenInterceptorService } from './services/token-interceptor.service';
+import { AuthModule } from './auth/auth.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -12,9 +16,16 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AuthModule
   ],
-  providers: [],
+  providers: [
+    PrivateSitesGuard, {
+      provide: HTTP_INTERCEPTORS, 
+      useClass: TokenInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

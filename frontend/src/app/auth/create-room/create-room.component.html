@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="create-room">
+      <div class="create-room-triangle"></div>
+        
+      <h2 class="create-room-header">Create a Game</h2>
+      
+      <form (submit)="createRoom()" class="create-room-container">
+        <p><input type="text" [(ngModel)]="roomParameters.roomName" name="roomname" placeholder="Room name" required autofocus></p>
+        <p><input type="text" [(ngModel)]="roomParameters.roomPassword" name="roompassword" placeholder="Room password (optional)" required autofocus></p>
+        <p><input type="submit" value="Create the room"></p>
+      </form>
+    </div>
+  </div>

@@ -1,20 +1,20 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
-.register {
+.create-room {
   width: 400px;
   margin: 16px auto;
   font-size: 16px;
 }
 
 /* Reset top and bottom margins from certain elements */
-.register-header,
-.register p {
+.create-room-header,
+.create-room p {
   margin-top: 0;
   margin-bottom: 0;
 }
 
 /* The triangle form is achieved by a CSS hack */
-.register-triangle {
+.create-room-triangle {
   width: 0;
   margin-right: auto;
   margin-left: auto;
@@ -22,7 +22,7 @@
   border-bottom-color: #28d;
 }
 
-.register-header {
+.create-room-header {
   background: #28d;
   padding: 20px;
   font-size: 1.4em;
@@ -32,17 +32,17 @@
   color: #fff;
 }
 
-.register-container {
+.create-room-container {
   background: #ebebeb;
   padding: 12px;
 }
 
 /* Every row inside .login-container is defined with p tags */
-.register p {
+.create-room p {
   padding: 12px;
 }
 
-.register input {
+.create-room input {
   box-sizing: border-box;
   display: block;
   width: 100%;
@@ -54,33 +54,29 @@
   font-size: 0.95em;
 }
 
-.register input[type="text"],
-.register input[type="email"],
-.register input[type="password"] {
+.create-room input[type="text"] {
   background: #fff;
   border-color: #bbb;
   color: #555;
 }
 
 /* Text fields' focus effect */
-.register input[type="text"]:focus,
-.register input[type="email"]:focus,
-.register input[type="password"]:focus {
+.create-room input[type="text"]:focus {
   border-color: #888;
 }
 
-.register input[type="submit"] {
+.create-room input[type="submit"] {
   background: #28d;
   border-color: transparent;
   color: #fff;
   cursor: pointer;
 }
 
-.register input[type="submit"]:hover {
+.create-room input[type="submit"]:hover {
   background: #17c;
 }
 
 /* Buttons' focus effect */
-.register input[type="submit"]:focus {
+.create-room input[type="submit"]:focus {
   border-color: #05a;
 }

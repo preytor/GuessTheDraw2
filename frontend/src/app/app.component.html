@@ -2,11 +2,31 @@
     <a href="./index.html" class="logo">Guess the Draw</a>
     <div class="header-right">
         <a routerLink="/ranking" routerLinkActive="active">Ranking</a>
-        <a routerLink="/register" routerLinkActive="active">Register</a>
-        <a routerLink="/login" routerLinkActive="active">Login</a>
+        <ng-container *ngIf="!getauthService().isLogged(); else loggedIn">
+            <a routerLink="/register" routerLinkActive="active">Register</a>
+            <a routerLink="/login" routerLinkActive="active">Login</a>
+        </ng-container>
+        <ng-template #loggedIn>
+                <a routerLink="/settings" routerLinkActive="active">Settings</a>
+                <a style="cursor: pointer;" (click)="getauthService().logOut()">Log Out </a>
+        </ng-template>
     </div>
 </nav>
 
 <div class="container">
     <router-outlet></router-outlet>
 </div> 
+
+<footer class="footer">
+    <div class="footer-middle">
+        <ul>
+            <li>
+                <a href="https://github.com/preytor/GuessTheDraw2"><img src="https://image.flaticon.com/icons/png/512/25/25231.png"/></a>
+                <a href="mailto:pgrfpgm@gmail.com"><img src="https://cdn4.iconfinder.com/data/icons/miu-black-social-2/60/mail-512.png"/></a>
+            </li>
+        </ul>
+        <ul>
+            <li><a class="textfooter">Pablo García Ramón - 2021</a></li>
+        </ul>
+    </div>
+</footer>

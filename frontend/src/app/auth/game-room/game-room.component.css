@@ -1,0 +1,14 @@
+.left-menu{
+    border: 1px solid black;
+    width: 20%;
+}
+
+.middle-menu{
+    border: 1px solid black;
+    width: 50%;
+}
+
+.right-menu{
+    border: 1px solid black;
+    width: 20%;
+}

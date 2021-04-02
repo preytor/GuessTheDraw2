@@ -1,0 +1,52 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+.main-menu{
+    width: 80%;
+    text-align: center;  
+    margin: 16px auto;
+}
+
+.main-menu-triangle {
+    width: 0;
+    margin-right: auto;
+    margin-left: auto;
+    border: 12px solid transparent;
+    border-bottom-color: #28d;
+}
+  
+.main-menu-header {
+    background: #28d;
+    padding: 20px;
+    font-size: 1.4em;
+    font-weight: normal;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.main-menu-options{
+    flex-direction: column;
+    font-size: 16px;
+    background: #ebebeb;
+    padding: 12px;
+}
+
+.main-menu-options button {
+    margin: auto;
+    background: #28d;
+    border-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    margin: 10px 20px;
+    padding: 12px;
+    font-size: 25px;
+    width: 50%;
+    font-weight: bold;
+}
+
+.main-menu-options button:hover {
+    background: #17c;
+}
+
+.main-menu-options button:focus {
+    border-color: #05a;
+  }
