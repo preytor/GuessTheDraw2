@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
+import { UserRoom } from '../../models/userRoom';
 
 @Component({
   selector: 'app-game-room',
@@ -9,7 +10,7 @@ import { GameService } from '../../services/game.service';
 })
 export class GameRoomComponent implements OnInit {
 
-  roomUsers = [];
+  roomUsers: Array<UserRoom> = [];
 
   constructor(private GameService: GameService, private Router: Router) { }
 
@@ -21,7 +22,7 @@ export class GameRoomComponent implements OnInit {
     .subscribe(
       res => {
         console.log(res)
-        this.roomUsers = res.roomUsers;
+        this.roomUsers = res;
       },
       err => console.log(err)
     )

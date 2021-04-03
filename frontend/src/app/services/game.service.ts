@@ -17,6 +17,6 @@ export class GameService {
   }
 
   getRoomUsers(roomID: number){
-    return this.HttpClient.post<UserRoom>(`${this.AUTH_SERVER}/game/getroomusers`, roomID);
+    return this.HttpClient.post<Array<UserRoom>>(`${this.AUTH_SERVER}/game/getroomusers`, roomID);
   }
 }
