@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/game/startroom", controller.beginGame);
 router.post("/game/getroomusers", controller.getRoomUsers);
+router.get("/game", controller.getGameData);
 
 export = router;

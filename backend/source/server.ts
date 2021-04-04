@@ -5,6 +5,7 @@ import config from "./config/config";
 import mongoose from "mongoose";
 import sampleRoutes from "./routes/sample";
 import userRoutes from "./routes/user";
+import gameRoutes from "./routes/game";
 
 const NAMESPACE = "Server";
 const router = express();
@@ -59,6 +60,7 @@ router.use((req, res, next) => {
 /** Routes */
 router.use("/sample", sampleRoutes);
 router.use(userRoutes);
+router.use(gameRoutes);
 
 /** Error Handling */
 router.use((req, res, next) => {

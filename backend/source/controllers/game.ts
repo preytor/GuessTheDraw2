@@ -12,4 +12,10 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
   logging.info(NAMESPACE,"beginning a game");
 };
 
-export default { beginGame, getRoomUsers };
+const getGameData = (req: Request, res: Response, next: NextFunction) => {
+  let roomNumber = req.query.room;
+
+  logging.info(NAMESPACE, `Game is ${roomNumber}`);
+};
+
+export default { beginGame, getRoomUsers, getGameData };
