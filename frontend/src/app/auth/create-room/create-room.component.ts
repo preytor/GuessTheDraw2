@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-create-room',
@@ -9,13 +10,20 @@ import { GameService } from '../../services/game.service';
 })
 export class CreateRoomComponent implements OnInit {
 
+
+  //find a way to get the user or generate a random name like "anonymous<numbers>"  
+  number = Math.random()*100;
+  
+  username = (this.authService.isLogged()) ? this.authService.current_user : `anonymous${this.number}`;
+
   roomParameters = {
     roomName: "",
-    roomPassword: ""
-    //find a way to get the user or generate a random name like "anonymous<numbers>"
+    roomPassword: "",
+    username: this.username
   }
 
-  constructor(private GameService: GameService, private Router: Router) { }
+  constructor(private GameService: GameService, private Router: Router, private authService: AuthService) { }
+
 
   ngOnInit(): void {
   }

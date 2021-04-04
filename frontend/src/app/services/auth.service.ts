@@ -16,11 +16,25 @@ export class AuthService {
   AUTH_SERVER: string = 'http://localhost:3000';  //the backend server
   authSubject = new BehaviorSubject(false);
   private token: string | null | undefined;
+
+  //current user keeps being empty
+  current_user = "";
+
   constructor(private httpClient: HttpClient, private Router: Router) { }
 
-  
+
   signIn(loginUser: loginUser){
-    return this.httpClient.post(`${this.AUTH_SERVER}/login`, loginUser);
+    return this.httpClient.post(`${this.AUTH_SERVER}/login`, loginUser)
+    .pipe(
+      tap(
+        (res) => {
+          if(res){
+            console.log("username is: "+Object(res)["username"])  //this works
+            this.current_user = Object(res)["username"];//but this doesnt seem to work :thinking:
+          }
+        }
+      )
+    );
   }
 
   signUp(registerUser: registerUser){
@@ -37,7 +51,7 @@ export class AuthService {
 
   logOut(){
     localStorage.removeItem('token');
-    this.Router.navigate(['/register']);
+    this.Router.navigate(['/']);
   }
 
   //old stuff
