@@ -21,16 +21,17 @@ const newgame: GameLogic = {
 };
 
 gamedata.addGame(newgame);
+gamedata.addGame(newgame);
 
 logging.info(
   "GAME",
   `Started module to handle the games`
 )
 
-var x: any = gamedata.getCurrentGames().entries();  //also gives an undefined if i do a .length
+var x: any = gamedata.getCurrentGames().entries();
 
 
-  logging.info("get current games:" , x[0]);  //gives an undefined
+  logging.info("get current games:" , gamedata.getGameAt(0).secretWord);  //this works
 
 
 /** Connect to Mongo */

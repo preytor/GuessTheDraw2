@@ -6,6 +6,9 @@ const getCurrentGames = (): Array<GameLogic> => {
     return currentGames;
 }
 
+const getGameAt = (index: number): GameLogic => {
+    return currentGames[index];
+}
 
 const getGameFromID = (id: any): GameLogic | undefined => {
     for (var i=0, iLen=getCurrentGames().length; i<iLen; i++) {
@@ -15,6 +18,7 @@ const getGameFromID = (id: any): GameLogic | undefined => {
 
 const addGame = (newgame: GameLogic): void => {
     getCurrentGames().push(newgame);
+    console.log(currentGames.length);
 }
 
 const removeGame = (gameToRemove: GameLogic): void => {
@@ -52,6 +56,7 @@ function removeGame(gameToRemove: GameLogic): void{
 
 export default {
     getCurrentGames,
+    getGameAt,
     getGameFromID,
     addGame,
     removeGame
