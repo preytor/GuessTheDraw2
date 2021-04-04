@@ -18,50 +18,57 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const register = (req: Request, res: Response, next: NextFunction) => {
-  let { username, email, password } = req.body;
+  let { username, email, password, repassword } = req.body;
 
-  bcryptjs.hash(password, 10, (hashError, hash) => {
-    if (hashError) {
-      return res.status(500).json({
-        message: hashError.message,
-        error: hashError,
-      });
-    }
-
-    const _user = new User({
-      _id: new mongoose.Types.ObjectId(),
-      username,
-      email,
-      password: hash,
+  if(password !== repassword){
+    return res.status(400).json({
+      message: "Password and repeat password aren't the same",
     });
-
-    const accessToken = jwt.sign({ username: _user.id },
-      config.server.token.secret,{ 
-        expiresIn: config.server.token.expireTime,
-      }
-    );
-
-    const dataUser = {
-      username: _user.username,
-      email: _user.email,
-      accessToken: accessToken,
-      expiresIn: config.server.token.expireTime
-    }
-
-    return _user
-      .save()
-      .then((user) => {
-        return res.status(201).json({
-          dataUser
-        });
-      })
-      .catch((error) => {
+  }else{
+    //pending to be redone down here
+    bcryptjs.hash(password, 10, (hashError, hash) => {
+      if (hashError) {
         return res.status(500).json({
-          message: error.message,
-          error
+          message: hashError.message,
+          error: hashError,
         });
+      }
+  
+      const _user = new User({
+        _id: new mongoose.Types.ObjectId(),
+        username,
+        email,
+        password: hash,
       });
-  });
+  
+      const accessToken = jwt.sign({ username: _user.id },
+        config.server.token.secret,{ 
+          expiresIn: config.server.token.expireTime,
+        }
+      );
+  
+      const dataUser = {
+        username: _user.username,
+        email: _user.email,
+        accessToken: accessToken,
+        expiresIn: config.server.token.expireTime
+      }
+  
+      return _user
+        .save()
+        .then((user) => {
+          return res.status(201).json({
+            dataUser
+          });
+        })
+        .catch((error) => {
+          return res.status(500).json({
+            message: error.message,
+            error
+          });
+        });
+    });
+  }
 };
 
 const login = (req: Request, res: Response, next: NextFunction) => {

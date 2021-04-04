@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
       res => {
         console.log(res),
         localStorage.setItem('token', Object(res)["token"]);
-        this.router.navigateByUrl('/login'); //just testing here a bit
+        this.router.navigateByUrl('/'); //just testing here a bit
       },
       err => console.log(err)
     );

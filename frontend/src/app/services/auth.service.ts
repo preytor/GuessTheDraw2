@@ -17,11 +17,10 @@ export class AuthService {
   authSubject = new BehaviorSubject(false);
   private token: string | null | undefined;
 
-  //current user keeps being empty
-  current_user = "";
+  //current user keeps being empty, but only shows in the logs
+  private current_user: string | undefined;
 
   constructor(private httpClient: HttpClient, private Router: Router) { }
-
 
   signIn(loginUser: loginUser){
     return this.httpClient.post(`${this.AUTH_SERVER}/login`, loginUser)
@@ -29,8 +28,9 @@ export class AuthService {
       tap(
         (res) => {
           if(res){
-            console.log("username is: "+Object(res)["username"])  //this works
-            this.current_user = Object(res)["username"];//but this doesnt seem to work :thinking:
+            let us: string = Object(res)["username"];
+            console.log("username sign in is: "+us)
+            this.setUser(us);
           }
         }
       )
@@ -38,19 +38,42 @@ export class AuthService {
   }
 
   signUp(registerUser: registerUser){
-    return this.httpClient.post(`${this.AUTH_SERVER}/register`, registerUser);
+    return this.httpClient.post(`${this.AUTH_SERVER}/register`, registerUser)
+    .pipe(
+      tap(
+        (res) => {
+          if(res){
+            console.log("username sign up is: "+Object(res)["username"])
+            this.setUser(Object(res)["username"]);
+          }
+        }
+      )
+    );
   }
 
   isLogged(): boolean{  //ask the server for the token of the user and return the token, then compare it with the one at local storage
-    return localStorage.getItem('token') ? true : false;
+    return (localStorage.getItem('token') ? true : false);
   }
 
   getToken(){
     return localStorage.getItem('token');
   }
 
+  setUser(_user:string){
+    this.current_user = _user;//doesnt work
+    console.log("set user user: "+_user);
+    //this.current_user = _user;//but this doesnt seem to work :thinking:
+    localStorage.setItem('user', _user);
+  }
+
+  getUser(){
+    //return this.current_user;
+    return localStorage.getItem('user');
+  }
+
   logOut(){
     localStorage.removeItem('token');
+    this.current_user = "";
     this.Router.navigate(['/']);
   }
 

@@ -10,11 +10,14 @@ class GameLogic {
         this.id = _id;
     }
 
-    setSecretWord(_secretWord: string):void {
+/*  //Commented for now, find a way to put them somewhere 
+    const setSecretWord = (_secretWord: string):void => {
         this.secretWord = _secretWord;
     }
-
-    getSecretWord(): string{
+    
+    const getSecretWord = (): string => {
         return this.secretWord;
-    }
+    }*/
 }
+
+export = GameLogic;

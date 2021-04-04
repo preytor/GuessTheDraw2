@@ -6,9 +6,32 @@ import mongoose from "mongoose";
 import sampleRoutes from "./routes/sample";
 import userRoutes from "./routes/user";
 import gameRoutes from "./routes/game";
+import gamedata from './gamedata';
+import GameLogic from "./game-logic";
 
 const NAMESPACE = "Server";
 const router = express();
+
+/** Holding the game data */
+
+const newgame: GameLogic = {
+  gameUsers: [], 
+  id: 1, 
+  secretWord: "meme"
+};
+
+gamedata.addGame(newgame);
+
+logging.info(
+  "GAME",
+  `Started module to handle the games`
+)
+
+var x: any = gamedata.getCurrentGames().entries();  //also gives an undefined if i do a .length
+
+
+  logging.info("get current games:" , x[0]);  //gives an undefined
+
 
 /** Connect to Mongo */
 mongoose

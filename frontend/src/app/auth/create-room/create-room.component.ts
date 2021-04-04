@@ -12,9 +12,9 @@ export class CreateRoomComponent implements OnInit {
 
 
   //find a way to get the user or generate a random name like "anonymous<numbers>"  
-  number = Math.random()*100;
+  number = Math.floor(Math.random()*101);
   
-  username = (this.authService.isLogged()) ? this.authService.current_user : `anonymous${this.number}`;
+  username = (this.authService.isLogged()) ? this.authService.getUser() : `anonymous${this.number}`;
 
   roomParameters = {
     roomName: "",

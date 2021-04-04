@@ -1,13 +1,13 @@
 <nav class="header">
     <a href="./index.html" class="logo">Guess the Draw</a>
-    <div class="header-right">
+    <div class="header-right">     
         <a routerLink="/ranking" routerLinkActive="active">Ranking</a>
         <ng-container *ngIf="!getauthService().isLogged(); else loggedIn">        
             <a routerLink="/register" routerLinkActive="active">Register</a>
             <a routerLink="/login" routerLinkActive="active">Login</a>
         </ng-container>
         <ng-template #loggedIn>
-            <a>Logged as: {{ getauthService().current_user }}</a>
+            <a>Logged as: {{ getauthService().getUser() }}</a>
             <a routerLink="/settings" routerLinkActive="active">Settings</a>
             <a style="cursor: pointer;" (click)="getauthService().logOut()">Log Out </a>
         </ng-template>
