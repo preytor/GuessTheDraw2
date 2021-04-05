@@ -19,7 +19,8 @@ export class CreateRoomComponent implements OnInit {
   roomParameters = {
     roomName: "",
     roomPassword: "",
-    username: this.username
+    username: this.username,
+    isRegistered: this.authService.isLogged()
   }
 
   constructor(private GameService: GameService, private Router: Router, private authService: AuthService) { }

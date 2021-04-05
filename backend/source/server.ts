@@ -16,6 +16,8 @@ const router = express();
 
 const newgame: GameLogic = {
   gameUsers: [], 
+  roomName: "ddd",
+  roomPassword: "d",
   id: 1, 
   secretWord: "meme"
 };

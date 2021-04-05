@@ -16,6 +16,10 @@ export class GameService {
     return this.HttpClient.post(`${this.AUTH_SERVER}/game/startroom`, roomParameters);
   }
 
+  roomExists(id: number){
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/roomexists`, id);
+  }
+
   getRoomUsers(roomID: number){
     return this.HttpClient.post<Array<UserRoom>>(`${this.AUTH_SERVER}/game/getroomusers`, roomID);
   }

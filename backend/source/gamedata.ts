@@ -11,9 +11,7 @@ const getGameAt = (index: number): GameLogic => {
 }
 
 const getGameFromID = (id: any): GameLogic | undefined => {
-    for (var i=0, iLen=getCurrentGames().length; i<iLen; i++) {
-        if (getCurrentGames()[i].id == id) return getCurrentGames()[i];
-    }
+    return currentGames.find(x => x.id === id);
 }
 
 const addGame = (newgame: GameLogic): void => {
@@ -28,6 +26,10 @@ const removeGame = (gameToRemove: GameLogic): void => {
             break;
         }
     }
+}
+
+const gameExists = (id: number): boolean => {
+    return currentGames.some(x => x.id === id);
 }
 
 /*
@@ -59,5 +61,6 @@ export default {
     getGameAt,
     getGameFromID,
     addGame,
-    removeGame
+    removeGame,
+    gameExists
 };
