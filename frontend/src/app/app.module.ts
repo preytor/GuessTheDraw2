@@ -9,6 +9,7 @@ import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { AuthModule } from './auth/auth.module';
+
 @NgModule({
   declarations: [
     AppComponent

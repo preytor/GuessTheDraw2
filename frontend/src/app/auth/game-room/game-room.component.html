@@ -8,11 +8,45 @@
 
         </div>
         <div class="drawing-board">
-            <canvas></canvas>
+            <canvas id="drawingboard"></canvas>
         </div>
+        <div class="color">
+            <div id="black"></div>
+            <div id="darkgrey"></div>
+            <div id="darkred"></div>
+            <div id="red"></div>
+            <div id="orange"></div>
+            <div id="yellow"></div>
+            <div id="green"></div>
+            <div id="deepskyblue"></div>
+            <div id="blue"></div>
+            <div id="blueviolet"></div>
+    
+            <div id="white"></div>
+            <div id="lightgrey"></div>
+            <div id="peru"></div>
+            <div id="pink"></div>
+            <div id="lightsalmon"></div>
+            <div id="lightyellow"></div>
+            <div id="lightgreen"></div>
+            <div id="lightcyan"></div>
+            <div id="darkslategray"></div>
+            <div id="thistle"></div>
+        </div>
+        <div class="size">
+            <div class="circleContainer"><div id="small"></div></div>
+            <div class="circleContainer"><div id="medium"></div></div>
+            <div class="circleContainer"><div id="big"></div></div>
+        </div>
+        <div id="clear"></div>
     </div>
 
     <div class="menu right-menu">
-        <div class="chat"></div>
+        <div class="chat">
+            <ul id="messages"></ul>
+            <form id="form" (submit)="sendChatMessage();chatMessage.message = ''">
+              <input id="input" [(ngModel)]="chatMessage.message" type="text" name="message" autocomplete="off" /><button>Send</button>
+            </form>
+        </div>
     </div>
 </div>

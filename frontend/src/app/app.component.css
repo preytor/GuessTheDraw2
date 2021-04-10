@@ -47,11 +47,11 @@
 }
 
 .footer{
-    position: fixed;
-    bottom: 10px;
+/*    position: fixed;
+    bottom: 10px; */
     overflow: hidden;
     background-color: #f1f1f1;
-    width: 99%;
+    width: 100%;
 }
 
 .footer-middle{

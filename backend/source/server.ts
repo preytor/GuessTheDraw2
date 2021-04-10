@@ -8,9 +8,22 @@ import userRoutes from "./routes/user";
 import gameRoutes from "./routes/game";
 import gamedata from './gamedata';
 import GameLogic from "./game-logic";
+import Chat from './controllers/chat';
+import { Server, Socket } from 'socket.io'
+
 
 const NAMESPACE = "Server";
+const CORS_ORIGIN = 'http://localhost:4200';
 const router = express();
+
+/** Create the server */
+const httpServer = http.createServer(router);
+/** Create the socket server */
+const io = new Server(httpServer, {
+  cors: {
+    origin: [CORS_ORIGIN]
+  }
+});
 
 /** Holding the game data */
 
@@ -97,9 +110,17 @@ router.use((req, res, next) => {
   });
 });
 
-/** Create the server */
-const httpServer = http.createServer(router);
+/** Chat */
+router.use(Chat); //doesnt really work
+io.on("connection", function(socket: Socket){
+  console.log("A user connected");
+  socket.on('chat message', (message) => {
+    console.log(message);
+    io.to(message.roomid).emit(message.text);
+  });
+});
 
+/** Listen to the server */
 httpServer.listen(config.server.port, () =>
   logging.info(
     NAMESPACE,

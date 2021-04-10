@@ -37,16 +37,23 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     gamedata.addGame(newgame);
   
     logging.info(NAMESPACE,`beginning a game, id: ${newgame.id}, room name: ${newgame.roomName}, room password: ${newgame.roomPassword}, username host: ${req.body.username}, is registered account: ${req.body.isRegistered}`);
+    return res.status(200).json({
+      result: true
+    });
 };
 
 const getGameData = (req: Request, res: Response, next: NextFunction) => {
   let roomNumber = req.query.room;
 
   logging.info(NAMESPACE, `Game is ${roomNumber}`);
+  //temporally
+  return res.status(200).json({
+    result: roomNumber
+  });
 };
 
 const roomExists = (req: Request, res: Response, next: NextFunction) => {
-  let _roomID: any = req.query.id;
+  let _roomID: any = req.params.id;
   let id: number = +_roomID;
   logging.info(NAMESPACE, `Game is ${id}`);
   return res.status(200).json({
