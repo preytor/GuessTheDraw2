@@ -10,6 +10,8 @@ import gamedata from './gamedata';
 import GameLogic from "./game-logic";
 import Chat from './controllers/chat';
 import { Server, Socket } from 'socket.io'
+var cors = require('cors');
+
 
 
 const NAMESPACE = "Server";
@@ -21,7 +23,10 @@ const httpServer = http.createServer(router);
 /** Create the socket server */
 const io = new Server(httpServer, {
   cors: {
-    origin: [CORS_ORIGIN]
+    origin: CORS_ORIGIN,
+    methods: ["GET", "POST"],
+    allowedHeaders: ["gtd-socket"],
+    credentials: true
   }
 });
 
@@ -81,20 +86,49 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 
 /** Rules of our API */
-router.use((req, res, next) => {
+const originsWhitelist = [
+  "http://localhost:4200", 
+  "http://localhost:80", 
+  "*"
+];
+
+const options = { //: cors.CorsOptions
+  allowedHeaders: [
+    'Access-Control-Allow-Origin',
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'X-Access-Token',
+    'Authorization'
+  ],
+  credentials: true,
+  methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+  origin: function(origin: any, callback: any){
+    var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+    callback(null, isWhitelisted);
+  },
+  preflightContinue: false
+}
+
+//use cors middleware
+router.use(cors(options));
+
+/** Rules of our API */ //(OLD)
+/*router.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); //delete this after production
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
+  );*/
 
 /*  if (req.method == "OPTIONS") {  //if uncomment this it throws a CORS error
     res.header("Access-Control-Allow-Methods", "GET PATCH DELETE POST PUT");
     return res.status(200).json({});
   }*/
-
+/*
   next();
-});
+});*/
 
 /** Routes */
 router.use("/sample", sampleRoutes);
@@ -114,11 +148,29 @@ router.use((req, res, next) => {
 router.use(Chat); //doesnt really work
 io.on("connection", function(socket: Socket){
   console.log("A user connected");
-  socket.on('chat message', (message) => {
-    console.log(message);
-    io.to(message.roomid).emit(message.text);
+
+  socket.on('chat_message', (message) => {
+    console.log("meesage: ", message);
+    socket.to(message.roomid).emit(message); //just in case
+    socket.emit(message);
+    io.to(message.roomid).emit(message); //just in case
+    io.emit(message);
+  });
+
+  socket.on('join', (id) => {
+    console.log("player joined  the room ", id);
+    socket.join(id);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("A user disconnected");
+    console.log(reason); // "ping timeout"
   });
 });
+
+
+//enable pre-flight
+router.options('*', cors(options));
 
 /** Listen to the server */
 httpServer.listen(config.server.port, () =>

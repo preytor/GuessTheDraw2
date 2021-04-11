@@ -9,6 +9,7 @@ import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { AuthModule } from './auth/auth.module';
+import { SocketService } from './services/socket.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AuthModule } from './auth/auth.module';
       provide: HTTP_INTERCEPTORS, 
       useClass: TokenInterceptorService,
       multi: true
-    }
+    },
+    SocketService
   ],
   bootstrap: [AppComponent]
 })

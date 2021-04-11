@@ -43,10 +43,14 @@
 
     <div class="menu right-menu">
         <div class="chat">
-            <ul id="messages"></ul>
+            <div id="messages"*ngFor="let message of messages">
+                {{message}}
+            </div>
             <form id="form" (submit)="sendChatMessage();chatMessage.message = ''">
               <input id="input" [(ngModel)]="chatMessage.message" type="text" name="message" autocomplete="off" /><button>Send</button>
             </form>
+
+            <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (onclick)="sendMessage()">Send</button>
         </div>
     </div>
 </div>
