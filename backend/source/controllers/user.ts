@@ -20,11 +20,11 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
 const register = (req: Request, res: Response, next: NextFunction) => {
   let { username, email, password, repassword } = req.body;
 
-  if(password !== repassword){
+  if (password !== repassword) {
     return res.status(400).json({
       message: "Password and repeat password aren't the same",
     });
-  }else{
+  } else {
     //pending to be redone down here
     bcryptjs.hash(password, 10, (hashError, hash) => {
       if (hashError) {
@@ -33,38 +33,40 @@ const register = (req: Request, res: Response, next: NextFunction) => {
           error: hashError,
         });
       }
-  
+
       const _user = new User({
         _id: new mongoose.Types.ObjectId(),
         username,
         email,
         password: hash,
       });
-  
-      const accessToken = jwt.sign({ username: _user.id },
-        config.server.token.secret,{ 
+
+      const accessToken = jwt.sign(
+        { username: _user.id },
+        config.server.token.secret,
+        {
           expiresIn: config.server.token.expireTime,
         }
       );
-  
+
       const dataUser = {
         username: _user.username,
         email: _user.email,
         accessToken: accessToken,
-        expiresIn: config.server.token.expireTime
-      }
-  
+        expiresIn: config.server.token.expireTime,
+      };
+
       return _user
         .save()
         .then((user) => {
           return res.status(201).json({
-            dataUser
+            dataUser,
           });
         })
         .catch((error) => {
           return res.status(500).json({
             message: error.message,
-            error
+            error,
           });
         });
     });
@@ -74,7 +76,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 const login = (req: Request, res: Response, next: NextFunction) => {
   let { email, password } = req.body;
 
-  User.find({ "email": email })
+  User.find({ email: email })
     .exec()
     .then((users) => {
       if (users.length !== 1) {

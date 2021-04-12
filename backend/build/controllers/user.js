@@ -8,6 +8,8 @@ var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var mongoose_1 = __importDefault(require("mongoose"));
 var user_1 = __importDefault(require("../models/user"));
 var signJWT_1 = __importDefault(require("../functions/signJWT"));
+var config_1 = __importDefault(require("../config/config"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var NAMESPACE = "Users";
 var validateToken = function (req, res, next) {
     logging_1.default.info(NAMESPACE, "Token validated, user authorized");
@@ -16,37 +18,55 @@ var validateToken = function (req, res, next) {
     });
 };
 var register = function (req, res, next) {
-    var _a = req.body, username = _a.username, password = _a.password;
-    bcryptjs_1.default.hash(password, 10, function (hashError, hash) {
-        if (hashError) {
-            return res.status(500).json({
-                message: hashError.message,
-                error: hashError,
-            });
-        }
-        var _user = new user_1.default({
-            _id: new mongoose_1.default.Types.ObjectId(),
-            username: username,
-            password: hash,
+    var _a = req.body, username = _a.username, email = _a.email, password = _a.password, repassword = _a.repassword;
+    if (password !== repassword) {
+        return res.status(400).json({
+            message: "Password and repeat password aren't the same",
         });
-        return _user
-            .save()
-            .then(function (user) {
-            return res.status(201).json({
-                user: user,
+    }
+    else {
+        //pending to be redone down here
+        bcryptjs_1.default.hash(password, 10, function (hashError, hash) {
+            if (hashError) {
+                return res.status(500).json({
+                    message: hashError.message,
+                    error: hashError,
+                });
+            }
+            var _user = new user_1.default({
+                _id: new mongoose_1.default.Types.ObjectId(),
+                username: username,
+                email: email,
+                password: hash,
             });
-        })
-            .catch(function (error) {
-            return res.status(500).json({
-                message: error.message,
-                error: error,
+            var accessToken = jsonwebtoken_1.default.sign({ username: _user.id }, config_1.default.server.token.secret, {
+                expiresIn: config_1.default.server.token.expireTime,
+            });
+            var dataUser = {
+                username: _user.username,
+                email: _user.email,
+                accessToken: accessToken,
+                expiresIn: config_1.default.server.token.expireTime,
+            };
+            return _user
+                .save()
+                .then(function (user) {
+                return res.status(201).json({
+                    dataUser: dataUser,
+                });
+            })
+                .catch(function (error) {
+                return res.status(500).json({
+                    message: error.message,
+                    error: error,
+                });
             });
         });
-    });
+    }
 };
 var login = function (req, res, next) {
-    var _a = req.body, username = _a.username, password = _a.password;
-    user_1.default.find({ username: username })
+    var _a = req.body, email = _a.email, password = _a.password;
+    user_1.default.find({ email: email })
         .exec()
         .then(function (users) {
         if (users.length !== 1) {
@@ -74,7 +94,7 @@ var login = function (req, res, next) {
                         return res.status(200).json({
                             message: "Auth successful",
                             token: token,
-                            user: users[0],
+                            username: users[0].username,
                         });
                     }
                 });

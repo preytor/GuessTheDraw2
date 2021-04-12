@@ -1,36 +1,36 @@
-import GameLogic from './game-logic';
+import GameLogic from "./game-logic";
 
 var currentGames: Array<GameLogic> = [];
 
 const getCurrentGames = (): Array<GameLogic> => {
-    return currentGames;
-}
+  return currentGames;
+};
 
 const getGameAt = (index: number): GameLogic => {
-    return currentGames[index];
-}
+  return currentGames[index];
+};
 
 const getGameFromID = (id: any): GameLogic | undefined => {
-    return currentGames.find(x => x.id === id);
-}
+  return currentGames.find((x) => x.id === id);
+};
 
 const addGame = (newgame: GameLogic): void => {
-    getCurrentGames().push(newgame);
-    console.log(currentGames.length);
-}
+  getCurrentGames().push(newgame);
+  console.log(currentGames.length);
+};
 
 const removeGame = (gameToRemove: GameLogic): void => {
-    for (var i=0, iLen=getCurrentGames().length; i<iLen; i++) {
-        if (getCurrentGames()[i].id == gameToRemove.id){
-            getCurrentGames().splice(i, 1);
-            break;
-        }
+  for (var i = 0, iLen = getCurrentGames().length; i < iLen; i++) {
+    if (getCurrentGames()[i].id == gameToRemove.id) {
+      getCurrentGames().splice(i, 1);
+      break;
     }
-}
+  }
+};
 
 const gameExists = (id: number): boolean => {
-    return currentGames.some(x => x.id === id);
-}
+  return currentGames.some((x) => x.id === id);
+};
 
 /*
 function getCurrentGames(): Array<GameLogic>{
@@ -57,10 +57,10 @@ function removeGame(gameToRemove: GameLogic): void{
 }*/
 
 export default {
-    getCurrentGames,
-    getGameAt,
-    getGameFromID,
-    addGame,
-    removeGame,
-    gameExists
+  getCurrentGames,
+  getGameAt,
+  getGameFromID,
+  addGame,
+  removeGame,
+  gameExists,
 };
