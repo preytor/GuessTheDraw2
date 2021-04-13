@@ -33,7 +33,15 @@ export class SocketService {
   }
 
   public joinRoom(id: number): void{
+/*    this.socket.emit('join', { id }, () => {
+      alert('memer');
+    });*/
     this.socket.emit('join', id);
+  }
+
+  public leaveRoom(id: number) {
+    this.socket.emit('disconnect', id);
+    this.socket.off();
   }
 
   public sendMessage(message: ChatMessage): void {
@@ -63,4 +71,20 @@ export class SocketService {
       this.socket.on(event, () => observer.next());
     });
   }
+
+  public listenToMessages(){
+    console.log("enters in here listenToMessages();")
+    this.socket.on('chat_message', (message: any) => {
+      console.log("chat message: ", message.message)
+    });
+  }
+
+  listen(eventName: string) {
+    return new Observable((subscriber) => {
+      this.socket.on(eventName, (data: any) => {
+        subscriber.next(data);
+      });
+    });
+  }
+
 }

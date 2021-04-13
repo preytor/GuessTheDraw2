@@ -22,7 +22,7 @@ const router = express();
 /** Create the server */
 const httpServer = http.createServer(router);
 /** Create the socket server */
-const io = new Server(httpServer, {
+const io = new Server(httpServer, { //httpServer instead of 4200
   //ponerle aqui la ip del cliente
   cors: {
     origin: CORS_ORIGIN,
@@ -146,12 +146,20 @@ io.on("connection", function (socket: Socket) {
   //mandar el socket a la ip del cliente
   console.log("A user connected");
 
+  socket.emit("chat_message", 'shitty test');//only sends to the person that enters
+  io.emit("chat_message", 'shitty test v2')
+
+  socket.on("disconnect", (id) => {
+    console.log("player left the room ", id);
+    //console.log(reason); // "ping timeout"
+  });
+
   socket.on("chat_message", (message) => {
-    console.log("meesage: ", message);
-    socket.to(message.roomid).emit(message); //just in case
-    socket.emit(message);
-    io.to(message.roomid).emit(message); //just in case
-    io.emit(message);
+    console.log("message: ", message);
+    socket.to(message.roomid).emit("chat_message", message.message); //just in case
+    socket.emit(message.message);
+    io.to(message.roomid).emit(message.message); //just in case
+    io.emit("chat_message", message.message);
   });
 
   socket.on("join", (id) => {
@@ -159,10 +167,15 @@ io.on("connection", function (socket: Socket) {
     socket.join(id);
   });
 
-  socket.on("disconnect", (reason) => {
-    console.log("A user disconnected");
-    console.log(reason); // "ping timeout"
-  });
+/*  socket.on("join", (id, callback) => {
+    console.log("player joined  the room ", id);
+    socket.join(id);
+
+    const error = true;
+    if(error){
+      callback({error: 'error'});
+    }
+  });*/
 });
 
 //enable pre-flight

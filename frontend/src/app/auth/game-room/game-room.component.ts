@@ -88,12 +88,20 @@ export class GameRoomComponent implements OnInit {
       //this.sendMessage("test on client", IDinNumber);
 
       this.socketService.onMessage2();
+      this.socketService.listenToMessages();//doesnt listen
     });
 
 
   }
 
+  
+
   ngOnInit(): void {
+    this.socketService.listen("chat_message")
+    .subscribe((data: any) => {
+      console.log(data);
+    });
+
     this.socketService
     .getMessages()
     .subscribe((message: ChatMessage) => {
@@ -114,6 +122,12 @@ export class GameRoomComponent implements OnInit {
       console.log("message 2: ", message);
       this.messages.push(message);
     });
+  }
+
+        
+      
+  ngOnDestroy(): void{
+    this.socketService.leaveRoom(this.chatMessage.roomId);
   }
 
   roomExists(id: number): boolean { //pending to fix this, the response is weird
