@@ -4,6 +4,7 @@ import { fromEvent, Observable } from 'rxjs';
 //import * as io from 'socket.io-client';
 import { io, Socket } from 'socket.io-client/build/index';
 import { ChatMessage } from '../models/chatMessage';
+import { DrawLine } from '../models/drawLine';
 import { Event } from '../models/event';
 //var io = require('socket.io-client'); //doesnt work well
 
@@ -24,23 +25,28 @@ export class SocketService {
   }
 
   public initSocket(): void{
-    this.socket = io("ws://localhost:3000", {
+    try {
+      this.socket = io("ws://localhost:3000", {
       withCredentials: true,
       extraHeaders: {
         "gtd-socket": "gtd"
       }
     });
+    }catch(e){
+      console.log('Could not connect to the server')
+    }
   }
 
-  public joinRoom(id: number): void{
-/*    this.socket.emit('join', { id }, () => {
+  /** chat */
+  public joinRoom(id: string): void{
+/*  this.socket.emit('join', { id }, () => {
       alert('memer');
     });*/
     this.socket.emit('join', id);
   }
 
   public leaveRoom(id: number) {
-    this.socket.emit('disconnect', id);
+    this.socket.emit('leave', id);
     this.socket.off();
   }
 
@@ -54,37 +60,27 @@ export class SocketService {
     });
   }
 
-  public onMessage2(): Observable<ChatMessage>{
-    return fromEvent(this.socket, 'chat_message');
-  }
-
-  public getMessages = () => {
-    return Observable.create((observer: any) => {
-      this.socket.on('chat_message', (message: any) => {
-        observer.next(message);
-      });
-    });
-  }
-
   public onEvent(event: Event): Observable<any>{
     return new Observable<Event>((observer) => {
       this.socket.on(event, () => observer.next());
     });
   }
 
-  public listenToMessages(){
-    console.log("enters in here listenToMessages();")
-    this.socket.on('chat_message', (message: any) => {
-      console.log("chat message: ", message.message)
-    });
+  /** Drawing */
+  emitDrawing(x0: number, y0: number, x1: number, y1: number, color: string, width: number) {
+    let drawSocket: DrawLine = {
+      color: color,
+      width: width,
+      x0: x0,
+      y0: y0,
+      x1: x1,
+      y1: y1
+    }
+    this.socket.emit(drawSocket);
   }
 
-  listen(eventName: string) {
-    return new Observable((subscriber) => {
-      this.socket.on(eventName, (data: any) => {
-        subscriber.next(data);
-      });
-    });
+  clearCanvas() {
+    this.socket.emit('clear', true);
   }
 
 }

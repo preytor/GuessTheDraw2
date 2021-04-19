@@ -8,48 +8,50 @@
 
         </div>
         <div class="drawing-board">
-            <canvas id="drawingboard"></canvas>
+            <canvas id="drawingboard" #drawingboard 
+            (document:mousemove)="onMouseMove($event)"
+            (document:click)="drawDot($event)"
+            (mousedown)="beginDrawing($event)"
+            (document:mouseout)="stopDrawing($event)" 
+            (document:mouseup)="stopDrawing($event)"
+            ></canvas>
         </div>
         <div class="color">
-            <div id="black"></div>
-            <div id="darkgrey"></div>
-            <div id="darkred"></div>
-            <div id="red"></div>
-            <div id="orange"></div>
-            <div id="yellow"></div>
-            <div id="green"></div>
-            <div id="deepskyblue"></div>
-            <div id="blue"></div>
-            <div id="blueviolet"></div>
+            <div id="black" (click)="changeDrawingColor('black')"></div>
+            <div id="darkgrey" (click)="changeDrawingColor('darkgrey')"></div>
+            <div id="darkred" (click)="changeDrawingColor('darkred')"></div>
+            <div id="red" (click)="changeDrawingColor('red')"></div>
+            <div id="orange" (click)="changeDrawingColor('orange')"></div>
+            <div id="yellow" (click)="changeDrawingColor('yellow')"></div>
+            <div id="green" (click)="changeDrawingColor('green')"></div>
+            <div id="deepskyblue" (click)="changeDrawingColor('deepskyblue')"></div>
+            <div id="blue" (click)="changeDrawingColor('blue')"></div>
+            <div id="blueviolet" (click)="changeDrawingColor('blueviolet')"></div>
     
-            <div id="white"></div>
-            <div id="lightgrey"></div>
-            <div id="peru"></div>
-            <div id="pink"></div>
-            <div id="lightsalmon"></div>
-            <div id="lightyellow"></div>
-            <div id="lightgreen"></div>
-            <div id="lightcyan"></div>
-            <div id="darkslategray"></div>
-            <div id="thistle"></div>
+            <div id="white" (click)="changeDrawingColor('white')"></div>
+            <div id="lightgrey" (click)="changeDrawingColor('lightgrey')"></div>
+            <div id="peru" (click)="changeDrawingColor('peru')"></div>
+            <div id="pink" (click)="changeDrawingColor('pink')"></div>
+            <div id="lightsalmon" (click)="changeDrawingColor('lightsalmon')"></div>
+            <div id="lightyellow" (click)="changeDrawingColor('lightyellow')"></div>
+            <div id="lightgreen" (click)="changeDrawingColor('lightgreen')"></div>
+            <div id="lightcyan" (click)="changeDrawingColor('lightcyan')"></div>
+            <div id="darkslategray" (click)="changeDrawingColor('darkslategray')"></div>
+            <div id="thistle" (click)="changeDrawingColor('thistle')"></div>
         </div>
         <div class="size">
-            <div class="circleContainer"><div id="small"></div></div>
-            <div class="circleContainer"><div id="medium"></div></div>
-            <div class="circleContainer"><div id="big"></div></div>
+            <div class="circleContainer" (click)="changeDrawingSize(1)"><div id="small"></div></div>
+            <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
+            <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
         </div>
-        <div id="clear"></div>
+        <div id="clear" (click)="clearCanvas()"></div>
     </div>
 
     <div class="menu right-menu">
         <div class="chat">
             <div id="messages"*ngFor="let message of messages">
-                {{message}}
+                {{message.message}}
             </div>
-            <form id="form" (submit)="sendChatMessage();chatMessage.message = ''">
-              <input id="input" [(ngModel)]="chatMessage.message" type="text" name="message" autocomplete="off" /><button>Send</button>
-            </form>
-
             <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (onclick)="sendMessage()">Send</button>
         </div>
     </div>

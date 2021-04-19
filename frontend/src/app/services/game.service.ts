@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { UserRoom } from '../models/userRoom';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,41 @@ export class GameService {
   }
 
   roomExists(id: number){
-    return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`);
+/*    let _exists;
+    this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+    .subscribe(
+      res => {
+        Object.values(res)[0];
+      },
+      err => console.log(err)
+    );*/
+
+    let _exists = this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+    .pipe(
+      tap(
+        (res) => {
+          if(res){
+            let response = Object(res)["exists"];
+            console.log("response: ", response)
+            _exists = response;
+            return response;
+          }
+        }
+      )
+    );
+
+        console.log("exists : ", _exists)
+    return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+    .pipe(
+      tap(
+        (res) => {
+          if(res){
+            console.log("response: ", Object(res)["exists"])
+            Object(res)["exists"];
+          }
+        }
+      )
+    );
   }
 
   getRoomUsers(roomID: number){

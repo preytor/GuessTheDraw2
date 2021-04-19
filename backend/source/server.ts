@@ -146,27 +146,28 @@ io.on("connection", function (socket: Socket) {
   //mandar el socket a la ip del cliente
   console.log("A user connected");
 
-  socket.emit("chat_message", 'shitty test');//only sends to the person that enters
-  io.emit("chat_message", 'shitty test v2')
-
   socket.on("disconnect", (id) => {
     console.log("player left the room ", id);
     //console.log(reason); // "ping timeout"
   });
 
   socket.on("chat_message", (message) => {
-    console.log("message: ", message);
-    socket.to(message.roomid).emit("chat_message", message.message); //just in case
-    socket.emit(message.message);
-    io.to(message.roomid).emit(message.message); //just in case
-    io.emit("chat_message", message.message);
+    console.log("message: ", message, "socketid: ", socket.id);
+  //  socket.to(message.roomid).emit("chat_message", message.message); //only sends to himself
+  //  socket.emit("chat_message", message.message); 
+      io.to(message.roomid).emit("chat_message", message); //just in case
+      io.emit("chat_message", message);
   });
 
   socket.on("join", (id) => {
-    console.log("player joined  the room ", id);
-    socket.join(id);
+    console.log("player ", socket.id, " joined  the room ", id);
+    socket.join(`${id}`);
   });
 
+  socket.on("leave", (id) => {
+    console.log("Player ", socket.id, " left the game");
+    socket.leave(`${id}`);
+  });
 /*  socket.on("join", (id, callback) => {
     console.log("player joined  the room ", id);
     socket.join(id);

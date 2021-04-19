@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute  } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { UserRoom } from '../../models/userRoom';
@@ -13,7 +13,7 @@ import { ChatMessage } from 'src/app/models/chatMessage';
   templateUrl: './game-room.component.html',
   styleUrls: ['./game-room.component.css']
 })
-export class GameRoomComponent implements OnInit {
+export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   roomUsers: Array<UserRoom> = [];
  // socket: Socket;
@@ -27,101 +27,66 @@ export class GameRoomComponent implements OnInit {
     roomId: 0
   }
 
-  constructor(private GameService: GameService, private Router: Router, private route: ActivatedRoute, private socketService: SocketService) {     
-    //initialize connection with the chat
-/*    this.socket = io("http://localhost:3000");
-    if(this.socket!=null){
-      console.log("initialized chat");
-    }*/
+  canDraw: boolean = true;  //check here if its the turn of this player to draw (send a request to the server/the server sends you a socket telling you its your turn)
+  isDrawing: boolean = false;
 
+  //temporal
+  emit: boolean = true;
+
+  currentDraw = {
+    color: 'black',
+    width: 2,
+    x: -1,
+    y: -1,
+  }
+
+  //canvas
+  @ViewChild('drawingboard') drawingboard!: ElementRef<HTMLCanvasElement>;
+  public content!: CanvasRenderingContext2D | null;
+
+  constructor(private GameService: GameService, private Router: Router, private route: ActivatedRoute, private socketService: SocketService) {     
     this.route.queryParams.subscribe(params => {
       let parameterID = params['id'];
       let IDinNumber: number = +parameterID;
 
       this.chatMessage.roomId = IDinNumber;
-      this.initIoconnection();
-
-      this.socketService  //this is the received messages
-      .onMessage()
-      .subscribe((message: any) => {  //ChatMessage
-        console.log("message received: ", message.message);
-        this.messages.push(message);
-      });
-
-      
-      this.socketService  //this is the received messages
-      .onMessage2()
-      .subscribe((message: ChatMessage) => {  //ChatMessage
-        console.log("message 2 received: ", message.message);
-        this.messages.push(message);
-      });
-
-      /** add  this in the "roomExists" */
-      //this.socket.join(IDinNumber); //FIGURE OUT WHERE TO PUT THIS//
-
-      if(!isNaN(IDinNumber)){      
-        if(this.roomExists(IDinNumber)){
-          this.chatMessage.roomId = IDinNumber;
-          console.log("room id: "+IDinNumber);
-          //
-        }else{
-          console.log("room doesnt exist");
-          //redirect to main menu
-        }
-      }else{
-        console.log("no room");
-      }
-
-      /** Submiting the chat message */
-      
-      //localStorage.debug = '*'; socket.io debug
-
-      /** Chat events */
-
-  /*    this.socket.on("chat message", function (message: any) {
-        console.log("debug chat message");
-        console.log(message);
-        document.body.innerHTML += message;
-      });*/
-
-      /** Chat functions */
-      //this.sendMessage("test on client", IDinNumber);
-
-      this.socketService.onMessage2();
-      this.socketService.listenToMessages();//doesnt listen
     });
 
+    
+  }
 
+  ngAfterViewInit(): void {
+    this.content = this.drawingboard.nativeElement.getContext('2d');
   }
 
   
 
-  ngOnInit(): void {
-    this.socketService.listen("chat_message")
-    .subscribe((data: any) => {
-      console.log(data);
-    });
+  ngAfterContentInit(): void {
 
-    this.socketService
-    .getMessages()
-    .subscribe((message: ChatMessage) => {
-      console.log("message: ", message);
-      this.messages.push(message);
-    });
+    if(!isNaN(this.chatMessage.roomId)){      
+      if(this.roomExists(this.chatMessage.roomId)){
+        console.log("room id: "+this.chatMessage.roomId);
+        //init the connection to socket.io
+        
+        this.initIoconnection();
+      }else{
+        console.log("room doesnt exist");
+        //redirect to main menu
+        console.log("redirecting")
+      }
+    }else{
+      console.log("no room");
+    }
 
+    /** Chat */
     this.socketService
     .onMessage()
-    .subscribe((message: ChatMessage) => {
-      console.log("message 1 : ", message);
-      this.messages.push(message);
+    .subscribe((cmessage: ChatMessage) => {
+      console.log("message 1 : ", cmessage.message);
+      this.messages.push(cmessage);
     });
 
-    this.socketService
-    .onMessage2()
-    .subscribe((message: ChatMessage) => {
-      console.log("message 2: ", message);
-      this.messages.push(message);
-    });
+    /** Drawing */
   }
 
         
@@ -134,7 +99,7 @@ export class GameRoomComponent implements OnInit {
     this.GameService.roomExists(id)
     .subscribe(
       res => {
-        console.log('console room exists'+res)
+        console.log('console room exists '+res)
         return res;
       },
       err => console.log(err)
@@ -155,8 +120,9 @@ export class GameRoomComponent implements OnInit {
 
   private initIoconnection(): void{
     this.socketService.initSocket();
-    this.socketService.joinRoom(this.chatMessage.roomId);
+    this.socketService.joinRoom(`room_${this.chatMessage.roomId}`);
 
+    /** Chat Messages */
     this.ioConnection = this.socketService  //this is the received messages
     .onMessage()
     .subscribe((message: any) => {  //ChatMessage
@@ -175,6 +141,8 @@ export class GameRoomComponent implements OnInit {
     this.socketService.onEvent(Event.MESSAGE).subscribe((message: any) => {
       console.log("message received: ", message.message);
     });
+
+    /** Drawing */
   }
 
   public sendMessage(): void{
@@ -206,5 +174,96 @@ export class GameRoomComponent implements OnInit {
   sendMessage = (text: string, roomid: number) => {
     this.socket.emit('chat message', text, roomid);
   }*/
+
+  /** Drawing functions */
+  changeDrawingColor(color: string): void{
+    console.log("new color is ", color)
+    this.currentDraw.color = color;
+  }
+
+  changeDrawingSize(size: number): void{
+    console.log("new size is ", size)
+    this.currentDraw.width = size;
+  }
+
+  clearCanvas(): void{
+    console.log("canvas cleared");
+    this.content?.clearRect(0, 0, this.drawingboard.nativeElement.width, this.drawingboard.nativeElement.height);
+    if(this.emit){ this.socketService.clearCanvas()}
+  }
+
+  drawLine(x0: number, y0: number, x1: number, y1: number, color: string, width: number) {
+    this.content?.beginPath();
+    this.content?.moveTo(x0, y0);
+    this.content?.lineTo(x1, y1);
+    this.content!.strokeStyle = color;
+    this.content!.lineWidth = width;
+    this.content?.stroke();
+    this.content?.closePath();
+
+    if(!this.emit) { return }
+
+    this.socketService.emitDrawing(x0, y0, x1, y1, color, width);
+  }
+
+  getMousePos(event: MouseEvent){
+    let rect = this.drawingboard.nativeElement.getBoundingClientRect();
+
+    let scaleX = this.drawingboard.nativeElement.width / rect.width;
+    let scaleY = this.drawingboard.nativeElement.height / rect.height;
+
+    return {
+      x: (event.clientX - rect.left) * scaleX,
+      y: (event.clientY - rect.top) * scaleY
+    }
+  }
+
+  //mouse functions
+  onMouseMove(e: MouseEvent){
+    if(!this.isDrawing) return
+    console.log(e);
+    
+    let mousePos = this.getMousePos(e);
+
+    this.drawLine(this.currentDraw.x, this.currentDraw.y, mousePos.x, mousePos.y, this.currentDraw.color, this.currentDraw.width);
+
+    this.currentDraw.x = mousePos.x;
+    this.currentDraw.y = mousePos.y;
+  }
+
+  throttle(callback: any, delay: number){
+    let previousCall = new Date().getTime();
+
+    return () => {
+      let time = new Date().getTime();
+
+      if((time-previousCall) >= delay){
+        previousCall = time;
+        callback.apply(null, arguments);
+      }
+    };
+  }
+
+  beginDrawing(e: MouseEvent){
+    if(!this.canDraw) return
+    this.isDrawing = true;
+
+    let mousePos = this.getMousePos(e);
+
+    this.currentDraw.x = mousePos.x;
+    this.currentDraw.y = mousePos.y;
+  }
+
+  drawDot(e: MouseEvent){
+    this.isDrawing = true;
+    this.isDrawing = false;
+  }
+
+  stopDrawing(e: MouseEvent){
+    this.isDrawing = false;
+
+    let mousePos = this.getMousePos(e);
+    this.drawLine(this.currentDraw.x, this.currentDraw.y, mousePos.x, mousePos.y, this.currentDraw.color, this.currentDraw.width);
+  }
 
 }
