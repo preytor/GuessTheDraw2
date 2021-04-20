@@ -59,10 +59,11 @@ const roomExists = (req: Request, res: Response, next: NextFunction) => {
   let _roomID: any = req.params.id;
   let id: number = +_roomID;
   logging.info(NAMESPACE, `Game is ${id}`);
-
   
   let exists = gamedata.gameExists(id);
-  console.log("result exists in roomExists ", exists)
+  
+  logging.info(NAMESPACE, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+  logging.info(NAMESPACE, "result exists in roomExists ", exists)
   return res.status(200).json({
     exists
   });

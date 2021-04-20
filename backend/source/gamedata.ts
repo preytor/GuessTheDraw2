@@ -1,4 +1,5 @@
 import GameLogic from "./game-logic";
+import logging from "./config/logging";
 
 var currentGames: Array<GameLogic> = [];
 
@@ -29,6 +30,8 @@ const removeGame = (gameToRemove: GameLogic): void => {
 };
 
 const gameExists = (id: number): boolean => {
+  logging.info("GAME_EXISTS", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+  logging.info("GAME_EXISTS", `Game exists?: ${currentGames.some((x) => x.id === id)}`)
   return currentGames.some((x) => x.id === id);
 };
 

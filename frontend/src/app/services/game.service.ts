@@ -27,7 +27,7 @@ export class GameService {
       err => console.log(err)
     );*/
 
-    let _exists = this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+/*    let _exists = this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
     .pipe(
       tap(
         (res) => {
@@ -41,14 +41,14 @@ export class GameService {
       )
     );
 
-        console.log("exists : ", _exists)
+        console.log("exists : ", _exists)*/
     return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
     .pipe(
       tap(
         (res) => {
           if(res){
             console.log("response: ", Object(res)["exists"])
-            Object(res)["exists"];
+            return Object(res)["exists"];
           }
         }
       )

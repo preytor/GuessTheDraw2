@@ -168,15 +168,18 @@ io.on("connection", function (socket: Socket) {
     console.log("Player ", socket.id, " left the game");
     socket.leave(`${id}`);
   });
-/*  socket.on("join", (id, callback) => {
-    console.log("player joined  the room ", id);
-    socket.join(id);
 
-    const error = true;
-    if(error){
-      callback({error: 'error'});
-    }
-  });*/
+  //** Drawing */
+
+  socket.on("drawing", (message) => {
+    io.to(message.roomid).emit("drawing", message);
+    io.emit("drawing", message);
+  });
+
+  socket.on("clear", (message) => {
+    io.to(message.roomid).emit("clear", message);
+    io.emit("clear", message);
+  });
 });
 
 //enable pre-flight

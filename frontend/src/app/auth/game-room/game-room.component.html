@@ -44,13 +44,13 @@
             <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
             <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
         </div>
-        <div id="clear" (click)="clearCanvas()"></div>
+        <div id="clear" (click)="clearCanvas(true)"></div>
     </div>
 
     <div class="menu right-menu">
         <div class="chat">
             <div id="messages"*ngFor="let message of messages">
-                {{message.message}}
+                {{message.from}}: {{message.message}}
             </div>
             <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (onclick)="sendMessage()">Send</button>
         </div>

@@ -7,6 +7,8 @@ import { Event } from '../../models/event';
 //import * as socketIo from 'socket.io-client';
 import { SocketService } from '../../services/socket.service';
 import { ChatMessage } from 'src/app/models/chatMessage';
+import { AuthService } from '../../services/auth.service';
+import { DrawLine } from 'src/app/models/drawLine';
 
 @Component({
   selector: 'app-game-room',
@@ -24,14 +26,11 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   chatMessage = {
     message: "",
-    roomId: 0
+    roomId: -1
   }
 
   canDraw: boolean = true;  //check here if its the turn of this player to draw (send a request to the server/the server sends you a socket telling you its your turn)
   isDrawing: boolean = false;
-
-  //temporal
-  emit: boolean = true;
 
   currentDraw = {
     color: 'black',
@@ -44,7 +43,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   @ViewChild('drawingboard') drawingboard!: ElementRef<HTMLCanvasElement>;
   public content!: CanvasRenderingContext2D | null;
 
-  constructor(private GameService: GameService, private Router: Router, private route: ActivatedRoute, private socketService: SocketService) {     
+  constructor(private GameService: GameService, private Router: Router, private route: ActivatedRoute, private socketService: SocketService, private authService: AuthService) {     
     this.route.queryParams.subscribe(params => {
       let parameterID = params['id'];
       let IDinNumber: number = +parameterID;
@@ -63,30 +62,21 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   ngAfterContentInit(): void {
 
-    if(!isNaN(this.chatMessage.roomId)){      
-      if(this.roomExists(this.chatMessage.roomId)){
+    if(!isNaN(this.chatMessage.roomId)){
+      //if(this.roomExists(this.chatMessage.roomId)){
+      if(this.GameService.roomExists(this.chatMessage.roomId)){
         console.log("room id: "+this.chatMessage.roomId);
         //init the connection to socket.io
         
         this.initIoconnection();
       }else{
-        console.log("room doesnt exist");
+        console.log("room doesnt exist");////////////////////////////////////////////////
         //redirect to main menu
         console.log("redirecting")
       }
     }else{
       console.log("no room");
     }
-
-    /** Chat */
-    this.socketService
-    .onMessage()
-    .subscribe((cmessage: ChatMessage) => {
-      console.log("message 1 : ", cmessage.message);
-      this.messages.push(cmessage);
-    });
-
-    /** Drawing */
   }
 
         
@@ -95,17 +85,17 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     this.socketService.leaveRoom(this.chatMessage.roomId);
   }
 
-  roomExists(id: number): boolean { //pending to fix this, the response is weird
+/*  roomExists(id: number): boolean { //pending to fix this, the response is weird
     this.GameService.roomExists(id)
     .subscribe(
       res => {
-        console.log('console room exists '+res)
-        return res;
+        console.log('console room exists '+Object(res)["exists"])///////////////////////////////////////////////
+        return Object(res)["exists"];
       },
       err => console.log(err)
     );
     return false
-  }
+  }*/
 
   getRoomUsers(roomID: number){
     this.GameService.getRoomUsers(roomID)
@@ -143,6 +133,20 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     });
 
     /** Drawing */
+    this.socketService.onDrawCanvas()
+    .subscribe((message: DrawLine) => {
+      console.log("draw received ", message);
+      //draw here stuff
+      this.drawLine(message.x0, message.y0, message.x1, message.y1, message.color, message.width, false);
+    });
+
+    this.socketService.onClearCanvas()
+    .subscribe((message) => {
+      console.log("clear canvas received ", message);
+      //draw here stuff
+      this.clearCanvas(false);
+    });
+
   }
 
   public sendMessage(): void{
@@ -152,7 +156,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     }
 
     this.socketService.sendMessage({
-      from: "", //getauthService().getUser() or something
+      from: this.authService.getUser()!,//"", //getauthService().getUser() or something
       message: this.messageContent,
       room: this.chatMessage.roomId
     });
@@ -177,22 +181,26 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   /** Drawing functions */
   changeDrawingColor(color: string): void{
+    if(!this.canDraw) return
     console.log("new color is ", color)
     this.currentDraw.color = color;
   }
 
   changeDrawingSize(size: number): void{
+    if(!this.canDraw) return
     console.log("new size is ", size)
     this.currentDraw.width = size;
   }
 
-  clearCanvas(): void{
+  clearCanvas(emit: boolean): void{
+    if(!this.canDraw) return
     console.log("canvas cleared");
     this.content?.clearRect(0, 0, this.drawingboard.nativeElement.width, this.drawingboard.nativeElement.height);
-    if(this.emit){ this.socketService.clearCanvas()}
+    if(!emit) { return }
+    this.socketService.clearCanvas(this.chatMessage.roomId);
   }
 
-  drawLine(x0: number, y0: number, x1: number, y1: number, color: string, width: number) {
+  drawLine(x0: number, y0: number, x1: number, y1: number, color: string, width: number, emit: boolean) {
     this.content?.beginPath();
     this.content?.moveTo(x0, y0);
     this.content?.lineTo(x1, y1);
@@ -201,9 +209,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     this.content?.stroke();
     this.content?.closePath();
 
-    if(!this.emit) { return }
+    if(!emit) { return }
 
-    this.socketService.emitDrawing(x0, y0, x1, y1, color, width);
+    this.socketService.emitDrawing(x0, y0, x1, y1, color, width, this.chatMessage.roomId);
   }
 
   getMousePos(event: MouseEvent){
@@ -220,12 +228,13 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   //mouse functions
   onMouseMove(e: MouseEvent){
+    if(!this.canDraw) return
     if(!this.isDrawing) return
     console.log(e);
     
     let mousePos = this.getMousePos(e);
 
-    this.drawLine(this.currentDraw.x, this.currentDraw.y, mousePos.x, mousePos.y, this.currentDraw.color, this.currentDraw.width);
+    this.drawLine(this.currentDraw.x, this.currentDraw.y, mousePos.x, mousePos.y, this.currentDraw.color, this.currentDraw.width, true);
 
     this.currentDraw.x = mousePos.x;
     this.currentDraw.y = mousePos.y;
@@ -255,15 +264,18 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   }
 
   drawDot(e: MouseEvent){
-    this.isDrawing = true;
+    if(!this.canDraw) return
+    if (this.isDrawing) { return; }
+
+    let mousePos = this.getMousePos(e);
+
+    this.drawLine(mousePos.x, mousePos.y, mousePos.x+this.currentDraw.width, mousePos.y+this.currentDraw.width, this.currentDraw.color, this.currentDraw.width, true);
     this.isDrawing = false;
   }
 
   stopDrawing(e: MouseEvent){
+    //if (this.isDrawing) { return; }
     this.isDrawing = false;
-
-    let mousePos = this.getMousePos(e);
-    this.drawLine(this.currentDraw.x, this.currentDraw.y, mousePos.x, mousePos.y, this.currentDraw.color, this.currentDraw.width);
   }
 
 }

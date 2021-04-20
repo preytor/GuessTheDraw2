@@ -67,20 +67,33 @@ export class SocketService {
   }
 
   /** Drawing */
-  emitDrawing(x0: number, y0: number, x1: number, y1: number, color: string, width: number) {
+  public onDrawCanvas(): Observable<DrawLine>{
+    return new Observable<DrawLine>((observer) => {
+      this.socket.on('drawing', (data: DrawLine) => observer.next(data));
+    });
+  }
+
+  public onClearCanvas(): Observable<DrawLine>{
+    return new Observable<DrawLine>((observer) => {
+      this.socket.on('clear', (data: DrawLine) => observer.next(data));
+    });
+  }
+
+  public emitDrawing(x0: number, y0: number, x1: number, y1: number, color: string, width: number, roomid: number): void {
     let drawSocket: DrawLine = {
       color: color,
       width: width,
       x0: x0,
       y0: y0,
       x1: x1,
-      y1: y1
+      y1: y1,
+      roomid: roomid
     }
-    this.socket.emit(drawSocket);
+    this.socket.emit('drawing', drawSocket);
   }
 
-  clearCanvas() {
-    this.socket.emit('clear', true);
+  public clearCanvas(roomid: number): void {
+    this.socket.emit('clear', {roomid});
   }
 
 }
