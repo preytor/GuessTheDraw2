@@ -9,6 +9,7 @@ import { JwtResponse } from '../models/jwt-response';
 
 import { tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { PlayerScore } from '../models/playerScore';
 
 
 @Injectable()
@@ -75,6 +76,20 @@ export class AuthService {
     localStorage.removeItem('token');
     this.current_user = "";
     this.Router.navigate(['/']);
+  }
+
+  getRanking(limit: number, offset: number): Observable<PlayerScore>{
+    return this.httpClient.get<PlayerScore>(`${this.AUTH_SERVER}/ranking/${offset}/${limit}`)
+    .pipe(
+      tap(
+        (res) => {
+          if(res){
+            //TODO return this content
+            
+          }
+        }
+      )
+    );
   }
 
   //old stuff

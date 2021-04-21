@@ -137,4 +137,34 @@ const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export default { validateToken, register, login, getAllUsers };
+const getRanking = (req: Request, res: Response, next: NextFunction) => {
+//  let { limit, offset } = req.query;
+//  let _limit: number = parseInt(limit);
+
+    let limit = 4;
+    let offset = 1;
+
+//  const limit: number = parseInt(req.query.limit);
+//  const offset: number = parseInt(req.query.offset);
+  User.find()
+    .sort({score: -1})
+    .select("username")
+    .select("score")
+    .skip(offset > 0 ? ( ( offset - 1 ) * limit ) : 0)  //works but doesnt work at the same time?
+    .limit(limit) //limit
+    .exec()
+    .then((users) => {
+      return res.status(200).json({
+        users,
+        count: users.length,
+      });
+    })
+    .catch((error) => {
+      return res.status(500).json({
+        message: error.message,
+        error,
+      });
+    });
+};
+
+export default { validateToken, register, login, getAllUsers, getRanking };

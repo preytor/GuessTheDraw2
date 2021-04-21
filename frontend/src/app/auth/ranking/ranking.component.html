@@ -1,1 +1,12 @@
-<p>ranking works!</p>
+<div>
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Score</th>
+        </tr>
+        <tr *ngFor="let player of players">
+            <td>{{player.name}}</td>
+            <td>{{player.score}}</td>
+        </tr>
+    </table>
+</div>

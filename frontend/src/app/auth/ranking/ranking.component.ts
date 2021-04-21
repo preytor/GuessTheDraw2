@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PlayerScore } from 'src/app/models/playerScore';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-ranking',
@@ -7,7 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RankingComponent implements OnInit {
 
-  constructor() { }
+  players: PlayerScore[] = [];
+
+  constructor(private authService: AuthService) {
+    this.authService.getRanking(0, 50)
+    .subscribe((rankings: PlayerScore) => {
+      console.log("ranking received: ", rankings);
+      this.players.push(rankings);
+    });
+  }
 
   ngOnInit(): void {
   }
