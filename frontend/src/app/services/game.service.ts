@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { UserRoom } from '../models/userRoom';
-import { tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators'
+import { Observable } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,20 @@ export class GameService {
     return this.HttpClient.post(`${this.AUTH_SERVER}/game/startroom`, roomParameters);
   }
 
-  roomExists(id: number){
+  roomExists(id: any){
+    return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });
+    
+    //this works but doesnt work at the same time
+    //return this.HttpClient.get<boolean>(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+    //.subscribe((data) => {console.log(data); return data});
+
+
+
+
+
 /*    let _exists;
     this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
     .subscribe(
@@ -41,8 +56,9 @@ export class GameService {
       )
     );
 
-        console.log("exists : ", _exists)*/
-    return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
+        console.log("exists : ", _exists)
+        return false;*/
+/*    return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
     .pipe(
       tap(
         (res) => {
@@ -52,7 +68,7 @@ export class GameService {
           }
         }
       )
-    );
+    );*/
   }
 
   getRoomUsers(roomID: number){

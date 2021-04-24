@@ -85,7 +85,12 @@ export class AuthService {
         (res) => {
           if(res){
             //TODO return this content
-            
+            let _offset = Object(res)["offset"];
+            let _limit = Object(res)["limit"];
+/*            {
+              "offset": _offset, 
+              "limit": _limit
+            }*/
           }
         }
       )

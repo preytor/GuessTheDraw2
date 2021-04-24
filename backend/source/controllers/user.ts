@@ -142,7 +142,7 @@ const getRanking = (req: Request, res: Response, next: NextFunction) => {
 //  let _limit: number = parseInt(limit);
 
     let limit = 4;
-    let offset = 1;
+    let offset = 1; //page 1, page 2, etc...
 
 //  const limit: number = parseInt(req.query.limit);
 //  const offset: number = parseInt(req.query.offset);
@@ -150,7 +150,7 @@ const getRanking = (req: Request, res: Response, next: NextFunction) => {
     .sort({score: -1})
     .select("username")
     .select("score")
-    .skip(offset > 0 ? ( ( offset - 1 ) * limit ) : 0)  //works but doesnt work at the same time?
+    .skip(offset > 0 ? ( ( offset - 1 ) * limit ) : 0)
     .limit(limit) //limit
     .exec()
     .then((users) => {

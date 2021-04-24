@@ -51,20 +51,21 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       this.chatMessage.roomId = IDinNumber;
     });
 
-    
   }
 
   ngAfterViewInit(): void {
     this.content = this.drawingboard.nativeElement.getContext('2d');
+
+
   }
 
   
 
   ngAfterContentInit(): void {
-
     if(!isNaN(this.chatMessage.roomId)){
-      //if(this.roomExists(this.chatMessage.roomId)){
-      if(this.GameService.roomExists(this.chatMessage.roomId)){
+      console.log("room exists printed: "+this.roomExists(this.chatMessage.roomId))
+      if(this.roomExists(this.chatMessage.roomId)){
+      //if(this.GameService.roomExists(this.chatMessage.roomId)){
         console.log("room id: "+this.chatMessage.roomId);
         //init the connection to socket.io
         
@@ -77,6 +78,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     }else{
       console.log("no room");
     }
+
+
   }
 
         
@@ -277,5 +280,25 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     //if (this.isDrawing) { return; }
     this.isDrawing = false;
   }
-
+  
+  //other methods
+  roomExists(id: number): boolean{
+    this.GameService.roomExists(id)
+    .then(data => {
+      console.log(`data in roomexists is: ${data}`)
+      if(data==true){
+        return true;
+      }else{
+        return false;
+      }
+    },
+    (er) => {
+      console.log(er);
+      return false;
+    });
+    return false;
+  }
 }
+
+
+

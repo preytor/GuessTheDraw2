@@ -62,11 +62,9 @@ const roomExists = (req: Request, res: Response, next: NextFunction) => {
   
   let exists = gamedata.gameExists(id);
   
-  logging.info(NAMESPACE, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-  logging.info(NAMESPACE, "result exists in roomExists ", exists)
-  return res.status(200).json({
+  return res.status(200).json(
     exists
-  });
+  );
 };
 
 export default { beginGame, getRoomUsers, getGameData, roomExists };
