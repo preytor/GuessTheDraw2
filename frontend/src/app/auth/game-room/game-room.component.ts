@@ -51,6 +51,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       this.chatMessage.roomId = IDinNumber;
     });
 
+
+
   }
 
   ngAfterViewInit(): void {
@@ -63,18 +65,15 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   ngAfterContentInit(): void {
     if(!isNaN(this.chatMessage.roomId)){
-      console.log("room exists printed: "+this.roomExists(this.chatMessage.roomId))
-      if(this.roomExists(this.chatMessage.roomId)){
-      //if(this.GameService.roomExists(this.chatMessage.roomId)){
-        console.log("room id: "+this.chatMessage.roomId);
-        //init the connection to socket.io
-        
-        this.initIoconnection();
-      }else{
-        console.log("room doesnt exist");////////////////////////////////////////////////
-        //redirect to main menu
-        console.log("redirecting")
-      }
+      this.roomExists(this.chatMessage.roomId).then(
+        res => {
+          Promise.resolve();
+          this.processIfRoomExists(res);
+        },
+        err => {
+          Promise.reject();
+        }
+      );
     }else{
       console.log("no room");
     }
@@ -282,7 +281,21 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   }
   
   //other methods
-  roomExists(id: number): boolean{
+  roomExists(id: number): Promise<boolean>{
+    return new Promise((resolve, reject): void => {
+      this.GameService.roomExists(id).then(
+        data => {
+          console.log(`data in roomexists is: ${data}`)
+          if(data==true){
+            resolve(true);
+          }else{
+            resolve(false);
+          }
+        }
+      );
+    });
+  }
+    /*
     this.GameService.roomExists(id)
     .then(data => {
       console.log(`data in roomexists is: ${data}`)
@@ -297,8 +310,25 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       return false;
     });
     return false;
+  }*/
+
+  processIfRoomExists(exists: boolean){
+    console.log("PROCESSED: ",exists)
+    if(exists){
+      console.log("room id: "+this.chatMessage.roomId);
+      //init the connection to socket.io
+      this.initIoconnection();
+
+      //check if it has password
+
+        //if it has password you have to insert it
+
+      //else you load the component normally
+
+    }else{
+      console.log("room doesnt exist");////////////////////////////////////////////////
+      //redirect to main menu
+      console.log("redirecting")
+    }
   }
 }
-
-
-

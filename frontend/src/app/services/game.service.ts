@@ -19,7 +19,7 @@ export class GameService {
     return this.HttpClient.post(`${this.AUTH_SERVER}/game/startroom`, roomParameters);
   }
 
-  roomExists(id: any){
+  roomExists(id: any): Promise<boolean>{
     return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomexists/${id}`)
     .toPromise().then(response => <any>response).catch(error => {
       return error;
