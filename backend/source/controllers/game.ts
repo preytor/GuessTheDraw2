@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import logging from "../config/logging";
 import gamedata from "../gamedata";
-import GameLogic from "../game-logic";
-import IGameUser from "../interfaces/gameUser";
+import { GameData } from "../models/gameData";
+import { UserRoom } from "../models/userRoom";
 
 const NAMESPACE = "GAME";
 
@@ -19,14 +19,14 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
       isRegistered: this.authService.isLogged()
     }
   */
-  let userHost: IGameUser = {
+  let userHost: UserRoom = {
     username: req.body.username,
     isRegistered: req.body.isRegistered,
     score: 0,
-    totalscore: 0,
+    totalScore: 0,
   };
 
-  const newgame: GameLogic = {
+  const newgame: GameData = {
     gameUsers: [userHost],
     roomName: req.body.roomName,
     roomPassword: req.body.roomPassword,
@@ -46,14 +46,17 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getGameData = (req: Request, res: Response, next: NextFunction) => {
-  let roomNumber = req.query.room;
-
+  let roomNumber: any = req.query.room;
+  let id: number = parseInt(roomNumber);
   logging.info(NAMESPACE, `Game is ${roomNumber}`);
+
+
   //temporally
-  return res.status(200).json({
-    result: roomNumber,
-  });
+  return res.status(200).json(
+    gamedata.getGameFromID(id)
+  );
 };
+
 
 const roomExists = (req: Request, res: Response, next: NextFunction) => {
   let _roomID: any = req.params.id;
@@ -67,4 +70,17 @@ const roomExists = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
-export default { beginGame, getRoomUsers, getGameData, roomExists };
+const roomHasPassword = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.params.id;
+  let id: number = +_roomID;
+  
+  let exists = gamedata.getGameFromID(id);
+  let hasPassword = exists?.roomPassword!=="";
+
+  return res.status(200).json(
+    hasPassword
+  );
+};
+
+
+export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword };

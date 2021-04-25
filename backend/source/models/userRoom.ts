@@ -1,6 +1,6 @@
 export interface UserRoom {
     username: string,
-    isRegistered: boolean,
+    isRegistered: boolean
     score: number,
-    totalScore: number
+    totalScore: number,
 }

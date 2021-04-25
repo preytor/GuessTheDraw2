@@ -67,9 +67,11 @@ export class AuthService {
     localStorage.setItem('user', _user);
   }
 
-  getUser(){
+  getUser(): string{
     //return this.current_user;
-    return localStorage.getItem('user');
+    return (localStorage.getItem('user')===null) ? this.generateRandomUserName() : localStorage.getItem('user')!;
+
+    //return localStorage.getItem('user');
   }
 
   logOut(){
@@ -95,6 +97,11 @@ export class AuthService {
         }
       )
     );
+  }
+
+  generateRandomUserName(): string{
+    let number = Math.floor(Math.random() * 9999) + 1
+    return `anonymous${number}`;
   }
 
   //old stuff

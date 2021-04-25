@@ -20,6 +20,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   roomUsers: Array<UserRoom> = [];
  // socket: Socket;
 
+  //currentuser
+  currentUser: string = "";
+
   messages: ChatMessage[] = [];
   messageContent: string = "";
   ioConnection: any;
@@ -76,6 +79,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       );
     }else{
       console.log("no room");
+      //should redirect
+      this.Router.navigate(['/']);
     }
 
 
@@ -130,10 +135,6 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       console.log('test disconnected');
     });
 
-    this.socketService.onEvent(Event.MESSAGE).subscribe((message: any) => {
-      console.log("message received: ", message.message);
-    });
-
     /** Drawing */
     this.socketService.onDrawCanvas()
     .subscribe((message: DrawLine) => {
@@ -158,7 +159,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     }
 
     this.socketService.sendMessage({
-      from: this.authService.getUser()!,//"", //getauthService().getUser() or something
+      from: this.currentUser,//"", //getauthService().getUser() or something
       message: this.messageContent,
       room: this.chatMessage.roomId
     });
@@ -295,22 +296,46 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       );
     });
   }
-    /*
-    this.GameService.roomExists(id)
-    .then(data => {
-      console.log(`data in roomexists is: ${data}`)
-      if(data==true){
-        return true;
-      }else{
-        return false;
-      }
-    },
-    (er) => {
-      console.log(er);
-      return false;
+
+  roomHasPassword(id: number): Promise<boolean>{
+    return new Promise((resolve, reject): void => {
+      this.GameService.roomHasPassword(id).then(
+        data => {
+          console.log(`data in roomhaspassword is: ${data}`)
+          if(data==true){
+            resolve(true);
+          }else{
+            resolve(false);
+          }
+        }
+      );
     });
-    return false;
-  }*/
+  }
+
+  initializeGame(){
+    console.log("Initializing game");
+    this.currentUser = this.authService.getUser();
+
+    let userdata: UserRoom = {    
+      username: this.currentUser,
+      isRegistered: this.authService.isLogged(),
+      score: 0,
+      totalScore: 0
+    };
+    this.GameService.addUserToRoom(this.chatMessage.roomId, userdata)
+  }
+
+  processIfRoomHasPassword(hasPassword: boolean){
+    //if it has password you have to insert it
+    if(hasPassword){
+      console.log("room has password")
+    }else{    //else you load the component normally
+      console.log("room doesnt have password")
+
+      //put the login to false and initialite the game
+      this.initializeGame();
+    }
+  }
 
   processIfRoomExists(exists: boolean){
     console.log("PROCESSED: ",exists)
@@ -320,15 +345,20 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       this.initIoconnection();
 
       //check if it has password
-
-        //if it has password you have to insert it
-
-      //else you load the component normally
-
+      this.roomHasPassword(this.chatMessage.roomId).then(
+        res => {
+          Promise.resolve();
+          this.processIfRoomHasPassword(res);
+        },
+        err => {
+          Promise.reject();
+        }
+      );
     }else{
-      console.log("room doesnt exist");////////////////////////////////////////////////
+      console.log("room doesnt exist");
       //redirect to main menu
       console.log("redirecting")
+      this.Router.navigate(['/']);
     }
   }
 }

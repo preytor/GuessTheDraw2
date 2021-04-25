@@ -1,21 +1,23 @@
 import GameLogic from "./game-logic";
 import logging from "./config/logging";
+import { GameData } from "./models/gameData";
 
-var currentGames: Array<GameLogic> = [];
+var currentGames: Array<GameData> = [];
 
-const getCurrentGames = (): Array<GameLogic> => {
+const getCurrentGames = (): Array<GameData> => {
   return currentGames;
 };
 
-const getGameAt = (index: number): GameLogic => {
+const getGameAt = (index: number): GameData => {
   return currentGames[index];
 };
 
-const getGameFromID = (id: any): GameLogic | undefined => {
+const getGameFromID = (id: number): GameData | undefined => {
   return currentGames.find((x) => x.id === id);
 };
 
-const addGame = (newgame: GameLogic): void => {
+const addGame = (newgame: GameData): void => {
+  //if the room already exists forbid creating it
   getCurrentGames().push(newgame);
   console.log(currentGames.length);
 };

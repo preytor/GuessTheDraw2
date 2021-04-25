@@ -71,7 +71,18 @@ export class GameService {
     );*/
   }
 
+  roomHasPassword(id: any): Promise<boolean>{
+    return this.HttpClient.get(`${this.AUTH_SERVER}/game/roomhaspassword/${id}`)
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });
+  }
+
   getRoomUsers(roomID: number){
     return this.HttpClient.post<Array<UserRoom>>(`${this.AUTH_SERVER}/game/getroomusers`, roomID);
+  }
+
+  addUserToRoom(roomID: number, userData: any){
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/addusertoroom/`, roomID, userData);
   }
 }

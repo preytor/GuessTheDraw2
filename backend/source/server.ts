@@ -10,6 +10,7 @@ import gamedata from "./gamedata";
 import GameLogic from "./game-logic";
 import Chat from "./controllers/chat";
 import { Server, Socket } from "socket.io";
+import { GameData } from "./models/gameData";
 //import { createAdapter } from 'socket.io-redis';
 //import { RedisClient } from 'redis';
 
@@ -38,7 +39,7 @@ const io = new Server(httpServer, { //httpServer instead of 4200
 
 /** Holding the game data */
 
-const newgame: GameLogic = {
+const newgame: GameData = {
   gameUsers: [],
   roomName: "ddd",
   roomPassword: "d",
@@ -46,8 +47,16 @@ const newgame: GameLogic = {
   secretWord: "meme",
 };
 
+const newgame2: GameData = {
+  gameUsers: [],
+  roomName: "meme2",
+  roomPassword: "",
+  id: 2,
+  secretWord: ""
+}
+
 gamedata.addGame(newgame);
-gamedata.addGame(newgame);
+gamedata.addGame(newgame2);
 
 logging.info("GAME", `Started module to handle the games`);
 
@@ -154,7 +163,7 @@ io.on("connection", function (socket: Socket) {
   socket.on("chat_message", (message) => {
     console.log("message: ", message, "socketid: ", socket.id);
   //  socket.to(message.roomid).emit("chat_message", message.message); //only sends to himself
-  //  socket.emit("chat_message", message.message); 
+  //  socket.emit("chat_message", message.message);
       io.to(message.roomid).emit("chat_message", message); //just in case
       io.emit("chat_message", message);
   });
@@ -172,6 +181,7 @@ io.on("connection", function (socket: Socket) {
   //** Drawing */
 
   socket.on("drawing", (message) => {
+    console.log("dasdasdsd: ", message.roomid)
     io.to(message.roomid).emit("drawing", message);
     io.emit("drawing", message);
   });
