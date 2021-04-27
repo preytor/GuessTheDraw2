@@ -12,10 +12,20 @@ export class RankingComponent implements OnInit {
   players: PlayerScore[] = [];
 
   constructor(private authService: AuthService) {
-    this.authService.getRanking(0, 50)
-    .subscribe((rankings: PlayerScore) => {
-      console.log("ranking received: ", rankings);
-      this.players.push(rankings);
+    let index = 1;
+    const offset = 10;
+    this.authService.getRanking(index, offset)
+    .subscribe((rankings: any) => {
+      for(let i = 0; i<rankings.users.length; i++){
+        //console.log("memememe0: ", rankings.users[i].username)
+        let _playerscore = {
+          rank: (index*i)+1,
+          name: rankings.users[i].username,
+          score: rankings.users[i].score
+        }
+        this.players.push(_playerscore);
+      }
+
     });
   }
 

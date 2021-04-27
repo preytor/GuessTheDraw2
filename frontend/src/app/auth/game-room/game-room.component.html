@@ -1,6 +1,8 @@
 <div class="game">
     <div class="menu left-menu">
+        <div *ngFor="let user of roomUsers">
 
+        </div>
     </div>
 
     <div class="middle-menu">
@@ -49,7 +51,7 @@
 
     <div class="menu right-menu">
         <div class="chat">
-            <div id="messages"*ngFor="let message of messages">
+            <div id="messages" *ngFor="let message of messages">
                 {{message.from}}: {{message.message}}
             </div>
             <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (onclick)="sendMessage()">Send</button>

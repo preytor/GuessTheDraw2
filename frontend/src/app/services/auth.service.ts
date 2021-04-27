@@ -80,23 +80,8 @@ export class AuthService {
     this.Router.navigate(['/']);
   }
 
-  getRanking(limit: number, offset: number): Observable<PlayerScore>{
-    return this.httpClient.get<PlayerScore>(`${this.AUTH_SERVER}/ranking/${offset}/${limit}`)
-    .pipe(
-      tap(
-        (res) => {
-          if(res){
-            //TODO return this content
-            let _offset = Object(res)["offset"];
-            let _limit = Object(res)["limit"];
-/*            {
-              "offset": _offset, 
-              "limit": _limit
-            }*/
-          }
-        }
-      )
-    );
+  getRanking(index: number, offset: number): Observable<PlayerScore>{
+    return this.httpClient.get<PlayerScore>(`${this.AUTH_SERVER}/ranking/${index}/${offset}`);
   }
 
   generateRandomUserName(): string{

@@ -138,20 +138,17 @@ const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getRanking = (req: Request, res: Response, next: NextFunction) => {
-//  let { limit, offset } = req.query;
-//  let _limit: number = parseInt(limit);
+  let limit = req.params.limit as string;
+  let offset = req.params.offset as string;
+  let _limit: number = parseInt(limit);
+  let _offset: number = parseInt(offset);
 
-    let limit = 4;
-    let offset = 1; //page 1, page 2, etc...
-
-//  const limit: number = parseInt(req.query.limit);
-//  const offset: number = parseInt(req.query.offset);
   User.find()
     .sort({score: -1})
     .select("username")
     .select("score")
-    .skip(offset > 0 ? ( ( offset - 1 ) * limit ) : 0)
-    .limit(limit) //limit
+    .skip(_offset > 0 ? ( ( _offset - 1 ) * _limit ) : 0)
+    .limit(_limit) //limit
     .exec()
     .then((users) => {
       return res.status(200).json({
