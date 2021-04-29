@@ -45,8 +45,8 @@ export class SocketService {
     this.socket.emit('join', id);
   }
 
-  public leaveRoom(id: number) {
-    this.socket.emit('leave', id);
+  public leaveRoom(id: number, username: string) {
+    this.socket.emit('leave', id, username);
     this.socket.off();
   }
 

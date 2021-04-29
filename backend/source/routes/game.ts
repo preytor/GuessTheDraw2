@@ -8,6 +8,7 @@ router.post("/game/getroomusers", controller.getRoomUsers);
 router.get("/game", controller.getGameData);
 router.get("/game/roomexists/:id", controller.roomExists);
 router.get("/game/roomhaspassword/:id", controller.roomHasPassword);
+router.post("/game/addusertoroom", controller.addUserToRoom);
 
 
 export = router;

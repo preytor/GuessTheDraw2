@@ -1,6 +1,7 @@
 import GameLogic from "./game-logic";
 import logging from "./config/logging";
 import { GameData } from "./models/gameData";
+import { UserRoom } from "./models/userRoom";
 
 var currentGames: Array<GameData> = [];
 
@@ -16,10 +17,13 @@ const getGameFromID = (id: number): GameData | undefined => {
   return currentGames.find((x) => x.id === id);
 };
 
-const addGame = (newgame: GameData): void => {
-  //if the room already exists forbid creating it
-  getCurrentGames().push(newgame);
-  console.log(currentGames.length);
+const addGame = (newgame: GameData): boolean => {
+  if(!gameExists(newgame.id)){
+    getCurrentGames().push(newgame);
+    console.log(currentGames.length);
+    return true;
+  }
+  return false;
 };
 
 const removeGame = (gameToRemove: GameLogic): void => {
@@ -35,6 +39,37 @@ const gameExists = (id: number): boolean => {
   logging.info("GAME_EXISTS", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   logging.info("GAME_EXISTS", `Game exists?: ${currentGames.some((x) => x.id === id)}`)
   return currentGames.some((x) => x.id === id);
+};
+
+const getRoomUsers = (id: number): Array<UserRoom> => {
+  return getGameFromID(id)?.gameUsers!;
+};
+
+const userExistsInRoom = (id: number, user: UserRoom): boolean => {
+  console.log("get game from id: ", getGameFromID(id))
+  let users = getGameFromID(id)?.gameUsers;
+  console.log(users)
+  let exists = false;
+  if(users!.length>0){
+    console.log("enters in length")
+    for (var i = 0, iLen = users!.length; i < iLen; i++) {
+      console.log(users![i].username, "  -  ", user.username)
+      if (users![i].username == user.username) {
+        exists = true;
+        break;
+      }
+    }
+  }
+  return exists;
+};
+
+const addUserInRoom = (id: number, user: UserRoom): boolean => {
+  console.log("user exists in rooom: ",userExistsInRoom(id, user));
+  if(!userExistsInRoom(id, user)){
+    getGameFromID(id)?.gameUsers.push(user);
+    return true;
+  }
+  return false;
 };
 
 /*
@@ -68,4 +103,7 @@ export default {
   addGame,
   removeGame,
   gameExists,
+  getRoomUsers,
+  userExistsInRoom,
+  addUserInRoom,
 };

@@ -52,6 +52,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       let IDinNumber: number = +parameterID;
 
       this.chatMessage.roomId = IDinNumber;
+
+      this.getRoomUsers(IDinNumber);
     });
 
 
@@ -89,7 +91,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         
       
   ngOnDestroy(): void{
-    this.socketService.leaveRoom(this.chatMessage.roomId);
+    this.socketService.leaveRoom(this.chatMessage.roomId, this.currentUser);
   }
 
 /*  roomExists(id: number): boolean { //pending to fix this, the response is weird
@@ -105,14 +107,24 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   }*/
 
   getRoomUsers(roomID: number){
-    this.GameService.getRoomUsers(roomID)
-    .subscribe(
+    this.GameService.getRoomUsers(roomID).then(
       res => {
-        console.log(res)
-        this.roomUsers = res;
+        Promise.resolve();
+        console.log("get room users: ", res)
+
+        let users: Array<UserRoom> = res;
+        console.log("Users in getrooom ", res)
+        this.roomUsers = [];
+        for(let i = 0; i<users.length; i++){
+          this.roomUsers.push(users[i])
+        }
+
+        this.roomUsers.sort(this.dynamicSort("-score"));
       },
-      err => console.log(err)
-    )
+      err => {
+        Promise.reject();
+      }
+    );
   }
 
   private initIoconnection(): void{
@@ -322,6 +334,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       score: 0,
       totalScore: 0
     };
+    console.log("roomid: ", this.chatMessage.roomId, "  userdata: ", userdata)
     this.GameService.addUserToRoom(this.chatMessage.roomId, userdata)
   }
 
@@ -329,6 +342,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     //if it has password you have to insert it
     if(hasPassword){
       console.log("room has password")
+      
+      //make the verification here, but this below needs to be in
+      this.initializeGame();
     }else{    //else you load the component normally
       console.log("room doesnt have password")
 
@@ -359,6 +375,21 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       //redirect to main menu
       console.log("redirecting")
       this.Router.navigate(['/']);
+    }
+  }
+
+  dynamicSort(property: string) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return (a: any, b: any) => {
+        /* next line works with strings and numbers, 
+         * and you may want to customize it to your needs
+         */
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
     }
   }
 }

@@ -8,6 +8,12 @@ const NAMESPACE = "GAME";
 
 const getRoomUsers = (req: Request, res: Response, next: NextFunction) => {
   logging.info(NAMESPACE, "getting room users");
+  let roomNumber: any = req.body.roomID;
+  let id: number = parseInt(roomNumber);
+  
+  return res.status(200).json(
+    gamedata.getRoomUsers(id)
+  );
 };
 
 const beginGame = (req: Request, res: Response, next: NextFunction) => {
@@ -82,5 +88,19 @@ const roomHasPassword = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
+const addUserToRoom = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.body.roomID;
+  let id: number = parseInt(_roomID);
 
-export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword };
+  let _user: any = req.body.user;
+  let user: UserRoom = _user;
+
+  console.log(id, " - ", user)
+
+  return res.status(200).json(
+    gamedata.addUserInRoom(id, user)
+  );
+};
+
+
+export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword, addUserToRoom };
