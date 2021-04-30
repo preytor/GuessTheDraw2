@@ -335,7 +335,12 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       totalScore: 0
     };
     console.log("roomid: ", this.chatMessage.roomId, "  userdata: ", userdata)
+    //for some reason this below doesnt work
     this.GameService.addUserToRoom(this.chatMessage.roomId, userdata)
+    .subscribe( () => {
+      //refresh players in room after adding a new one
+      this.getRoomUsers(this.chatMessage.roomId);
+    })
   }
 
   processIfRoomHasPassword(hasPassword: boolean){
