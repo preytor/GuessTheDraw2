@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
+import { CreateGameData } from 'src/app/models/createGameData';
 
 @Component({
   selector: 'app-create-room',
@@ -16,7 +17,7 @@ export class CreateRoomComponent implements OnInit {
   
   username = (this.authService.isLogged()) ? this.authService.getUser() : `anonymous${this.number}`;
 
-  roomParameters = {
+  roomParameters: CreateGameData = {
     roomName: "",
     roomPassword: "",
     username: this.username,
