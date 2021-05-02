@@ -32,11 +32,13 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     totalScore: 0,
   };
 
+  let _id = gamedata.getCurrentGames().length + 1;
+
   const newgame: GameData = {
     gameUsers: [userHost],
     roomName: req.body.roomName,
     roomPassword: req.body.roomPassword,
-    id: gamedata.getCurrentGames().length + 1,
+    id: _id,
     secretWord: "",
   };
 
@@ -48,6 +50,7 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
   );
   return res.status(200).json({
     result: true,
+    id: _id
   });
 };
 
@@ -95,12 +98,35 @@ const addUserToRoom = (req: Request, res: Response, next: NextFunction) => {
   let _user: any = req.body.user;
   let user: UserRoom = _user;
 
-  console.log(id, " - ", user)
-
   return res.status(200).json(
     gamedata.addUserInRoom(id, user)
   );
 };
 
+const removeUserFromRoom = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.body.roomID;
+  let id: number = parseInt(_roomID);
 
-export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword, addUserToRoom };
+  let _user: any = req.body.user;
+  let userName: string = _user;
+  console.log("BALBALABLA REMOVING USER FROM ROOM")
+  return res.status(200).json(
+    gamedata.removeUserInRoom(id, userName)
+  );
+};
+
+const getGameLobbies = (req: Request, res: Response, next: NextFunction) => {
+  let _index: any = req.params.index;
+  let index: number = parseInt(_index);
+
+  let _offset: any = req.params.offset;
+  let offset: number = _offset;
+  
+  return res.status(200).json(
+    gamedata.getGameLobbies(index, offset)
+  );
+};
+
+
+
+export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword, addUserToRoom, removeUserFromRoom, getGameLobbies };

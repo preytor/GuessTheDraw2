@@ -53,7 +53,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
       this.chatMessage.roomId = IDinNumber;
 
-      this.getRoomUsers(IDinNumber);
+      //this.getRoomUsers(IDinNumber);
     });
 
 
@@ -91,7 +91,11 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         
       
   ngOnDestroy(): void{
-    this.socketService.leaveRoom(this.chatMessage.roomId, this.currentUser);
+    //test if this even works
+    this.GameService.removeUserFromRoom(this.chatMessage.roomId, this.currentUser)
+    .subscribe( () => {
+      this.socketService.leaveRoom(this.chatMessage.roomId, this.currentUser);
+    });
   }
 
 /*  roomExists(id: number): boolean { //pending to fix this, the response is weird
@@ -107,13 +111,16 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   }*/
 
   getRoomUsers(roomID: number){
+    console.log("ROOM ID GER TOOM USERS"+roomID)
     this.GameService.getRoomUsers(roomID).then(
       res => {
         Promise.resolve();
         console.log("get room users: ", res)
+        let users: Array<UserRoom> = [];
+        if(res != null) users = res;
 
-        let users: Array<UserRoom> = res;
-        console.log("Users in getrooom ", res)
+        //console.log("Users in getrooom ", res)
+        console.log("getting room users")
         this.roomUsers = [];
         for(let i = 0; i<users.length; i++){
           this.roomUsers.push(users[i])
@@ -129,7 +136,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   private initIoconnection(): void{
     this.socketService.initSocket();
-    this.socketService.joinRoom(`room_${this.chatMessage.roomId}`);
+    let id: string = ""+this.chatMessage.roomId; 
+    this.socketService.joinRoom(id);
 
     /** Chat Messages */
     this.ioConnection = this.socketService  //this is the received messages
@@ -137,6 +145,12 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     .subscribe((message: any) => {  //ChatMessage
       console.log("message received: ", message.message);
       this.messages.push(message);
+    });
+
+    this.socketService.onJoin()
+    .subscribe((roomID: any) => {
+      console.log("join received ", roomID.roomID);
+      this.getRoomUsers(roomID.roomID);
     });
 
     this.socketService.onEvent(Event.CONNECT).subscribe(() => {
@@ -326,6 +340,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   initializeGame(){
     console.log("Initializing game");
+    //init the connection to socket.io
+    this.initIoconnection();
+
     this.currentUser = this.authService.getUser();
 
     let userdata: UserRoom = {    
@@ -339,6 +356,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     this.GameService.addUserToRoom(this.chatMessage.roomId, userdata)
     .subscribe( () => {
       //refresh players in room after adding a new one
+      console.log("room id thingy this "+this.chatMessage.roomId)
       this.getRoomUsers(this.chatMessage.roomId);
     })
   }
@@ -362,9 +380,6 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     console.log("PROCESSED: ",exists)
     if(exists){
       console.log("room id: "+this.chatMessage.roomId);
-      //init the connection to socket.io
-      this.initIoconnection();
-
       //check if it has password
       this.roomHasPassword(this.chatMessage.roomId).then(
         res => {

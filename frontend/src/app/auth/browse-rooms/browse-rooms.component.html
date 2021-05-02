@@ -1,1 +1,10 @@
-<p>browse-rooms works!</p>
+<div>
+    <table>
+        <tr>
+            <th colspan="3">Join a game</th>
+        </tr>
+        <tr *ngFor="let game of games">
+            <td>{{game.name}} - {{game.numPlayers}} {{game.hasPassword}}<div><a href="/room?id={{game.id}}" routerLinkActive="active">join</a></div></td>
+        </tr>
+    </table>
+</div>

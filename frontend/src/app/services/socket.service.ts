@@ -66,6 +66,12 @@ export class SocketService {
     });
   }
 
+  public onJoin(): Observable<number>{
+    return new Observable<number>((observer) => {
+      this.socket.on('join', (roomID: number) => observer.next(roomID));
+    });
+  }
+
   /** Drawing */
   public onDrawCanvas(): Observable<DrawLine>{
     return new Observable<DrawLine>((observer) => {

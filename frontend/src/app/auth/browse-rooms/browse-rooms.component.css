@@ -1,0 +1,28 @@
+table {
+    font-family: arial, sans-serif;
+    width: 40%;
+    margin: 20px auto;
+    border: solid #dddddd 2px;  
+    border-collapse: separate;
+    border-spacing: 0px;
+    border-radius: 6px;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+
+th{
+    background-color: dodgerblue;
+    color: whitesmoke;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+tr:nth-child(odd) {
+    background-color: #9b9b9b;
+}

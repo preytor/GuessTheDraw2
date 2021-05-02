@@ -9,6 +9,7 @@ router.get("/game", controller.getGameData);
 router.get("/game/roomexists/:id", controller.roomExists);
 router.get("/game/roomhaspassword/:id", controller.roomHasPassword);
 router.post("/game/addusertoroom", controller.addUserToRoom);
-
+router.post("/game/removeusertoroom", controller.removeUserFromRoom);
+router.get("/game/gamelobby/:index/:offset", controller.getGameLobbies);
 
 export = router;

@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { UserRoom } from '../models/userRoom';
 import { CreateGameData } from '../models/createGameData';
 
+import { Observable } from 'rxjs';
+import { GameLobby } from '../models/gameLobby';
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +47,16 @@ export class GameService {
     let content = {roomID: _roomID, user: _userData}
     console.log("content: ",content)
     return this.HttpClient.post(`${this.AUTH_SERVER}/game/addusertoroom`, content);
+  }
+
+  removeUserFromRoom(_roomID: number, _userName: string){
+    console.log("removing user from room")
+    let content = {roomID: _roomID, userName: _userName}
+    console.log("content: ",content)
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/removeusertoroom`, content);
+  }
+
+  getGameRooms(index: number, offset: number): Observable<GameLobby>{
+    return this.HttpClient.get<GameLobby>(`${this.AUTH_SERVER}/game/gamelobby/${index}/${offset}`);
   }
 }

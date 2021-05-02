@@ -2,6 +2,7 @@ import GameLogic from "./game-logic";
 import logging from "./config/logging";
 import { GameData } from "./models/gameData";
 import { UserRoom } from "./models/userRoom";
+import { GameLobby } from "./models/gameLobby";
 
 var currentGames: Array<GameData> = [];
 
@@ -36,8 +37,8 @@ const removeGame = (gameToRemove: GameLogic): void => {
 };
 
 const gameExists = (id: number): boolean => {
-  logging.info("GAME_EXISTS", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-  logging.info("GAME_EXISTS", `Game exists?: ${currentGames.some((x) => x.id === id)}`)
+//  logging.info("GAME_EXISTS", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+//  logging.info("GAME_EXISTS", `Game exists?: ${currentGames.some((x) => x.id === id)}`)
   return currentGames.some((x) => x.id === id);
 };
 
@@ -45,32 +46,66 @@ const getRoomUsers = (id: number): Array<UserRoom> => {
   return getGameFromID(id)?.gameUsers!;
 };
 
-const userExistsInRoom = (id: number, user: UserRoom): boolean => {
-  console.log("get game from id: ", getGameFromID(id))
+const userExistsInRoom = (id: number, userName: string): boolean => {
+
   let users = getGameFromID(id)?.gameUsers;
-  console.log(users)
   let exists = false;
-  if(users!.length>0){
-    console.log("enters in length")
-    for (var i = 0, iLen = users!.length; i < iLen; i++) {
-      console.log(users![i].username, "  -  ", user.username)
-      if (users![i].username == user.username) {
-        exists = true;
-        break;
-      }
+
+  if(users!.length==0){ return false; }
+
+  console.log("enters in length")
+  for (var i = 0, iLen = users!.length; i < iLen; i++) {
+    console.log(users![i].username, "  -  ", userName)
+    if (users![i].username == userName) {
+      exists = true;
+      break;
     }
   }
   return exists;
 };
 
 const addUserInRoom = (id: number, user: UserRoom): boolean => {
-  console.log("user exists in rooom: ",userExistsInRoom(id, user));
-  if(!userExistsInRoom(id, user)){
+  if(!userExistsInRoom(id, user.username)){
     getGameFromID(id)?.gameUsers.push(user);
     return true;
   }
   return false;
 };
+
+const removeUserInRoom = (id: number, userName: string): boolean => {
+  if(!userExistsInRoom(id, userName)){
+    for(let i = 0; i < getGameFromID(id)?.gameUsers.length!; i++){
+      if(getGameFromID(id)?.gameUsers[i].username == userName){
+        getGameFromID(id)?.gameUsers.splice(i, 1);
+        break;
+      }
+    }
+    return true;
+  }
+  return false;
+};
+
+const getGameLobbies = (index: number, offset: number): GameLobby[] => {
+  let games = getCurrentGames();
+  let lobbies: GameLobby[] = [];
+
+  for(let i = index; i < offset || games.length-1; i++){
+    if(games[i] === undefined) break;
+
+    let game: GameLobby = {
+      name: games[i].roomName,
+      hasPassword: (games[i].roomPassword.length==0) ? false : true,
+      numPlayers: games[i].gameUsers.length,
+      id: games[i].id
+    }
+
+    lobbies.push(game);
+  }
+
+  return lobbies;
+};
+
+
 
 /*
 function getCurrentGames(): Array<GameLogic>{
@@ -106,4 +141,6 @@ export default {
   getRoomUsers,
   userExistsInRoom,
   addUserInRoom,
+  removeUserInRoom,
+  getGameLobbies,
 };
