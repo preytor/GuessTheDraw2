@@ -143,6 +143,7 @@ io.on("connection", function (socket: Socket) {
   //mandar el socket a la ip del cliente
   console.log("A user connected");
 
+  /* not used, changed to disconnecting
   socket.on("disconnect", (id) => {
     console.log(`--player left ${id}`)
     console.log("player left the room ", socket.id);
@@ -153,7 +154,36 @@ io.on("connection", function (socket: Socket) {
     console.log("player left the room  --");
 
     //console.log(reason); // "ping timeout"
-  });
+  });*/
+
+  socket.on('disconnecting', function() {
+    let rooms = socket.rooms;
+    
+    let _roomID = -1;
+    let _userN = "";
+    rooms.forEach(function(room) {
+        if(room.indexOf('room_') > -1){
+          _roomID = parseInt(room.split("_", 2)[1]);
+          console.log("roomID split: ",_roomID)
+          //with this we have the room id of the player who just left
+        }
+        if(room.indexOf('user_') > -1){
+          _userN = room.split("_", 2)[1];
+          console.log("userN split: ",_userN)
+          //with this we have the user name of the player who just left
+        }
+    });
+
+    if(gamedata.removeUserInRoom(_roomID, _userN)){
+      socket.to(`room_${_roomID}`).emit('left', {roomID: _roomID})
+      let newMessage = {
+        from: "",
+        message: `${_userN} has left the game`,
+        room: _roomID
+      }
+      socket.to(`room_${_roomID}`).emit("chat_message", newMessage);
+    }
+});
 
   socket.on("chat_message", (message) => {
     console.log("message: ", message, "socketid: ", socket.id);
@@ -170,13 +200,17 @@ io.on("connection", function (socket: Socket) {
       //socket.emit("chat_message", newMessage);
   });
 
-  socket.on("join", (id) => {
-    console.log("player ", socket.id, " joined  the room ", id);
+  socket.on("join", (message) => {
+    console.log("player ", socket.id, " joined  the room ", message.id);
     //socket.rooms.add(`${id}`);
 
-    const nameRoom = `room_${id}`;
+    //also join a room that is the user name
+    //so later i can check the rooms he is, 
+    //if it has the room_number you get the room and if it has the user_userName you get the user name
+    const nameRoom = `room_${message.id}`;
     console.log(`nameroom: ${nameRoom}`)
     socket.join(nameRoom);
+    socket.join(message.userName)
 
     console.log("joined: "+nameRoom)
     socket.rooms.forEach(object => console.log("rooms: "+object))
@@ -184,9 +218,9 @@ io.on("connection", function (socket: Socket) {
     let newMessage = {
       from: "",
       message: "A new player has joined",
-      room: id
+      room: message.id
     }
-    socket.to(nameRoom).emit("join", {roomID: id});
+    socket.to(nameRoom).emit("join", {roomID: message.id});
     socket.to(nameRoom).emit("chat_message", newMessage);
   });
 

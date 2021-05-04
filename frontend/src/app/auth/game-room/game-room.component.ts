@@ -147,7 +147,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   private initIoconnection(): void{
     this.socketService.initSocket();
     let id: string = ""+this.chatMessage.roomId; 
-    this.socketService.joinRoom(id);
+    this.socketService.joinRoom(id, `user_${this.currentUser}`);
 
     /** Chat Messages */
     this.ioConnection = this.socketService  //this is the received messages
@@ -160,6 +160,12 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     this.socketService.onJoin()
     .subscribe((roomID: any) => {
       console.log("join received ", roomID.roomID);
+      this.getRoomUsers(roomID.roomID);
+    });
+
+    this.socketService.onLeft()
+    .subscribe((roomID: any) => {
+      console.log("left received ", roomID.roomID);
       this.getRoomUsers(roomID.roomID);
     });
 
@@ -350,10 +356,11 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   initializeGame(){
     console.log("Initializing game");
-    //init the connection to socket.io
-    this.initIoconnection();
 
     this.currentUser = this.authService.getUser();
+
+    //init the connection to socket.io
+    this.initIoconnection();
 
     let userdata: UserRoom = {    
       username: this.currentUser,

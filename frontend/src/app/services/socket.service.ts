@@ -38,11 +38,11 @@ export class SocketService {
   }
 
   /** chat */
-  public joinRoom(id: string): void{
+  public joinRoom(_id: string, _userName: string): void{
 /*  this.socket.emit('join', { id }, () => {
       alert('memer');
     });*/
-    this.socket.emit('join', id);
+    this.socket.emit('join', {id: _id, userName: _userName});
   }
 
   public leaveRoom(id: number, username: string) {
@@ -69,6 +69,12 @@ export class SocketService {
   public onJoin(): Observable<number>{
     return new Observable<number>((observer) => {
       this.socket.on('join', (roomID: number) => observer.next(roomID));
+    });
+  }
+
+  public onLeft(): Observable<number>{
+    return new Observable<number>((observer) => {
+      this.socket.on('left', (roomID: number) => observer.next(roomID));
     });
   }
 

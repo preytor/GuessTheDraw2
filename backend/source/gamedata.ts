@@ -48,10 +48,14 @@ const getRoomUsers = (id: number): Array<UserRoom> => {
 
 const userExistsInRoom = (id: number, userName: string): boolean => {
 
+  console.log("user exists in room id: ",id)
+  if(!gameExists(id)){ return false; }
+
   let users = getGameFromID(id)?.gameUsers;
   let exists = false;
 
-  if(users!.length==0){ return false; }
+  if(users!.length<=0){ return false; }
+  if(userName===""){ return false; }
 
   console.log("enters in length")
   for (var i = 0, iLen = users!.length; i < iLen; i++) {
@@ -73,7 +77,7 @@ const addUserInRoom = (id: number, user: UserRoom): boolean => {
 };
 
 const removeUserInRoom = (id: number, userName: string): boolean => {
-  if(!userExistsInRoom(id, userName)){
+  if(userExistsInRoom(id, userName)){
     for(let i = 0; i < getGameFromID(id)?.gameUsers.length!; i++){
       if(getGameFromID(id)?.gameUsers[i].username == userName){
         getGameFromID(id)?.gameUsers.splice(i, 1);
