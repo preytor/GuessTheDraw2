@@ -46,6 +46,14 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   @ViewChild('drawingboard') drawingboard!: ElementRef<HTMLCanvasElement>;
   public content!: CanvasRenderingContext2D | null;
 
+  @HostListener('window:beforeunload', ['$event'])  //this still doesnt work i think
+  doSomething($event:any) {
+    this.GameService.removeUserFromRoom(this.chatMessage.roomId, this.currentUser)
+    .subscribe( () => {
+      this.socketService.leaveRoom(this.chatMessage.roomId, this.currentUser);
+    });
+  }
+
   constructor(private GameService: GameService, private Router: Router, private route: ActivatedRoute, private socketService: SocketService, private authService: AuthService) {     
     this.route.queryParams.subscribe(params => {
       let parameterID = params['id'];
@@ -56,7 +64,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       //this.getRoomUsers(IDinNumber);
     });
 
-
+    window.onbeforeunload = function () {
+      return "Do you really want to close?";
+    };
 
   }
 
@@ -91,11 +101,11 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         
       
   ngOnDestroy(): void{
-    //test if this even works
-    this.GameService.removeUserFromRoom(this.chatMessage.roomId, this.currentUser)
+    //test if this even works, seems like it doesnt
+/*    this.GameService.removeUserFromRoom(this.chatMessage.roomId, this.currentUser)
     .subscribe( () => {
       this.socketService.leaveRoom(this.chatMessage.roomId, this.currentUser);
-    });
+    });*/
   }
 
 /*  roomExists(id: number): boolean { //pending to fix this, the response is weird

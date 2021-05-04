@@ -34,8 +34,9 @@ export class CreateRoomComponent implements OnInit {
 
   createRoom(){
     this.GameService.startRoom(this.roomParameters)
-    .subscribe(
+    .then(
       res => {
+        Promise.resolve();
         console.log(res)
 
         let resp: any = res;
@@ -43,7 +44,10 @@ export class CreateRoomComponent implements OnInit {
         //if res something router redirect to game room by GET parameter, in GET you have the URL of the room
         this.Router.navigate(['/room', { queryParams: { id: resp.id} }]);
       },
-      err => console.log(err)
+      err => {
+        Promise.reject();
+        console.log(err)
+      }
     )
   }
 

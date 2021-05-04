@@ -109,7 +109,7 @@ const removeUserFromRoom = (req: Request, res: Response, next: NextFunction) => 
 
   let _user: any = req.body.user;
   let userName: string = _user;
-  console.log("BALBALABLA REMOVING USER FROM ROOM")
+  console.log("BALBALABLA REMOVING USER FROM ROOM ", id, userName)
   return res.status(200).json(
     gamedata.removeUserInRoom(id, userName)
   );

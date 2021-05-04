@@ -144,8 +144,13 @@ io.on("connection", function (socket: Socket) {
   console.log("A user connected");
 
   socket.on("disconnect", (id) => {
+    console.log(`--player left ${id}`)
     console.log("player left the room ", socket.id);
-    console.log("player left the room ", socket.rooms);
+    console.log(socket.rooms.size)
+    socket.rooms.forEach(
+      object => console.log("room left: "+object)
+    )
+    console.log("player left the room  --");
 
     //console.log(reason); // "ping timeout"
   });
@@ -159,38 +164,53 @@ io.on("connection", function (socket: Socket) {
         message: `: ${message.message}`,
         room: message.room
       }
-      io.to(`room_${message.roomid}`).emit("chat_message", newMessage); //just in case
-      io.emit("chat_message", newMessage);
+      console.log("message to room: ", `room_${message.room}`)
+      socket.to(`room_${message.room}`).emit("chat_message", newMessage); //just in case
+      socket.rooms.forEach(object => console.log("rooms message: "+object))
+      //socket.emit("chat_message", newMessage);
   });
 
   socket.on("join", (id) => {
     console.log("player ", socket.id, " joined  the room ", id);
-    socket.rooms.add(`${id}`);
+    //socket.rooms.add(`${id}`);
+
+    const nameRoom = `room_${id}`;
+    console.log(`nameroom: ${nameRoom}`)
+    socket.join(nameRoom);
+
+    console.log("joined: "+nameRoom)
+    socket.rooms.forEach(object => console.log("rooms: "+object))
+    console.log("end rooms")
     let newMessage = {
       from: "",
       message: "A new player has joined",
       room: id
     }
-    io.emit("join", {roomID: id});
-    io.emit("chat_message", newMessage);
+    socket.to(nameRoom).emit("join", {roomID: id});
+    socket.to(nameRoom).emit("chat_message", newMessage);
   });
 
   socket.on("leave", (id) => {
     console.log("Player ", socket.id, " left the game");
     socket.leave(`${id}`);
+    socket.rooms.forEach(object => console.log("rooms leave: "+object))
+      
   });
 
   //** Drawing */
 
   socket.on("drawing", (message) => {
     console.log("dasdasdsd: ", message.roomid)
-    io.to(message.roomid).emit("drawing", message);
-    io.emit("drawing", message);
+    socket.to(`room_${message.roomid}`).emit("drawing", message);
+    socket.rooms.forEach(object => console.log("rooms drawing: "+object))
+      
+    //io.emit("drawing", message);
   });
 
   socket.on("clear", (message) => {
-    io.to(message.roomid).emit("clear", message);
-    io.emit("clear", message);
+    console.log("dasdasdsd clear: ", message.roomid)
+    socket.to(`room_${message.roomid}`).emit("clear", message);
+    //io.emit("clear", message);
   });
 });
 

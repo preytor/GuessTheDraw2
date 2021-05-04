@@ -105,7 +105,10 @@ const getGameLobbies = (index: number, offset: number): GameLobby[] => {
   return lobbies;
 };
 
-
+const beginGame = (id: number) => {
+  //TODO PENDING
+  getGameFromID(id)
+}
 
 /*
 function getCurrentGames(): Array<GameLogic>{

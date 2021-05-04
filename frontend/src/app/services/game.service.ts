@@ -16,8 +16,11 @@ export class GameService {
 
   constructor(private HttpClient: HttpClient, private AuthService: AuthService) { }
 
-  startRoom(roomParameters: CreateGameData){ //make an interface that is something like "name, password, userHost" or something like that
-    return this.HttpClient.post(`${this.AUTH_SERVER}/game/startroom`, roomParameters);
+  startRoom(roomParameters: CreateGameData): Promise<any>{ //make an interface that is something like "name, password, userHost" or something like that
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/startroom`, roomParameters)
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });
   }
 
   roomExists(id: any): Promise<boolean>{
