@@ -200,6 +200,14 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       return;
     }
 
+    let _chatMessage: ChatMessage = {
+      from: this.currentUser,
+      message: this.messageContent,
+      room: this.chatMessage.roomId
+    }
+
+
+    this.messages.push(_chatMessage);
     this.socketService.sendMessage({
       from: this.currentUser,//"", //getauthService().getUser() or something
       message: this.messageContent,
