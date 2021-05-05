@@ -2,6 +2,7 @@ import GameLogic from "./game-logic";
 import { GameData } from "./models/gameData";
 import { UserRoom } from "./models/userRoom";
 import { GameLobby } from "./models/gameLobby";
+import {io} from "./server";
 
 var currentGames: Array<GameData> = [];
 
@@ -113,28 +114,66 @@ const getDisplaySecretWord = (id: number) => {
 }
 
 const beginGame = (id: number) => {
+  
+  console.log(`begingame in game ${id} is working - BEFORE`)
+  if(!gameExists(id)) return;
+  if(getGameFromID(id)?.hasFinished == true) return;
 
-  console.log(`begingame in game ${id} is working`)
+  //console.log("listeners and shit",io.sockets.adapter.rooms)
+  //io.sockets.emit("clear", {roomid: 1});  //works
+  //let players = io.sockets.adapter.rooms.get(`room_${id}`);
+  //console.log("players in listener and shit: ", players);
+  console.log(`begingame in game ${id} is working - AFTER`)
+  //io.to(`room_${id}`).emit("host_change", {roomid: id});//works, below is 1 for testing
+  io.to(`room_1`).emit("host_change", {roomid: id});
 
-  //TODO PENDING
+
+  //TODO PENDING, ERROR: TypeError: Cannot read property 'gameUsers' of undefined
   let gameData = getGameFromID(id);
   const _seconds = 60000; //60 seconds
-  const host = setPlayerHost(id) //send a socket to this player and he can draw (the rest can't)
-//  const secretWord = getSecretWord()
+  let host = setPlayerHost(id) //send a socket to this player and he can draw (the rest can't)
+  let secretWord = getSecretWord()
+  let viewWord = "";
+  for(let i = 0; i<secretWord.length; i++){
+    viewWord+="_";
+  }
+
+  currentGames[id].secretWord = secretWord;
+  currentGames[id].displaySecretWord = viewWord;
 
   //send the clients except the host the word but as _ in an array (array["_", "_", "_"]) etc...
   
+
   //discover word at 30 seconds
   setTimeout(() => { discoverLetterInRoom(id) }, 30000);
   //discover word at 50 seconds
   setTimeout(() => { discoverLetterInRoom(id) }, 50000);
   //do an "if (!hasFinished) {"
-  if(!gameExists(id)) return;
-  if(getGameFromID(id)?.hasFinished == true) return;
   setTimeout(() => { beginGame(id) }, _seconds);
 }
 
 const discoverLetterInRoom = (id: number) => {
+  if(!gameExists(id)) return;
+  if(getGameFromID(id)?.hasFinished == true) return;
+
+  let gameSecretWord = getGameFromID(id)?.secretWord;
+
+  let replaced = false;
+  do{
+    let randomLetter = randomIntFromInterval(0, gameSecretWord!.length-1);
+
+    if(currentGames[id].displaySecretWord.charAt(randomLetter)=="_"){
+      let secret = currentGames[id].secretWord;
+      let display = currentGames[id].displaySecretWord;
+
+      let newDisplay = setCharAt(display, randomLetter, secret.charAt(randomLetter));
+      currentGames[id].displaySecretWord = newDisplay;
+      replaced = true;
+      console.log("new display is: ",currentGames[id].displaySecretWord)
+    }
+  }while(!replaced);
+
+
 
 }
 
@@ -162,6 +201,21 @@ const setPlayerHost = (id: number) => {
     }
   }
 
+}
+
+const getSecretWord = () => {
+  return "";
+}
+
+
+//utils
+function randomIntFromInterval(min: number, max: number) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function setCharAt(str: string,index: number,chr: string) {
+  if(index > str.length-1) return str;
+  return str.substring(0,index) + chr + str.substring(index+1);
 }
 
 /*

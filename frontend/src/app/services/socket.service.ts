@@ -108,4 +108,10 @@ export class SocketService {
     this.socket.emit('clear', {roomid});
   }
 
+  //game logic
+  public onHostChange(): Observable<any>{
+    return new Observable<any>((observer) => {
+      this.socket.on('host_change', (data: any) => observer.next(data));
+    });
+  }
 }

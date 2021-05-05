@@ -23,7 +23,7 @@ const router = express();
 /** Create the server */
 const httpServer = http.createServer(router);
 /** Create the socket server */
-const io = new Server(httpServer, { //httpServer instead of 4200
+export const io = new Server(httpServer, { //httpServer instead of 4200
   //ponerle aqui la ip del cliente
   cors: {
     origin: CORS_ORIGIN,
@@ -45,7 +45,7 @@ const newgame: GameData = {
   roomPassword: "d",
   id: 1,
   secretWord: "meme",
-  displaySecretWord: "_ _ _ _",
+  displaySecretWord: "____",
   hasFinished: false
 };
 
@@ -55,7 +55,7 @@ const newgame2: GameData = {
   roomPassword: "",
   id: 2,
   secretWord: "as",
-  displaySecretWord: "_ _",
+  displaySecretWord: "__",
   hasFinished: false
 }
 

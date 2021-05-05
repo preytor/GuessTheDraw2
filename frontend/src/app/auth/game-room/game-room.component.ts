@@ -195,6 +195,13 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       this.clearCanvas(false);
     });
 
+    /** Game */
+    this.socketService.onHostChange()
+    .subscribe((message) => {
+      console.log("received host change ", message);
+      //do stuff
+
+    });
   }
 
   public sendMessage(): void{
@@ -205,7 +212,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
     let _chatMessage: ChatMessage = {
       from: this.currentUser,
-      message: this.messageContent,
+      message: ": "+this.messageContent,
       room: this.chatMessage.roomId
     }
 
@@ -448,7 +455,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     this.getSecretWordDisplayed(this.chatMessage.roomId).then(
       res => {
         Promise.resolve();
-        this.displayWord = `${res}`;
+        this.displayWord = `${res.split('').join(' ')}`;
       },
       err => {
         Promise.reject();
