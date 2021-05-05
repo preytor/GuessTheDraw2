@@ -4,6 +4,28 @@ import { UserRoom } from "./models/userRoom";
 import { GameLobby } from "./models/gameLobby";
 import {io} from "./server";
 
+const words: string[] = ["Far","Oil","Cow","Murky","Closed",
+"Sheep","Hard","Crab","Tight","Meat","Immense","Tree",
+"School","Addition","Division","Sleep","Music","Butter","Corn",
+"Animal","Observe","Steam","Fear","Cotton","Lift","Owner",
+"Puzzle","Turtle","Fish","Road",
+"Windmill","Lamp","Ocean","Beach","Noise","Sunflower","Quiet",
+"Thirsty","Fear","Tractor","Happy","Vagabond","Ill","Many",
+"Deep","Space","Present","Tall","House","Clean","Tired",
+"Plane","Ten","Computer",
+"Stone","Wood","Late","Scattered","Sad","Wise","Yellow","Nasty",
+"Folder","Girl","Boy","Family","Unknown","Ghost",
+"Flower","Smell","Point","Duck","Drunk","Barbarian",
+"Rainy","Aboard","Ship","Bed","Hell", "Snow",
+"Mountain","River","Earthquake","Book","Toilet",
+"Run","Door","Key","Trash","Console","Water","Moon",
+"Drunk","Rain","Acid","Toxic",
+"Car","Dog","Cat","Pencil","Paper","Helicopter",
+"Guitar","Gym","Ice Cream","Beautiful","Tourist",
+"Handsome","Army","Heavy","Thought","Old","Absent",
+"Ugly","Quick","Worried","Sun",
+"Cloudy","Hungry","Cold","Church","Zealous","Hospital"];
+
 var currentGames: Array<GameData> = [];
 
 const getCurrentGames = (): Array<GameData> => {
@@ -206,7 +228,10 @@ const setPlayerHost = (id: number) => {
 }
 
 const getSecretWord = () => {
-  return "meme";
+  ///
+  let randomN = randomIntFromInterval(0, words.length);
+  let word = words[randomN];
+  return `${word}`;
 }
 
 
