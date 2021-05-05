@@ -3,4 +3,5 @@ export interface UserRoom {
     isRegistered: boolean
     score: number,
     totalScore: number,
+    hasBeenHost: boolean
 }

@@ -5,5 +5,7 @@ export interface GameData{
     roomName: string,
     roomPassword: string,
     id: number,
-    secretWord: string
+    secretWord: string,
+    displaySecretWord: string,
+    hasFinished: boolean
 }

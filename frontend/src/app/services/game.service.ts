@@ -62,4 +62,11 @@ export class GameService {
   getGameRooms(index: number, offset: number): Observable<GameLobby>{
     return this.HttpClient.get<GameLobby>(`${this.AUTH_SERVER}/game/gamelobby/${index}/${offset}`);
   }
+
+  getSecretWordDisplay(id: any): Promise<String>{
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/getDisplaySecretWord`, {roomID: id})
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });
+  }
 }

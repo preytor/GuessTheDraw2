@@ -11,5 +11,6 @@ router.get("/game/roomhaspassword/:id", controller.roomHasPassword);
 router.post("/game/addusertoroom", controller.addUserToRoom);
 router.post("/game/removeusertoroom", controller.removeUserFromRoom);
 router.get("/game/gamelobby/:index/:offset", controller.getGameLobbies);
+router.post("/game/getDisplaySecretWord", controller.getDisplaySecretWord);
 
 export = router;

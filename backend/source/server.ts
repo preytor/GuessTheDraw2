@@ -8,7 +8,7 @@ import userRoutes from "./routes/user";
 import gameRoutes from "./routes/game";
 import gamedata from "./gamedata";
 import GameLogic from "./game-logic";
-import Chat from "./controllers/chat";
+import  Chat from "./controllers/chat";
 import { Server, Socket } from "socket.io";
 import { GameData } from "./models/gameData";
 //import { createAdapter } from 'socket.io-redis';
@@ -45,6 +45,8 @@ const newgame: GameData = {
   roomPassword: "d",
   id: 1,
   secretWord: "meme",
+  displaySecretWord: "_ _ _ _",
+  hasFinished: false
 };
 
 const newgame2: GameData = {
@@ -52,7 +54,9 @@ const newgame2: GameData = {
   roomName: "meme2",
   roomPassword: "",
   id: 2,
-  secretWord: ""
+  secretWord: "as",
+  displaySecretWord: "_ _",
+  hasFinished: false
 }
 
 gamedata.addGame(newgame);

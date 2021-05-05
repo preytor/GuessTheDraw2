@@ -30,6 +30,7 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     isRegistered: req.body.isRegistered,
     score: 0,
     totalScore: 0,
+    hasBeenHost: false
   };
 
   let _id = gamedata.getCurrentGames().length + 1;
@@ -40,9 +41,13 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     roomPassword: req.body.roomPassword,
     id: _id,
     secretWord: "",
+    displaySecretWord: "",
+    hasFinished: false
   };
 
   gamedata.addGame(newgame);
+  console.log("begignning asdas das ",_id)
+  gamedata.beginGame(_id);
 
   logging.info(
     NAMESPACE,
@@ -127,6 +132,13 @@ const getGameLobbies = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
+const getDisplaySecretWord = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.body.roomID;
+  let id: number = parseInt(_roomID);
 
+  return res.status(200).json(
+    { displayWord: gamedata.getDisplaySecretWord(id) }
+  );
+};
 
-export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword, addUserToRoom, removeUserFromRoom, getGameLobbies };
+export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword, addUserToRoom, removeUserFromRoom, getGameLobbies, getDisplaySecretWord };

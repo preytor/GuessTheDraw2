@@ -1,5 +1,4 @@
 import GameLogic from "./game-logic";
-import logging from "./config/logging";
 import { GameData } from "./models/gameData";
 import { UserRoom } from "./models/userRoom";
 import { GameLobby } from "./models/gameLobby";
@@ -109,9 +108,60 @@ const getGameLobbies = (index: number, offset: number): GameLobby[] => {
   return lobbies;
 };
 
+const getDisplaySecretWord = (id: number) => {
+  return (gameExists(id)) ? getGameFromID(id)?.displaySecretWord : "";
+}
+
 const beginGame = (id: number) => {
+
+  console.log(`begingame in game ${id} is working`)
+
   //TODO PENDING
-  getGameFromID(id)
+  let gameData = getGameFromID(id);
+  const _seconds = 60000; //60 seconds
+  const host = setPlayerHost(id) //send a socket to this player and he can draw (the rest can't)
+//  const secretWord = getSecretWord()
+
+  //send the clients except the host the word but as _ in an array (array["_", "_", "_"]) etc...
+  
+  //discover word at 30 seconds
+  setTimeout(() => { discoverLetterInRoom(id) }, 30000);
+  //discover word at 50 seconds
+  setTimeout(() => { discoverLetterInRoom(id) }, 50000);
+  //do an "if (!hasFinished) {"
+  if(!gameExists(id)) return;
+  if(getGameFromID(id)?.hasFinished == true) return;
+  setTimeout(() => { beginGame(id) }, _seconds);
+}
+
+const discoverLetterInRoom = (id: number) => {
+
+}
+
+const setPlayerHost = (id: number) => {
+  let players = getGameFromID(id)?.gameUsers;
+  let foundHost = false;
+  if(players!.length>0){
+    for(let i = 0; i<players!.length; i++){
+      if(players![i].hasBeenHost==false){
+        currentGames[id].gameUsers[i].hasBeenHost=true;
+        foundHost = true;
+        //TODO: make the player the host 
+        break;
+      }
+    }
+
+    if(!foundHost){
+      for(let i = 0; i<players!.length; i++){
+        if(i>0){
+          currentGames[id].gameUsers[i].hasBeenHost=false;
+        }else{
+          //TODO: make the player the host 
+        }
+      }
+    }
+  }
+
 }
 
 /*
@@ -150,4 +200,6 @@ export default {
   addUserInRoom,
   removeUserInRoom,
   getGameLobbies,
+  beginGame,
+  getDisplaySecretWord
 };

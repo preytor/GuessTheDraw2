@@ -23,6 +23,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   //currentuser
   currentUser: string = "";
 
+  //display word
+  displayWord: string = "";
+
   messages: ChatMessage[] = [];
   messageContent: string = "";
   ioConnection: any;
@@ -374,7 +377,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       username: this.currentUser,
       isRegistered: this.authService.isLogged(),
       score: 0,
-      totalScore: 0
+      totalScore: 0,
+      hasBeenHost: false
     };
     console.log("roomid: ", this.chatMessage.roomId, "  userdata: ", userdata)
     //for some reason this below doesnt work
@@ -384,6 +388,8 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       console.log("room id thingy this "+this.chatMessage.roomId)
       this.getRoomUsers(this.chatMessage.roomId);
     })
+
+    this.updateVisibleSecretWord();
   }
 
   processIfRoomHasPassword(hasPassword: boolean){
@@ -436,5 +442,28 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
     }
+  }
+
+  updateVisibleSecretWord(){
+    this.getSecretWordDisplayed(this.chatMessage.roomId).then(
+      res => {
+        Promise.resolve();
+        this.displayWord = `${res}`;
+      },
+      err => {
+        Promise.reject();
+      }
+    );
+  }
+
+  getSecretWordDisplayed(id: number): Promise<String>{
+    return new Promise((resolve, reject): void => {
+      this.GameService.getSecretWordDisplay(id).then(
+        data => {
+          let value = Object(data)["displayWord"];
+          resolve(value);
+        }
+      );
+    });
   }
 }
