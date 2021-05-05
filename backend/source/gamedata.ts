@@ -127,7 +127,6 @@ const beginGame = (id: number) => {
   //io.to(`room_${id}`).emit("host_change", {roomid: id});//works, below is 1 for testing
   io.to(`room_1`).emit("host_change", {roomid: id});
 
-
   //TODO PENDING, ERROR: TypeError: Cannot read property 'gameUsers' of undefined
   let gameData = getGameFromID(id);
   const _seconds = 60000; //60 seconds
@@ -138,11 +137,12 @@ const beginGame = (id: number) => {
     viewWord+="_";
   }
 
-  currentGames[id].secretWord = secretWord;
-  currentGames[id].displaySecretWord = viewWord;
+  gameData!.secretWord! = secretWord;
+  gameData!.displaySecretWord! = viewWord;
 
   //send the clients except the host the word but as _ in an array (array["_", "_", "_"]) etc...
   
+  console.log("blabla ", getGameFromID(id))
 
   //discover word at 30 seconds
   setTimeout(() => { discoverLetterInRoom(id) }, 30000);
@@ -156,37 +156,39 @@ const discoverLetterInRoom = (id: number) => {
   if(!gameExists(id)) return;
   if(getGameFromID(id)?.hasFinished == true) return;
 
-  let gameSecretWord = getGameFromID(id)?.secretWord;
+  let gameSecretWord = getGameFromID(id)!.secretWord;
 
   let replaced = false;
   do{
     let randomLetter = randomIntFromInterval(0, gameSecretWord!.length-1);
 
-    if(currentGames[id].displaySecretWord.charAt(randomLetter)=="_"){
-      let secret = currentGames[id].secretWord;
-      let display = currentGames[id].displaySecretWord;
+    if(getGameFromID(id)!.displaySecretWord.charAt(randomLetter)=="_"){
+      let secret = getGameFromID(id)!.secretWord;
+      let display = getGameFromID(id)!.displaySecretWord;
 
       let newDisplay = setCharAt(display, randomLetter, secret.charAt(randomLetter));
-      currentGames[id].displaySecretWord = newDisplay;
+      getGameFromID(id)!.displaySecretWord = newDisplay;
       replaced = true;
-      console.log("new display is: ",currentGames[id].displaySecretWord)
+      console.log("new display is: ",getGameFromID(id)!.displaySecretWord)
     }
   }while(!replaced);
-
-
-
 }
 
 const setPlayerHost = (id: number) => {
-  let players = getGameFromID(id)?.gameUsers;
+  console.log("dsdasdasdasd", getGameFromID(id)!.gameUsers)
+  let players = getGameFromID(id)!.gameUsers;
   let foundHost = false;
-  if(players!.length>0){
-    for(let i = 0; i<players!.length; i++){
-      if(players![i].hasBeenHost==false){
-        currentGames[id].gameUsers[i].hasBeenHost=true;
-        foundHost = true;
-        //TODO: make the player the host 
-        break;
+  if(players.length>0){
+    for(let i = 0; i<players.length; i++){
+      console.log("player at i: "+i+" ",players![i])
+      if(players[i]!=undefined){
+        if(players![i].hasBeenHost==false){
+          //currentGames[id].gameUsers[i].hasBeenHost=true;
+          players[i].hasBeenHost=true;
+          foundHost = true;
+          //TODO: make the player the host 
+          break;
+        }
       }
     }
 
@@ -204,7 +206,7 @@ const setPlayerHost = (id: number) => {
 }
 
 const getSecretWord = () => {
-  return "";
+  return "meme";
 }
 
 
