@@ -16,9 +16,10 @@ import { PrivateSitesGuard } from '../private-sites.guard';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CreateRoomComponent } from './create-room/create-room.component';
 import { BrowseRoomsComponent } from './browse-rooms/browse-rooms.component';
+import { JoinRoomComponent } from './join-room/join-room.component';
 
 @NgModule({
-  declarations: [RegisterComponent, LoginComponent, GameRoomComponent, UserSettingsComponent, RankingComponent, MainMenuComponent, CreateRoomComponent, BrowseRoomsComponent],
+  declarations: [RegisterComponent, LoginComponent, GameRoomComponent, UserSettingsComponent, RankingComponent, MainMenuComponent, CreateRoomComponent, BrowseRoomsComponent, JoinRoomComponent],
   imports: [
     CommonModule,
     FormsModule,

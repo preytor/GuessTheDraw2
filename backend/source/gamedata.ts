@@ -191,7 +191,8 @@ const discoverLetterInRoom = (id: number) => {
       let newDisplay = setCharAt(display, randomLetter, secret.charAt(randomLetter));
       getGameFromID(id)!.displaySecretWord = newDisplay;
       replaced = true;
-      console.log("new display is: ",getGameFromID(id)!.displaySecretWord)
+      console.log("new display in room "+id+" is: ",getGameFromID(id)!.displaySecretWord)
+      io.to(`room_${id}`).emit("show_hint", {roomid: id});
     }
   }while(!replaced);
 }
@@ -208,7 +209,10 @@ const setPlayerHost = (id: number) => {
           //currentGames[id].gameUsers[i].hasBeenHost=true;
           players[i].hasBeenHost=true;
           foundHost = true;
+          
           //TODO: make the player the host 
+          io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: players[i]!.username});
+
           break;
         }
       }
@@ -216,13 +220,20 @@ const setPlayerHost = (id: number) => {
 
     if(!foundHost){
       for(let i = 0; i<players!.length; i++){
+        //TypeError: Cannot read property 'gameUsers' of undefined
+
+        if(getGameFromID(id)!.gameUsers===undefined) continue;
+
         if(i>0){
-          currentGames[id].gameUsers[i].hasBeenHost=false;
+          currentGames![id].gameUsers![i].hasBeenHost=false;
         }else{
           //TODO: make the player the host 
+          io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: players[i]!.username});
+
         }
       }
     }
+    io.to(`room_${id}`).emit("show_hint", {roomid: id});
   }
 
 }

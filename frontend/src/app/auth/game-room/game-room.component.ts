@@ -200,7 +200,14 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     .subscribe((message) => {
       console.log("received host change ", message);
       //do stuff
+    
+    });
 
+    this.socketService.onShowHint()
+    .subscribe((message) => {
+    console.log("received update hint ", message);
+      //do stuff
+      this.updateVisibleSecretWord();
     });
   }
 

@@ -114,4 +114,10 @@ export class SocketService {
       this.socket.on('host_change', (data: any) => observer.next(data));
     });
   }
+
+  public onShowHint(): Observable<any>{
+    return new Observable<any>((observer) => {
+      this.socket.on('show_hint', (data: any) => observer.next(data));
+    });
+  }
 }

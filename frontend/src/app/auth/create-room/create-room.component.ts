@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
 import { CreateGameData } from 'src/app/models/createGameData';
-import { startRoom } from 'src/app/models/startRoom';
-import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-room',
@@ -40,9 +38,9 @@ export class CreateRoomComponent implements OnInit {
         console.log(res)
 
         let resp: any = res;
-        
+        let hasPass = (this.roomParameters.roomPassword==="") ? false : true;
         //if res something router redirect to game room by GET parameter, in GET you have the URL of the room
-        this.Router.navigate(['/room', { queryParams: { id: resp.id} }]);
+        this.Router.navigate(['/join-room'], { queryParams: {id: resp.id, pass: hasPass }});
       },
       err => {
         Promise.reject();
