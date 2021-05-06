@@ -49,6 +49,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
   @ViewChild('drawingboard') drawingboard!: ElementRef<HTMLCanvasElement>;
   public content!: CanvasRenderingContext2D | null;
 
+  //timer
+  timerValue: number | undefined;
+
   @HostListener('window:beforeunload', ['$event'])  //this still doesnt work i think
   doSomething($event:any) {
     this.GameService.removeUserFromRoom(this.chatMessage.roomId, this.currentUser)
@@ -199,8 +202,13 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     this.socketService.onHostChange()
     .subscribe((message) => {
       console.log("received host change ", message);
-      //do stuff
+      //do stuff to change who can draw
     
+      //restart timer
+      let count: number = 60, timer = setInterval(() => {
+        this.timerValue=count--;
+        if(count == 1) clearInterval(timer);
+      }, 1000);
     });
 
     this.socketService.onShowHint()

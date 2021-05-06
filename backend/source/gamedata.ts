@@ -141,6 +141,10 @@ const beginGame = (id: number) => {
   if(!gameExists(id)) return;
   if(getGameFromID(id)?.hasFinished == true) return;
 
+  //calculate the score math of all the players in the room 
+  //and set the current score to 0
+
+
   //console.log("listeners and shit",io.sockets.adapter.rooms)
   //io.sockets.emit("clear", {roomid: 1});  //works
   //let players = io.sockets.adapter.rooms.get(`room_${id}`);
@@ -152,8 +156,8 @@ const beginGame = (id: number) => {
   //TODO PENDING, ERROR: TypeError: Cannot read property 'gameUsers' of undefined
   let gameData = getGameFromID(id);
   const _seconds = 60000; //60 seconds
-  let host = setPlayerHost(id) //send a socket to this player and he can draw (the rest can't)
-  let secretWord = getSecretWord()
+  setPlayerHost(id); //send a socket to this player and he can draw (the rest can't)
+  let secretWord = getSecretWord();
   let viewWord = "";
   for(let i = 0; i<secretWord.length; i++){
     viewWord+="_";
@@ -198,7 +202,6 @@ const discoverLetterInRoom = (id: number) => {
 }
 
 const setPlayerHost = (id: number) => {
-  console.log("dsdasdasdasd", getGameFromID(id)!.gameUsers)
   let players = getGameFromID(id)!.gameUsers;
   let foundHost = false;
   if(players.length>0){
@@ -212,26 +215,26 @@ const setPlayerHost = (id: number) => {
           
           //TODO: make the player the host 
           io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: players[i]!.username});
-
           break;
         }
       }
     }
 
     if(!foundHost){
-      for(let i = 0; i<players!.length; i++){
-        //TypeError: Cannot read property 'gameUsers' of undefined
+      let _newHost;
 
+      for(let i = 0; i<players!.length; i++){
         if(getGameFromID(id)!.gameUsers===undefined) continue;
 
         if(i>0){
-          currentGames![id].gameUsers![i].hasBeenHost=false;
+          getGameFromID(id)!.gameUsers[i]!.hasBeenHost=false;
         }else{
           //TODO: make the player the host 
-          io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: players[i]!.username});
+          _newHost = players[i]!.username;
 
         }
       }
+      io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: _newHost});
     }
     io.to(`room_${id}`).emit("show_hint", {roomid: id});
   }
