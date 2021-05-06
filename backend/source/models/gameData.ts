@@ -7,5 +7,6 @@ export interface GameData{
     id: number,
     secretWord: string,
     displaySecretWord: string,
-    hasFinished: boolean
+    hasFinished: boolean,
+    hostName: string
 }

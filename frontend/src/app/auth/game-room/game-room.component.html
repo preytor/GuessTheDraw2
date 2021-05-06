@@ -23,35 +23,37 @@
             (document:mouseup)="stopDrawing($event)"
             ></canvas>
         </div>
-        <div class="color">
-            <div id="black" (click)="changeDrawingColor('black')"></div>
-            <div id="darkgrey" (click)="changeDrawingColor('darkgrey')"></div>
-            <div id="darkred" (click)="changeDrawingColor('darkred')"></div>
-            <div id="red" (click)="changeDrawingColor('red')"></div>
-            <div id="orange" (click)="changeDrawingColor('orange')"></div>
-            <div id="yellow" (click)="changeDrawingColor('yellow')"></div>
-            <div id="green" (click)="changeDrawingColor('green')"></div>
-            <div id="deepskyblue" (click)="changeDrawingColor('deepskyblue')"></div>
-            <div id="blue" (click)="changeDrawingColor('blue')"></div>
-            <div id="blueviolet" (click)="changeDrawingColor('blueviolet')"></div>
-    
-            <div id="white" (click)="changeDrawingColor('whitesmoke')"></div>
-            <div id="lightgrey" (click)="changeDrawingColor('lightgrey')"></div>
-            <div id="peru" (click)="changeDrawingColor('peru')"></div>
-            <div id="pink" (click)="changeDrawingColor('pink')"></div>
-            <div id="lightsalmon" (click)="changeDrawingColor('lightsalmon')"></div>
-            <div id="lightyellow" (click)="changeDrawingColor('lightyellow')"></div>
-            <div id="lightgreen" (click)="changeDrawingColor('lightgreen')"></div>
-            <div id="lightcyan" (click)="changeDrawingColor('lightcyan')"></div>
-            <div id="darkslategray" (click)="changeDrawingColor('darkslategray')"></div>
-            <div id="thistle" (click)="changeDrawingColor('thistle')"></div>
-        </div>
-        <div class="size">
-            <div class="circleContainer" (click)="changeDrawingSize(1)"><div id="small"></div></div>
-            <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
-            <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
-        </div>
-        <div id="clear" (click)="clearCanvas(true)"></div>
+        <ng-container *ngIf="canUserDraw()">
+            <div class="color">
+                <div id="black" (click)="changeDrawingColor('black')"></div>
+                <div id="darkgrey" (click)="changeDrawingColor('darkgrey')"></div>
+                <div id="darkred" (click)="changeDrawingColor('darkred')"></div>
+                <div id="red" (click)="changeDrawingColor('red')"></div>
+                <div id="orange" (click)="changeDrawingColor('orange')"></div>
+                <div id="yellow" (click)="changeDrawingColor('yellow')"></div>
+                <div id="green" (click)="changeDrawingColor('green')"></div>
+                <div id="deepskyblue" (click)="changeDrawingColor('deepskyblue')"></div>
+                <div id="blue" (click)="changeDrawingColor('blue')"></div>
+                <div id="blueviolet" (click)="changeDrawingColor('blueviolet')"></div>
+        
+                <div id="white" (click)="changeDrawingColor('whitesmoke')"></div>
+                <div id="lightgrey" (click)="changeDrawingColor('lightgrey')"></div>
+                <div id="peru" (click)="changeDrawingColor('peru')"></div>
+                <div id="pink" (click)="changeDrawingColor('pink')"></div>
+                <div id="lightsalmon" (click)="changeDrawingColor('lightsalmon')"></div>
+                <div id="lightyellow" (click)="changeDrawingColor('lightyellow')"></div>
+                <div id="lightgreen" (click)="changeDrawingColor('lightgreen')"></div>
+                <div id="lightcyan" (click)="changeDrawingColor('lightcyan')"></div>
+                <div id="darkslategray" (click)="changeDrawingColor('darkslategray')"></div>
+                <div id="thistle" (click)="changeDrawingColor('thistle')"></div>
+            </div>
+            <div class="size">
+                <div class="circleContainer" (click)="changeDrawingSize(1)"><div id="small"></div></div>
+                <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
+                <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
+            </div>
+            <div id="clear" (click)="clearCanvas(true)"></div>
+        </ng-container>
     </div>
 
     <div class="menu right-menu">

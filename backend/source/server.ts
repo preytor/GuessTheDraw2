@@ -46,7 +46,8 @@ const newgame: GameData = {
   id: 1,
   secretWord: "meme",
   displaySecretWord: "____",
-  hasFinished: false
+  hasFinished: false,
+  hostName: ""
 };
 
 const newgame2: GameData = {
@@ -56,7 +57,8 @@ const newgame2: GameData = {
   id: 2,
   secretWord: "as",
   displaySecretWord: "__",
-  hasFinished: false
+  hasFinished: false,
+  hostName: ""
 }
 
 gamedata.addGame(newgame);

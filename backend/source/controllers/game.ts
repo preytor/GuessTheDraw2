@@ -42,7 +42,8 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     id: _id,
     secretWord: "",
     displaySecretWord: "",
-    hasFinished: false
+    hasFinished: false,
+    hostName: ""
   };
 
   gamedata.addGame(newgame);
@@ -141,4 +142,38 @@ const getDisplaySecretWord = (req: Request, res: Response, next: NextFunction) =
   );
 };
 
-export default { beginGame, getRoomUsers, getGameData, roomExists, roomHasPassword, addUserToRoom, removeUserFromRoom, getGameLobbies, getDisplaySecretWord };
+const getSecretWord = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.body.roomID;
+  let id: number = parseInt(_roomID);
+
+  return res.status(200).json(
+    { secretWord: gamedata.getSecretWord(id) }
+  );
+};
+
+const getuserCanDraw = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.body.id;
+  let id: number = parseInt(_roomID);
+
+  let _user: any = req.body.userName;
+  let userName: string = _user;
+
+  return res.status(200).json(
+    gamedata.playerCanDraw(id, userName)
+  );
+};
+
+
+export default { 
+  beginGame, 
+  getRoomUsers, 
+  getGameData, 
+  roomExists, 
+  roomHasPassword, 
+  addUserToRoom, 
+  removeUserFromRoom, 
+  getGameLobbies, 
+  getDisplaySecretWord, 
+  getSecretWord, 
+  getuserCanDraw 
+};

@@ -12,5 +12,7 @@ router.post("/game/addusertoroom", controller.addUserToRoom);
 router.post("/game/removeusertoroom", controller.removeUserFromRoom);
 router.get("/game/gamelobby/:index/:offset", controller.getGameLobbies);
 router.post("/game/getDisplaySecretWord", controller.getDisplaySecretWord);
+router.post("/game/getSecretWord", controller.getSecretWord);
+router.post("/game/userCanDraw", controller.getuserCanDraw);
 
 export = router;

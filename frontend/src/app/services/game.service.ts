@@ -69,4 +69,18 @@ export class GameService {
       return error;
     });
   }
+  
+  getSecretWord(id: any): Promise<String>{
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/getSecretWord`, {roomID: id})
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });
+  }
+
+  userCanDraw(_id: any, _userName: any): Promise<boolean>{
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/userCanDraw`, {id: _id, userName: _userName})
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });;
+  }
 }

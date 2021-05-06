@@ -35,7 +35,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     roomId: -1
   }
 
-  canDraw: boolean = true;  //check here if its the turn of this player to draw (send a request to the server/the server sends you a socket telling you its your turn)
+  canDraw: boolean = false;  //check here if its the turn of this player to draw (send a request to the server/the server sends you a socket telling you its your turn)
   isDrawing: boolean = false;
 
   currentDraw = {
@@ -100,8 +100,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       //should redirect
       this.Router.navigate(['/']);
     }
-
-
+    
   }
 
         
@@ -203,7 +202,15 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     .subscribe((message) => {
       console.log("received host change ", message);
       //do stuff to change who can draw
+      if(message.newHost===this.currentUser){
+        console.log("now he can draw")
+        this.canDraw = true;
+      }else{
+        this.canDraw = false;
+      }
     
+      this.clearCanvas(false);
+
       //restart timer
       let count: number = 60, timer = setInterval(() => {
         this.timerValue=count--;
@@ -215,7 +222,11 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     .subscribe((message) => {
     console.log("received update hint ", message);
       //do stuff
-      this.updateVisibleSecretWord();
+      if(!this.canUserDraw()) {
+        this.updateVisibleSecretWord();
+      }else{
+        this.updateSecretWord();
+      }
     });
   }
 
@@ -409,6 +420,18 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       //refresh players in room after adding a new one
       console.log("room id thingy this "+this.chatMessage.roomId)
       this.getRoomUsers(this.chatMessage.roomId);
+
+      this.playerCanDraw(this.chatMessage.roomId, this.currentUser).then(
+        res => {
+          if(res){
+            this.canDraw = true;
+          }
+          Promise.resolve();
+        },
+        err => {
+          Promise.reject();
+        }
+      )
     })
 
     this.updateVisibleSecretWord();
@@ -487,5 +510,47 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         }
       );
     });
+  }
+
+  updateSecretWord(){
+    this.getSecretWord(this.chatMessage.roomId).then(
+      res => {
+        Promise.resolve();
+        this.displayWord = `${res.split('').join(' ')}`;
+      },
+      err => {
+        Promise.reject();
+      }
+    );
+  }
+
+  getSecretWord(id: number): Promise<String>{
+    return new Promise((resolve, reject): void => {
+      this.GameService.getSecretWord(id).then(
+        data => {
+          let value = Object(data)["secretWord"];
+          resolve(value);
+        }
+      );
+    });
+  }
+
+  playerCanDraw(id: number, userName: string): Promise<boolean>{
+    return new Promise((resolve, reject): void => {
+      this.GameService.userCanDraw(id, userName).then(
+        data => {
+          console.log(`data in playerCanDraw is: ${data}`)
+          if(data==true){
+            resolve(true);
+          }else{
+            resolve(false);
+          }
+        }
+      );
+    });
+  }
+
+  canUserDraw(){
+    return this.canDraw;
   }
 }

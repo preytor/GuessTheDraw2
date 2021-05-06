@@ -135,6 +135,10 @@ const getDisplaySecretWord = (id: number) => {
   return (gameExists(id)) ? getGameFromID(id)?.displaySecretWord : "";
 }
 
+const getSecretWord = (id: number) => {
+  return (gameExists(id)) ? getGameFromID(id)?.secretWord : "";
+}
+
 const beginGame = (id: number) => {
   
   console.log(`begingame in game ${id} is working - BEFORE`)
@@ -157,7 +161,7 @@ const beginGame = (id: number) => {
   let gameData = getGameFromID(id);
   const _seconds = 60000; //60 seconds
   setPlayerHost(id); //send a socket to this player and he can draw (the rest can't)
-  let secretWord = getSecretWord();
+  let secretWord = generateSecretWord();
   let viewWord = "";
   for(let i = 0; i<secretWord.length; i++){
     viewWord+="_";
@@ -215,7 +219,10 @@ const setPlayerHost = (id: number) => {
           
           //TODO: make the player the host 
           io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: players[i]!.username});
+          getGameFromID(id)!.hostName=players[i]!.username;
           break;
+        }else{
+
         }
       }
     }
@@ -231,17 +238,18 @@ const setPlayerHost = (id: number) => {
         }else{
           //TODO: make the player the host 
           _newHost = players[i]!.username;
-
+          getGameFromID(id)!.hostName=_newHost;
         }
       }
       io.to(`room_${id}`).emit("host_change", {roomid: id, newHost: _newHost});
     }
     io.to(`room_${id}`).emit("show_hint", {roomid: id});
+    io.to(`room_${id}`).emit("clear", {roomid: id});
   }
 
 }
 
-const getSecretWord = () => {
+const generateSecretWord = () => {
   ///
   let randomN = randomIntFromInterval(0, words.length);
   let word = words[randomN];
@@ -259,6 +267,14 @@ function setCharAt(str: string,index: number,chr: string) {
   return str.substring(0,index) + chr + str.substring(index+1);
 }
 
+const playerCanDraw = (id: number, userName: string): boolean => {
+
+  if(!gameExists(id)){ return false; }
+
+  let canDraw = (getGameFromID(id)!.hostName===userName) ? true : false;
+
+  return canDraw;
+};
 /*
 function getCurrentGames(): Array<GameLogic>{
     return currentGames;
@@ -296,5 +312,7 @@ export default {
   removeUserInRoom,
   getGameLobbies,
   beginGame,
-  getDisplaySecretWord
+  getDisplaySecretWord,
+  getSecretWord,
+  playerCanDraw
 };
