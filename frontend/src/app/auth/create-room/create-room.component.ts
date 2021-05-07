@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { AuthService } from '../../services/auth.service';
 import { CreateGameData } from 'src/app/models/createGameData';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-room',
@@ -10,7 +12,7 @@ import { CreateGameData } from 'src/app/models/createGameData';
   styleUrls: ['./create-room.component.css']
 })
 export class CreateRoomComponent implements OnInit {
-
+  // (submit)="createRoom()" 
 
   //find a way to get the user or generate a random name like "anonymous<numbers>"  
   number = Math.floor(Math.random()*101);
@@ -24,10 +26,21 @@ export class CreateRoomComponent implements OnInit {
     isRegistered: this.authService.isLogged()
   }
 
+  createRoomForm: FormGroup | undefined;
+  
+ /* ({
+    roomname: new FormControl('', Validators.required),
+    roompassword: new FormControl('')
+  })*/
+
   constructor(private GameService: GameService, private Router: Router, private authService: AuthService) { }
 
 
   ngOnInit(): void {
+    this.createRoomForm = new FormGroup({
+      roomname: new FormControl(this.roomParameters.roomName, [Validators.required, Validators.minLength(1)]),
+      roompassword: new FormControl(this.roomParameters.roomPassword)
+    });
   }
 
   createRoom(){
@@ -49,4 +62,11 @@ export class CreateRoomComponent implements OnInit {
     )
   }
 
+  log(){
+    console.log('dasdasdd')
+  }
+
+  onSubmit(){
+    this.createRoom()
+  }
 }

@@ -8,7 +8,7 @@
 
 /* Reset top and bottom margins from certain elements */
 .create-room-header,
-.create-room p {
+.form-group {
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -38,7 +38,7 @@
 }
 
 /* Every row inside .login-container is defined with p tags */
-.create-room p {
+.form-group {
   padding: 12px;
 }
 

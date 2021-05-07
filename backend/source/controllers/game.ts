@@ -17,26 +17,21 @@ const getRoomUsers = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const beginGame = (req: Request, res: Response, next: NextFunction) => {
-  /*  POST PARAMETERS
-    roomParameters = {
-      roomName: "",
-      roomPassword: "",
-      username: this.username,
-      isRegistered: this.authService.isLogged()
-    }
-  */
-  let userHost: UserRoom = {
+
+  //we dont care about this for now 
+  //because it would have an empty player in it
+/*  let userHost: UserRoom = {
     username: req.body.username,
     isRegistered: req.body.isRegistered,
     score: 0,
     totalScore: 0,
     hasBeenHost: false
-  };
+  };*/
 
   let _id = gamedata.getCurrentGames().length + 1;
 
   const newgame: GameData = {
-    gameUsers: [userHost],
+    gameUsers: [],//gameUsers: [userHost], //without any player for now
     roomName: req.body.roomName,
     roomPassword: req.body.roomPassword,
     id: _id,

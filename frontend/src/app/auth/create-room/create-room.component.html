@@ -3,11 +3,20 @@
       <div class="create-room-triangle"></div>
         
       <h2 class="create-room-header">Create a Game</h2>
-      
-      <form (submit)="createRoom()" class="create-room-container">
-        <p><input type="text" [(ngModel)]="roomParameters.roomName" name="roomname" placeholder="Room name" required autofocus></p>
-        <p><input type="text" [(ngModel)]="roomParameters.roomPassword" name="roompassword" placeholder="Room password (optional)" required autofocus></p>
-        <p><input type="submit" value="Create the room"></p>
+     
+      <form #createRoomFrm="ngForm" FormGroup name="createRoomForm" (ngSubmit)="onSubmit()" class="create-room-container">
+        <div class="form-group">
+          <label for="roomname">Room Name</label>
+          <input ngModel name="roomName" (change)="log()" #roomName="ngModel" type="text" placeholder="Room name" required minlength="1" autofocus />
+          <div class="alert alert-danger" *ngIf="roomName.touched && !roomName.valid">Room name is required!</div>
+        </div>
+        <div class="form-group">
+          <label for="roompassword">Room Password</label>
+          <input ngModel name="roomPassword" type="text" placeholder="Room password (optional)" autofocus />
+        </div>
+        <div class="form-group">
+          <input [disabled]="!createRoomFrm.form.valid" type="submit" value="Create the room" />
+        </div>
       </form>
     </div>
   </div>

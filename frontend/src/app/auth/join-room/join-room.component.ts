@@ -16,11 +16,12 @@ export class JoinRoomComponent implements OnInit {
     //get if it has pass "pass"
     //if it has show the module of the login, 
     //if not wait the seconds and go to the room
+/*    console.log(this.aRoute.queryParams)
 
     this.aRoute.queryParams.subscribe(params => {
       this.urlID = params['id'];
       this.hasPass = params['pass'];
-    });
+    });*/
   }
 
   ngOnInit(): void {

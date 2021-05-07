@@ -5,10 +5,22 @@
     <h2 class="register-header">Register</h2>
     
     <form (submit)="signUp()" class="register-container">
-      <p><input type="text" [(ngModel)]="registeringUser.username" name="username" placeholder="Username" required autofocus></p>
-      <p><input type="email" [(ngModel)]="registeringUser.email" name="email" placeholder="Email" required></p>
-      <p><input type="password" [(ngModel)]="registeringUser.password" name="password" placeholder="Password" required></p>
-      <p><input type="password" [(ngModel)]="registeringUser.repassword" name="repeat-password" placeholder="Password" required></p>
+      <p>
+        <label for="username">Username</label>
+        <input type="text" [(ngModel)]="registeringUser.username" name="username" placeholder="Username" required autofocus>
+      </p>
+      <p>
+        <label for="email">Email</label>
+        <input type="email" [(ngModel)]="registeringUser.email" name="email" placeholder="Email" required>
+      </p>
+      <p>
+        <label for="password">Password</label>
+        <input type="password" [(ngModel)]="registeringUser.password" name="password" placeholder="Password" required>
+      </p>
+      <p>
+        <label for="repeat-password">Password</label>
+        <input type="password" [(ngModel)]="registeringUser.repassword" name="repeat-password" placeholder="Password" required>
+      </p>
       <p><input type="submit" value="Register"></p>
     </form>
   </div>

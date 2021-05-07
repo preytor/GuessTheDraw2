@@ -61,7 +61,7 @@
             <div id="messages" *ngFor="let message of messages">
                 {{message.from}}{{message.message}}
             </div>
-            <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (onclick)="sendMessage()">Send</button>
+            <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (click)="sendMessage()">Send</button>
         </div>
     </div>
 </div>
