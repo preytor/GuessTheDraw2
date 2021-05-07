@@ -62,10 +62,6 @@ export class CreateRoomComponent implements OnInit {
     )
   }
 
-  log(){
-    console.log('dasdasdd')
-  }
-
   onSubmit(){
     this.createRoom()
   }

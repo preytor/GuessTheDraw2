@@ -4,24 +4,31 @@
       
     <h2 class="register-header">Register</h2>
     
-    <form (submit)="signUp()" class="register-container">
-      <p>
+    <form #RegisterForm="ngForm" (ngSubmit)="signUp()" class="register-container">
+      <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" [(ngModel)]="registeringUser.username" name="username" placeholder="Username" required autofocus>
-      </p>
-      <p>
+        <input ngModel name="registeringUser.username" type="text" #userName="ngModel" [(ngModel)]="registeringUser.username" name="username" placeholder="Username" required minlength="1" autofocus>
+        <div class="alert alert-danger" *ngIf="userName.touched && !userName.valid">User name is required!</div>
+      </div>
+      <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" [(ngModel)]="registeringUser.email" name="email" placeholder="Email" required>
-      </p>
-      <p>
+        <input ngModel name="registeringUser.email" type="email" #userMail="ngModel" [(ngModel)]="registeringUser.email" name="email" placeholder="Email" required minlength="1">
+        <div class="alert alert-danger" *ngIf="userMail.touched && !userMail.valid">Email is required!</div>
+      </div>
+      <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" [(ngModel)]="registeringUser.password" name="password" placeholder="Password" required>
-      </p>
-      <p>
+        <input ngModel name="registeringUser.password" type="password" #userPass="ngModel" [(ngModel)]="registeringUser.password" name="password" placeholder="Password" required minlength="1">
+        <div class="alert alert-danger" *ngIf="userPass.touched && !userPass.valid">Password is required!</div>
+      </div>
+      <div class="form-group">
         <label for="repeat-password">Password</label>
-        <input type="password" [(ngModel)]="registeringUser.repassword" name="repeat-password" placeholder="Password" required>
-      </p>
-      <p><input type="submit" value="Register"></p>
+        <input ngModel name="registeringUser.repassword" type="password" #userRepass="ngModel" [(ngModel)]="registeringUser.repassword" name="repeat-password" placeholder="Password" required minlength="1">
+        <div class="alert alert-danger" *ngIf="userRepass.touched && !userRepass.valid">Repeated password is required!</div>
+        <div class="alert alert-danger" *ngIf="userRepass.errors?.differentPass">{{userRepass.errors?.differentPass}}Repeated password is required!</div>
+      </div>
+      <div class="form-group">
+        <input [disabled]="!RegisterForm.form.valid" type="submit" value="Register">
+      </div>
     </form>
   </div>
 </div>

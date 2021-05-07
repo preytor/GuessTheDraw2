@@ -74,6 +74,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = (req: Request, res: Response, next: NextFunction) => {
+  console.log(req.body)
   let { email, password } = req.body;
 
   User.find({ email: email })
