@@ -47,7 +47,8 @@ const newgame: GameData = {
   secretWord: "meme",
   displaySecretWord: "____",
   hasFinished: false,
-  hostName: ""
+  hostName: "",
+  timer: 60
 };
 
 const newgame2: GameData = {
@@ -58,7 +59,8 @@ const newgame2: GameData = {
   secretWord: "as",
   displaySecretWord: "__",
   hasFinished: false,
-  hostName: ""
+  hostName: "",
+  timer: 60
 }
 
 gamedata.addGame(newgame);
@@ -200,10 +202,34 @@ io.on("connection", function (socket: Socket) {
         message: `: ${message.message}`,
         room: message.room
       }
-      console.log("message to room: ", `room_${message.room}`)
-      socket.to(`room_${message.room}`).emit("chat_message", newMessage); //just in case
-      socket.rooms.forEach(object => console.log("rooms message: "+object))
-      //socket.emit("chat_message", newMessage);
+
+      if(gamedata.gameExists(message.room)){
+        let guess: string = message.message;
+        let secretWord: string | undefined = gamedata!.getSecretWord(message.room);
+        if(secretWord===undefined){ return }
+        console.log("guess: ",guess.toLowerCase())
+        console.log("secretword: ",secretWord.toLowerCase())
+        console.log("same?: ",guess.toLowerCase().includes(secretWord!.toLowerCase()))
+        
+        if(guess.toLowerCase().includes(secretWord!.toLowerCase())){
+          //gamedata give score
+          gamedata.giveScoreToPlayer(message.room, message.from);
+          //guessed right
+          let successMessage = {
+            from: message.from,
+            message: ` has guessed the word right!`,
+            room: message.room
+          }
+          io.to(`room_${message.room}`).emit("chat_message", successMessage);
+          io.to(`room_${message.room}`).emit("update_score", {room: successMessage.room});
+          io.to(`room_${message.room}`).emit("forbid_guessing", {playerName: message.from});
+        }else{
+          console.log("message to room: ", `room_${message.room}`)
+          socket.to(`room_${message.room}`).emit("chat_message", newMessage); //just in case
+          socket.rooms.forEach(object => console.log("rooms message: "+object))
+          //socket.emit("chat_message", newMessage);
+        }
+      }
   });
 
   socket.on("join", (message) => {

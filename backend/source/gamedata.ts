@@ -135,19 +135,31 @@ const getDisplaySecretWord = (id: number) => {
   return (gameExists(id)) ? getGameFromID(id)?.displaySecretWord : "";
 }
 
-const getSecretWord = (id: number) => {
-  return (gameExists(id)) ? getGameFromID(id)?.secretWord : "";
+const getSecretWord = (id: number): string => {
+  return (gameExists(id)) ? getGameFromID(id)!.secretWord : "";
 }
 
-const beginGame = (id: number) => {
+const beginGame = (id: number, timerSeconds: any, gameRound: any) => {
   
   console.log(`begingame in game ${id} is working - BEFORE`)
   if(!gameExists(id)) return;
   if(getGameFromID(id)?.hasFinished == true) return;
 
+  //reset timers
+//  let lowerTimerVar: any;
+//  clearTimeout(lowerTimerVar); 
+  if(timerSeconds!=null){
+    clearInterval(timerSeconds);
+  }
+  if(gameRound!=null){
+    clearTimeout(gameRound); 
+  }
+  
   //calculate the score math of all the players in the room 
   //and set the current score to 0
-
+  restartScores(id);
+  //set timer to 60
+  getGameFromID(id)!.timer = 60;
 
   //console.log("listeners and shit",io.sockets.adapter.rooms)
   //io.sockets.emit("clear", {roomid: 1});  //works
@@ -155,7 +167,7 @@ const beginGame = (id: number) => {
   //console.log("players in listener and shit: ", players);
   console.log(`begingame in game ${id} is working - AFTER`)
   //io.to(`room_${id}`).emit("host_change", {roomid: id});//works, below is 1 for testing
-  io.to(`room_1`).emit("host_change", {roomid: id});
+  //io.to(`room_1`).emit("host_change", {roomid: id});
 
   //TODO PENDING, ERROR: TypeError: Cannot read property 'gameUsers' of undefined
   let gameData = getGameFromID(id);
@@ -173,13 +185,18 @@ const beginGame = (id: number) => {
   //send the clients except the host the word but as _ in an array (array["_", "_", "_"]) etc...
   
   console.log("blabla ", getGameFromID(id))
+  //update timer every second
+  let _timerSeconds = setInterval(() => {
+    getGameFromID(id)!.timer -=1;
+    console.log("timer: "+getGameFromID(id)!.timer)
+  }, 1000);
 
   //discover word at 30 seconds
   setTimeout(() => { discoverLetterInRoom(id) }, 30000);
   //discover word at 50 seconds
   setTimeout(() => { discoverLetterInRoom(id) }, 50000);
   //do an "if (!hasFinished) {"
-  setTimeout(() => { beginGame(id) }, _seconds);
+  let _gameRound = setTimeout(() => { beginGame(id, _timerSeconds, _gameRound); }, _seconds);
 }
 
 const discoverLetterInRoom = (id: number) => {
@@ -275,6 +292,34 @@ const playerCanDraw = (id: number, userName: string): boolean => {
 
   return canDraw;
 };
+
+const giveScoreToPlayer = (id: number, userName: string) => {
+  if(!gameExists(id)){ return }
+  if(!userExistsInRoom(id, userName)){ return }
+
+  let timeLeft = getGameFromID(id)!.timer;
+
+  if(userExistsInRoom(id, userName)){
+    for(let i = 0; i < getGameFromID(id)?.gameUsers.length!; i++){
+      if(getGameFromID(id)?.gameUsers[i].username == userName){
+        getGameFromID(id)!.gameUsers[i]!.score += timeLeft;
+        break;
+      }
+    }
+  }
+}
+
+const restartScores = (id: number) => {
+  if(!gameExists(id)){ return }
+
+  for(let i = 0; i < getGameFromID(id)?.gameUsers.length!; i++){
+    if(getGameFromID(id)!.gameUsers[i]!=undefined){
+        getGameFromID(id)!.gameUsers[i]!.totalScore += getGameFromID(id)!.gameUsers[i]!.score;
+        getGameFromID(id)!.gameUsers[i]!.score = 0;
+    }
+  }
+}
+
 /*
 function getCurrentGames(): Array<GameLogic>{
     return currentGames;
@@ -314,5 +359,7 @@ export default {
   beginGame,
   getDisplaySecretWord,
   getSecretWord,
-  playerCanDraw
+  playerCanDraw,
+  giveScoreToPlayer,
+  restartScores
 };

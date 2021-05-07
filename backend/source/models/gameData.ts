@@ -8,5 +8,6 @@ export interface GameData{
     secretWord: string,
     displaySecretWord: string,
     hasFinished: boolean,
-    hostName: string
+    hostName: string,
+    timer: number
 }

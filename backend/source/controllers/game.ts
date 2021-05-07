@@ -43,12 +43,13 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     secretWord: "",
     displaySecretWord: "",
     hasFinished: false,
-    hostName: ""
+    hostName: "",
+    timer: 60
   };
 
   gamedata.addGame(newgame);
   console.log("begignning asdas das ",_id)
-  gamedata.beginGame(_id);
+  gamedata.beginGame(_id, null, null);
 
   logging.info(
     NAMESPACE,

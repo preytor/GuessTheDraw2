@@ -37,6 +37,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
 
   canDraw: boolean = false;  //check here if its the turn of this player to draw (send a request to the server/the server sends you a socket telling you its your turn)
   isDrawing: boolean = false;
+  canGuess: boolean = true;
 
   currentDraw = {
     color: 'black',
@@ -208,13 +209,14 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       }else{
         this.canDraw = false;
       }
-    
+      this.canGuess = true;
+      //doesnt do properly seems like
       this.clearCanvas(false);
 
       //restart timer
-      let count: number = 60, timer = setInterval(() => {
+      let count: number = 59, timer = setInterval(() => {
         this.timerValue=count--;
-        if(count == 1) clearInterval(timer);
+        if(count == 0) clearInterval(timer);
       }, 1000);
     });
 
@@ -228,12 +230,36 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         this.updateSecretWord();
       }
     });
+
+    this.socketService.onUpdateScore()
+    .subscribe((message) => {
+      console.log("received update scores ", message);
+      this.getRoomUsers(this.chatMessage.roomId);
+    });
+
+    this.socketService.onForbidGuessing()
+    .subscribe((message) => {
+      console.log("received can guess ", message);
+      if(message.playerName===this.currentUser){
+        console.log("now he can't guess anymore")
+        this.canGuess = false
+      }
+    });
   }
 
   public sendMessage(): void{
-    //console.log(this.messageContent);
-    if(!this.messageContent){
-      return;
+    console.log(this.messageContent);
+
+    if(!this.messageContent){ return; }
+    if(!this.canGuess){ this.messageContent = ""; return; }
+
+    //if player is the host and says the secret word in the chat
+    if(this.canDraw){
+      let secretWithoutSpace = this.displayWord.split(" ").join("").toUpperCase();
+      if(this.messageContent.toUpperCase().includes(secretWithoutSpace)){
+        this.messageContent = "";
+        return;
+      }
     }
 
     let _chatMessage: ChatMessage = {
@@ -242,10 +268,9 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
       room: this.chatMessage.roomId
     }
 
-
     this.messages.push(_chatMessage);
     this.socketService.sendMessage({
-      from: this.currentUser,//"", //getauthService().getUser() or something
+      from: this.currentUser,
       message: this.messageContent,
       room: this.chatMessage.roomId
     });

@@ -120,4 +120,16 @@ export class SocketService {
       this.socket.on('show_hint', (data: any) => observer.next(data));
     });
   }
+
+  public onUpdateScore(): Observable<any>{
+    return new Observable<any>((observer) => {
+      this.socket.on('update_score', (data: any) => observer.next(data));
+    });
+  }
+
+  public onForbidGuessing(): Observable<any>{
+    return new Observable<any>((observer) => {
+      this.socket.on('forbid_guessing', (data: any) => observer.next(data));
+    });
+  }
 }
