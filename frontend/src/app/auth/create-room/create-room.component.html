@@ -1,22 +1,28 @@
 <div class="container">
-    <div class="create-room">
-      <div class="create-room-triangle"></div>
-        
-      <h2 class="create-room-header">Create a Game</h2>
-     
-      <form #createRoomFrm="ngForm" FormGroup name="createRoomForm" (ngSubmit)="onSubmit()" class="create-room-container">
-        <div class="form-group">
-          <label for="roomname">Room Name</label>
-          <input ngModel name="roomParameters.roomName" [(ngModel)]="roomParameters.roomName" #roomName="ngModel" type="text" placeholder="Room name" required minlength="1" autofocus />
-          <div class="alert alert-danger" *ngIf="roomName.touched && !roomName.valid">Room name is required!</div>
-        </div>
-        <div class="form-group">
-          <label for="roompassword">Room Password</label>
-          <input ngModel name="roomParameters.roomPassword" [(ngModel)]="roomParameters.roomPassword" type="text" placeholder="Room password (optional)" autofocus />
-        </div>
-        <div class="form-group">
-          <input [disabled]="!createRoomFrm.form.valid" type="submit" value="Create the room" />
-        </div>
-      </form>
-    </div>
+  <div class="create-room">
+    <div class="create-room-triangle"></div>
+      
+    <h2 class="create-room-header">Create a Game</h2>
+    
+    <form #createRoomFrm="ngForm" FormGroup name="createRoomForm" (ngSubmit)="onSubmit()" class="create-room-container">
+      <div class="form-group">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="bi bi-card-text"></i>
+          <input ngModel name="roomParameters.roomName" [(ngModel)]="roomParameters.roomName" #roomName="ngModel" type="text" placeholder="Room name" required minlength="1" autofocus  class="form-control col" aria-label="Username" aria-describedby="basic-addon1"/>
+        </span>
+        <div class="alert alert-danger" *ngIf="roomName.touched && !roomName.valid">Room name is required!</div>
+      </div>
+
+      <div class="form-group">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="bi bi-lock-fill"></i>
+          <input ngModel name="roomParameters.roomPassword" [(ngModel)]="roomParameters.roomPassword" type="text" placeholder="Room password (optional)" autofocus  class="form-control col" aria-label="Username" aria-describedby="basic-addon1"/>
+        </span>
+      </div>
+
+      <div class="form-group">
+        <input class="btn btn-primary btn-lg btn-block" [disabled]="!createRoomFrm.form.valid" type="submit" value="Create the room" />
+      </div>
+    </form>
   </div>
+</div>

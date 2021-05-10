@@ -10,6 +10,7 @@ import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { AuthModule } from './auth/auth.module';
 import { SocketService } from './services/socket.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SocketService } from './services/socket.service';
     AppRoutingModule,
     AuthModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ],
   exports: [
     FormsModule,

@@ -5,30 +5,44 @@
     <h2 class="register-header">Register</h2>
     
     <form #RegisterForm="ngForm" (ngSubmit)="signUp()" class="register-container">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input ngModel name="registeringUser.username" type="text" #userName="ngModel" [(ngModel)]="registeringUser.username" name="username" placeholder="Username" required minlength="1" autofocus>
-        <div class="alert alert-danger" *ngIf="userName.touched && !userName.valid">User name is required!</div>
+      
+      <div class="form-group w-100">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="bi bi-person-fill"></i>
+          <input ngModel name="registeringUser.username" type="text" #userName="ngModel" [(ngModel)]="registeringUser.username" name="username" placeholder="Username" required minlength="1" autofocus class="form-control col" aria-label="Username" aria-describedby="basic-addon1">
+        </span>
+        <div class="alert alert-danger col" *ngIf="userName.touched && !userName.valid">User name is required!</div>
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input ngModel name="registeringUser.email" type="email" #userMail="ngModel" [(ngModel)]="registeringUser.email" name="email" placeholder="Email" required minlength="1">
+
+      <div class="form-group w-100">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="bi bi-envelope-fill"></i>
+          <input ngModel name="registeringUser.email" type="email" #userMail="ngModel" [(ngModel)]="registeringUser.email" name="email" placeholder="Email" required minlength="1" class="form-control col" aria-label="Username" aria-describedby="basic-addon1">
+        </span>
         <div class="alert alert-danger" *ngIf="userMail.touched && !userMail.valid">Email is required!</div>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input ngModel name="registeringUser.password" type="password" #userPass="ngModel" [(ngModel)]="registeringUser.password" name="password" placeholder="Password" required minlength="1">
+
+      <div class="form-group w-100">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="bi bi-key"></i>
+          <input ngModel name="registeringUser.password" type="password" #userPass="ngModel" [(ngModel)]="registeringUser.password" name="password" placeholder="Password" required minlength="1" class="form-control col" aria-label="Username" aria-describedby="basic-addon1">
+        </span>
         <div class="alert alert-danger" *ngIf="userPass.touched && !userPass.valid">Password is required!</div>
       </div>
-      <div class="form-group">
-        <label for="repeat-password">Password</label>
-        <input ngModel name="registeringUser.repassword" type="password" #userRepass="ngModel" [(ngModel)]="registeringUser.repassword" name="repeat-password" placeholder="Password" required minlength="1">
+
+      <div class="form-group w-100">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="bi bi-key-fill"></i>
+          <input ngModel name="registeringUser.repassword" type="password" #userRepass="ngModel" [(ngModel)]="registeringUser.repassword" name="repeat-password" placeholder="Repeat password" required minlength="1" class="form-control col" aria-label="Username" aria-describedby="basic-addon1">
+        </span>
         <div class="alert alert-danger" *ngIf="userRepass.touched && !userRepass.valid">Repeated password is required!</div>
         <div class="alert alert-danger" *ngIf="userRepass.errors?.differentPass">{{userRepass.errors?.differentPass}}Repeated password is required!</div>
       </div>
-      <div class="form-group">
-        <input [disabled]="!RegisterForm.form.valid" type="submit" value="Register">
+
+      <div class="form-group w-100">
+        <input class="btn btn-primary btn-lg btn-block" [disabled]="!RegisterForm.form.valid" type="submit" value="Register">
       </div>
+
     </form>
   </div>
 </div>
