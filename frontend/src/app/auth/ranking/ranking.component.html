@@ -1,17 +1,21 @@
-<div>
-    <table>
-        <tr>
-            <th colspan="3">TOP 50 PLAYERS IN THE GAME</th>
-        </tr>
-        <tr>
-            <th>Position</th>
-            <th>Username</th>
-            <th>Score</th>
-        </tr>
-        <tr *ngFor="let player of players">
-            <td>{{player.rank}}º</td>
-            <td>{{player.name}}</td>
-            <td>{{player.score}}</td>
-        </tr>
+<div class="container">
+    <table class="table table-striped ">
+        <thead class="backgroundtable">
+            <tr class="backgroundtable">
+                <th class="text-center" scope="col" colspan="3">TOP 50 PLAYERS IN THE GAME</th>
+            </tr>
+            <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Username</th>
+                <th scope="col">Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let player of players">
+                <th scope="row" class="table-light">{{player.rank}}º</th>
+                <td scope="col" class="table-light">{{player.name}}</td>
+                <td scope="col" class="table-light">{{player.score}}</td>
+            </tr>
+        </tbody>
     </table>
 </div>

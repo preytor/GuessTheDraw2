@@ -1,4 +1,4 @@
-table {
+/*table {
     font-family: arial, sans-serif;
     width: 40%;
     margin: 20px auto;
@@ -25,4 +25,14 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
     background-color: #9b9b9b;
+}*/
+
+/** Bootstrap */
+table{
+    margin: 20px;
+}
+
+.backgroundtable{
+    background-color: dodgerblue;
+    color: white;
 }
