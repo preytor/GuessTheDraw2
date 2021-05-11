@@ -195,7 +195,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
     .subscribe((message) => {
       console.log("clear canvas received ", message);
       //draw here stuff
-      this.clearCanvas(false);
+      this.content?.clearRect(0, 0, this.drawingboard.nativeElement.width, this.drawingboard.nativeElement.height);
     });
 
     /** Game */
@@ -210,8 +210,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         this.canDraw = false;
       }
       this.canGuess = true;
-      //doesnt do properly seems like
-      this.clearCanvas(false);
+      this.content?.clearRect(0, 0, this.drawingboard.nativeElement.width, this.drawingboard.nativeElement.height);
 
       //restart timer
       let count: number = 59, timer = setInterval(() => {

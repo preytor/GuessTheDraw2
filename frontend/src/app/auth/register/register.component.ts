@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(private AuthService: AuthService, private router: Router) { }
 
+  //cambiar metodo
   ngOnInit(): void {
     this.registerForm = new FormGroup({
       username: new FormControl(this.registeringUser.username, [Validators.required, Validators.minLength(1)]),
@@ -46,7 +47,9 @@ export class RegisterComponent implements OnInit {
 }
 
 function repeatPassword(control: AbstractControl){
+  console.log("dasdasdasd, ",control.root)
   if(control && (control.value !== null || control.value !== undefined)){
+    console.log("llega o no")
     const cnfpassValue = control.value;
     const passControl = control.root.get("password");
     if(passControl){

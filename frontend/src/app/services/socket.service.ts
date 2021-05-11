@@ -16,7 +16,7 @@ export class SocketService {
   private socket: any;
 
   constructor() { 
-    this.socket = io("ws://localhost:3000", {
+    this.socket = io("ws://92.186.61.227:3000", { //io("ws://localhost:3000", { //localhost one
       withCredentials: true,
       extraHeaders: {
         "gtd-socket": "gtd"
@@ -26,7 +26,7 @@ export class SocketService {
 
   public initSocket(): void{
     try {
-      this.socket = io("ws://localhost:3000", {
+      this.socket = io("ws://92.186.61.227:3000", {// io("ws://localhost:3000", { //localhost one
       withCredentials: true,
       extraHeaders: {
         "gtd-socket": "gtd"

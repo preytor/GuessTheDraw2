@@ -11,6 +11,7 @@ import { TokenInterceptorService } from './services/token-interceptor.service';
 import { AuthModule } from './auth/auth.module';
 import { SocketService } from './services/socket.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RoutesModule } from './routes/routes.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AuthModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    RoutesModule
   ],
   exports: [
     FormsModule,

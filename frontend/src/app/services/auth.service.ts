@@ -14,7 +14,7 @@ import { PlayerScore } from '../models/playerScore';
 
 @Injectable()
 export class AuthService {
-  AUTH_SERVER: string = 'http://localhost:3000';  //the backend server
+  AUTH_SERVER: string = 'http://92.186.61.227:3000';//'http://localhost:3000';  //the backend server
   authSubject = new BehaviorSubject(false);
   private token: string | null | undefined;
 

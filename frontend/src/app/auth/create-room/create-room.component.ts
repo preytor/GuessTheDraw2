@@ -53,7 +53,7 @@ export class CreateRoomComponent implements OnInit {
         let resp: any = res;
         let hasPass = (this.roomParameters.roomPassword==="") ? false : true;
         //if res something router redirect to game room by GET parameter, in GET you have the URL of the room
-        this.Router.navigate(['/join-room'], { queryParams: {id: resp.id, pass: hasPass }});
+        this.Router.navigate(['./join-room'], { queryParams: {id: resp.id, pass: hasPass }});
       },
       err => {
         Promise.reject();

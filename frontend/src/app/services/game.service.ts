@@ -12,7 +12,7 @@ import { GameLobby } from '../models/gameLobby';
 })
 export class GameService {
 
-  AUTH_SERVER: string = 'http://localhost:3000';  //the backend server
+  AUTH_SERVER: string = 'http://92.186.61.227:3000';//'http://localhost:3000';  //the backend server
 
   constructor(private HttpClient: HttpClient, private AuthService: AuthService) { }
 
