@@ -44,6 +44,7 @@ export class AuthService {
       tap(
         (res) => {
           if(res){
+            console.log("res is: ",res)
             console.log("username sign up is: "+Object(res)["username"])
             this.setUser(Object(res)["username"]);
           }

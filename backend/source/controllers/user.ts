@@ -60,7 +60,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
         .save()
         .then((user) => {
           return res.status(201).json({
-            dataUser,
+            username,
           });
         })
         .catch((error) => {
