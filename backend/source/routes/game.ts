@@ -14,5 +14,8 @@ router.get("/game/gamelobby/:index/:offset", controller.getGameLobbies);
 router.post("/game/getDisplaySecretWord", controller.getDisplaySecretWord);
 router.post("/game/getSecretWord", controller.getSecretWord);
 router.post("/game/userCanDraw", controller.getuserCanDraw);
+router.post("/game/isRightPassword", controller.isRightPassword);
+
+
 
 export = router;

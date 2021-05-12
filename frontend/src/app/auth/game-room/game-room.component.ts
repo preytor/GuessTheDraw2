@@ -97,7 +97,7 @@ export class GameRoomComponent implements AfterContentInit, AfterViewInit {
         }
       );
     }else{
-      console.log("no room");
+      console.log("no room: ",this.chatMessage.roomId);
       //should redirect
       this.Router.navigate(['/']);
     }

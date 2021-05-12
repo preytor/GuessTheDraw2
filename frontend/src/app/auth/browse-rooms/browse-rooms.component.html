@@ -1,10 +1,64 @@
-<div>
-    <table>
-        <tr>
-            <th colspan="3">Join a game</th>
-        </tr>
-        <tr *ngFor="let game of games">
-            <td>{{game.name}} - {{game.numPlayers}} {{game.hasPassword}}<div><a href="/room?id={{game.id}}" routerLinkActive="active">join</a></div></td>
-        </tr>
+<div class="container">
+    <table class="table table-striped border">
+        <thead class="backgroundtable">
+            <tr class="backgroundtable"> 
+                <th class="text-center" scope="col" colspan="4">Join a game</th>
+            </tr>
+            <tr>
+                <th scope="col">Room name</th>
+                <th scope="col">Has password</th>
+                <th scope="col">Players</th>
+                <th scope="col">Join</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let game of games">
+                <td scope="col"class="table-light">{{game.name}}</td>
+                <td scope="col"class="table-light">
+                    <div *ngIf="game.hasPassword; else elseBlock">Yes <i class="bi bi-lock-fill"></i></div>
+                    <ng-template #elseBlock>No <i class="bi bi-unlock-fill"></i></ng-template>
+                </td>
+                <td scope="col"class="table-light">{{game.numPlayers}}<i class="bi bi-person-fill"></i></td>
+                <td scope="col" class="table-light">
+                    <div *ngIf="game.hasPassword; else elseJoin">
+                        <button (click)="showModal=true; _roomPassForm.id = game.id" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                            Join
+                        </button>
+                    </div>
+                    <ng-template #elseJoin>
+                        <a role="button" class="btn btn-primary" href="/room?id={{game.id}}" routerLinkActive="active">Join</a>
+                    </ng-template>
+                </td>
+            </tr>
+        </tbody>
     </table>
+</div>
+
+<!-- Modal -->
+<div [ngClass]="{'show': showModal}" class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Introduce the password to join the room ({{_roomPassForm.id}})</h5>
+                <button type="button" class="close" (click)="showModal=false" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #roomPassFrm="ngForm" FormGroup name="roomPassForm" (ngSubmit)="enterRoom()" class="login-container">
+                    <div class="form-group">
+                      <span class="input-group-text" id="basic-addon1">
+                        <i class="bi bi-key-fill"></i>
+                        <input ngModel name="password" [(ngModel)]="_roomPassForm.password" type="password" #joinPass="ngModel" name="password" placeholder="Password" required minlength="1" class="form-control col" aria-label="Username" aria-describedby="basic-addon1" autofocus>
+                      </span>
+                      <div class="alert alert-danger" *ngIf="joinPass.touched && !joinPass.valid">Password is required!</div>
+                    </div>
+              
+                    <div class="form-group">
+                      <input class="btn btn-primary btn-lg btn-block" [disabled]="!roomPassFrm.form.valid" type="submit" value="Enter room">
+                    </div>
+                  </form>
+            </div>
+        </div>
+    </div>
 </div>

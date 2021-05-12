@@ -159,6 +159,18 @@ const getuserCanDraw = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
+const isRightPassword = (req: Request, res: Response, next: NextFunction) => {
+  let _roomID: any = req.body.id;
+  let id: number = parseInt(_roomID);
+
+  let _password: any = req.body.password;
+  let password: string = _password;
+
+  return res.status(200).json(
+    gamedata.isTheRightPassword(id, password)
+  );
+};
+
 
 export default { 
   beginGame, 
@@ -171,5 +183,6 @@ export default {
   getGameLobbies, 
   getDisplaySecretWord, 
   getSecretWord, 
-  getuserCanDraw 
+  getuserCanDraw,
+  isRightPassword
 };

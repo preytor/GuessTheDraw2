@@ -293,6 +293,14 @@ const playerCanDraw = (id: number, userName: string): boolean => {
   return canDraw;
 };
 
+const isTheRightPassword = (id: number, password: string): boolean => {
+  if(!gameExists(id)){ return false; }
+
+  let rightPassword = (getGameFromID(id)!.roomPassword===password) ? true : false;
+
+  return rightPassword;
+};
+
 const giveScoreToPlayer = (id: number, userName: string) => {
   if(!gameExists(id)){ return }
   if(!userExistsInRoom(id, userName)){ return }
@@ -361,5 +369,6 @@ export default {
   getSecretWord,
   playerCanDraw,
   giveScoreToPlayer,
-  restartScores
+  restartScores,
+  isTheRightPassword
 };

@@ -84,4 +84,11 @@ export class GameService {
       return error;
     });;
   }
+
+  isRightPassword(_id: any, _password: any): Promise<boolean>{
+    return this.HttpClient.post(`${this.AUTH_SERVER}/game/isRightPassword`, {id: _id, password: _password})
+    .toPromise().then(response => <any>response).catch(error => {
+      return error;
+    });;
+  }
 }
