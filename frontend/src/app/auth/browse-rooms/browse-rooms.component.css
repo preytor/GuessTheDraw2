@@ -41,3 +41,7 @@ table{
 .modal.show{
     display: block;
 }
+
+.semitransparent{
+    opacity: 0.97;
+}

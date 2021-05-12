@@ -7,16 +7,15 @@
             <tr>
                 <th scope="col">Room name</th>
                 <th scope="col">Has password</th>
-                <th scope="col">Players</th>
-                <th scope="col">Join</th>
+                <th scope="col" colspan="2">Players</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="semitransparent">
             <tr *ngFor="let game of games">
                 <td scope="col"class="table-light">{{game.name}}</td>
                 <td scope="col"class="table-light">
                     <div *ngIf="game.hasPassword; else elseBlock">Yes <i class="bi bi-lock-fill"></i></div>
-                    <ng-template #elseBlock>No <i class="bi bi-unlock-fill"></i></ng-template>
+                    <ng-template #elseBlock>No   <i class="bi bi-unlock-fill"></i></ng-template>
                 </td>
                 <td scope="col"class="table-light">{{game.numPlayers}}<i class="bi bi-person-fill"></i></td>
                 <td scope="col" class="table-light">

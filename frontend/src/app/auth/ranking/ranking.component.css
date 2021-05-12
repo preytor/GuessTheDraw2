@@ -36,3 +36,7 @@ table{
     background-color: dodgerblue;
     color: white;
 }
+
+.semitransparent{
+    opacity: 0.97;
+}

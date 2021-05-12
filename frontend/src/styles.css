@@ -1,9 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 body {
-  background: #456;
-  /*background-image: url("https://images.freeimages.com/images/large-previews/a3b/website-rays-background-pattern-1637863.png");
-  background-repeat: no-repeat;
-  background-size: 100%;*/
+  background: rgb(151, 176, 202);
+  background-image: url("https://cdn.pixabay.com/photo/2021/02/18/21/32/doodles-6028492_1280.png");
   font-family: 'Open Sans', sans-serif;
 }
