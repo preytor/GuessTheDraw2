@@ -17,7 +17,7 @@ import { GameData } from "./models/gameData";
 var cors = require("cors");
 
 const NAMESPACE = "Server";
-const CORS_ORIGIN = ["http://localhost:4200", "http://92.186.61.227:4200"];  //add here the other ip
+const CORS_ORIGIN = ["http://localhost:4200"];  //add here the other ip
 const router = express(); 
 
 /** Create the server */
@@ -104,7 +104,7 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 
 /** Rules of our API */
-const originsWhitelist = ["http://92.186.61.227:4200", "http://localhost:4200", "http://localhost:80", "*"];
+const originsWhitelist = ["http://localhost:4200", "http://localhost:80", "*"];
 
 const options = {
   //: cors.CorsOptions

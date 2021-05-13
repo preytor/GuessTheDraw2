@@ -1,67 +1,208 @@
-<div class="game">
-    <div class="menu left-menu">
-        <div *ngFor="let user of roomUsers">
-            <div>{{user.username}} - {{user.score}} points</div>
+<div class="container-fluid spaceContent">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-3"> 
+            <div class="menu left-menu">
+                <table class="table table-striped border">
+                    <thead class="backgroundtable">
+                        <tr>
+                            <th scope="col">Player</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>   
+                    <tbody class="ranking overflow-auto">
+                        <tr *ngFor="let user of roomUsers">
+                            <td scope="col" class="table-light">{{user.username}}</td>
+                            <td scope="col" class="table-light">{{user.score}} pts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>      
         </div>
-    </div>
+        <div class="col-sm-12 col-md-8 col-lg-6">
 
-    <div class="middle-menu">
-        <div class="secret-word-category">
-            <div class="secret-word text-uppercase">
-                {{displayWord}}
-            </div>
-            <div class="timer">
-                {{timerValue}}
-            </div>
-        </div>
-        <div class="drawing-board">
-            <canvas id="drawingboard" #drawingboard 
-            (document:mousemove)="onMouseMove($event)"
-            (document:click)="drawDot($event)"
-            (mousedown)="beginDrawing($event)"
-            (document:mouseout)="stopDrawing($event)" 
-            (document:mouseup)="stopDrawing($event)"
-            ></canvas>
-        </div>
-        <ng-container *ngIf="canUserDraw()">
-            <div class="color">
-                <div id="black" (click)="changeDrawingColor('black')"></div>
-                <div id="darkgrey" (click)="changeDrawingColor('darkgrey')"></div>
-                <div id="darkred" (click)="changeDrawingColor('darkred')"></div>
-                <div id="red" (click)="changeDrawingColor('red')"></div>
-                <div id="orange" (click)="changeDrawingColor('orange')"></div>
-                <div id="yellow" (click)="changeDrawingColor('yellow')"></div>
-                <div id="green" (click)="changeDrawingColor('green')"></div>
-                <div id="deepskyblue" (click)="changeDrawingColor('deepskyblue')"></div>
-                <div id="blue" (click)="changeDrawingColor('blue')"></div>
-                <div id="blueviolet" (click)="changeDrawingColor('blueviolet')"></div>
-        
-                <div id="white" (click)="changeDrawingColor('whitesmoke')"></div>
-                <div id="lightgrey" (click)="changeDrawingColor('lightgrey')"></div>
-                <div id="peru" (click)="changeDrawingColor('peru')"></div>
-                <div id="pink" (click)="changeDrawingColor('pink')"></div>
-                <div id="lightsalmon" (click)="changeDrawingColor('lightsalmon')"></div>
-                <div id="lightyellow" (click)="changeDrawingColor('lightyellow')"></div>
-                <div id="lightgreen" (click)="changeDrawingColor('lightgreen')"></div>
-                <div id="lightcyan" (click)="changeDrawingColor('lightcyan')"></div>
-                <div id="darkslategray" (click)="changeDrawingColor('darkslategray')"></div>
-                <div id="thistle" (click)="changeDrawingColor('thistle')"></div>
-            </div>
-            <div class="size">
-                <div class="circleContainer" (click)="changeDrawingSize(1)"><div id="small"></div></div>
-                <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
-                <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
-            </div>
-            <div id="clear" (click)="clearCanvas(true)"></div>
-        </ng-container>
-    </div>
+            <div class="middle-menu menuBackground">
+                <div class="container">
+                    <div class="row secret-word-category">
+                        <div class="timer float-start">
+                            {{timerValue}}
+                        </div>
+                        <div class="float-end text-center secret-word text-uppercase">
+                            {{displayWord}}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="drawing-board">
+                    <canvas id="drawingboard" #drawingboard 
+                        (document:mousemove)="onMouseMove($event)"
+                        (document:click)="drawDot($event)"
+                        (mousedown)="beginDrawing($event)"
+                        (document:mouseout)="stopDrawing($event)" 
+                        (document:mouseup)="stopDrawing($event)">
+                    </canvas>
+                </div>
 
-    <div class="menu right-menu">
-        <div class="chat">
-            <div id="messages" *ngFor="let message of messages">
-                {{message.from}}{{message.message}}
+                <ng-container *ngIf="canUserDraw()">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-sm-12 col-4 col-xl-4">
+                                <div class="color" id="black" (click)="changeDrawingColor('black')"></div>
+                                <div class="color" id="darkgrey" (click)="changeDrawingColor('darkgrey')"></div>
+                                <div class="color" id="darkred" (click)="changeDrawingColor('darkred')"></div>
+                                <div class="color" id="red" (click)="changeDrawingColor('red')"></div>
+                                <div class="color" id="orange" (click)="changeDrawingColor('orange')"></div>
+                                <div class="color" id="yellow" (click)="changeDrawingColor('yellow')"></div>
+                                <div class="color" id="green" (click)="changeDrawingColor('green')"></div>
+                                <div class="color" id="deepskyblue" (click)="changeDrawingColor('deepskyblue')"></div>
+                                <div class="color" id="blue" (click)="changeDrawingColor('blue')"></div>
+                                <div class="color" id="blueviolet" (click)="changeDrawingColor('blueviolet')"></div>
+                            </div>
+                            <div class="col-sm-12 col-4 col-xl-4">
+                                <div class="color" id="white" (click)="changeDrawingColor('whitesmoke')"></div>
+                                <div class="color" id="lightgrey" (click)="changeDrawingColor('lightgrey')"></div>
+                                <div class="color" id="peru" (click)="changeDrawingColor('peru')"></div>
+                                <div class="color" id="pink" (click)="changeDrawingColor('pink')"></div>
+                                <div class="color" id="lightsalmon" (click)="changeDrawingColor('lightsalmon')"></div>
+                                <div class="color" id="lightyellow" (click)="changeDrawingColor('lightyellow')"></div>
+                                <div class="color" id="lightgreen" (click)="changeDrawingColor('lightgreen')"></div>
+                                <div class="color" id="lightcyan" (click)="changeDrawingColor('lightcyan')"></div>
+                                <div class="color" id="darkslategray" (click)="changeDrawingColor('darkslategray')"></div>
+                                <div class="color" id="thistle" (click)="changeDrawingColor('thistle')"></div>
+                            </div>
+                            <div class="col-sm-12 col-4 col-xl-4">
+                                <div class="circleContainer" (click)="changeDrawingSize(1)"><div id="small"></div></div>
+                                <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
+                                <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
+                                <div class="circleContainer" (click)="clearCanvas(true)"><span class="clear"><i class="bi bi-file-earmark icon-erase"></i></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
             </div>
-            <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (click)="sendMessage()">Send</button>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="menu right-menu">
+                <div #scrollChat [scrollTop]="scrollChat.scrollHeight" class="chat overflow-auto">
+                    <table class="table table-striped border">
+                        <tbody class="chatTr">
+                            <tr scope="col" class="table-light" *ngFor="let message of messages">
+                                {{message.from}}{{message.message}}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat" viewBox="0 0 16 16">
+                        <path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"></path>
+                    </svg>
+                </span>
+                <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()" type="text" class="form-control" placeholder="Insert a message" aria-label="Insert a message" aria-describedby="basic-addon1"/>
+                <span>
+                    <button class="btn btn-primary" (click)="sendMessage()">Send</button>
+                </span>
+            </div>
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<main class="game container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <div class="menu left-menu">
+                <div *ngFor="let user of roomUsers">
+                    <div>{{user.username}} - {{user.score}} points</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="middle-menu menuBackground">
+                <div class="secret-word-category">
+                    <div class="secret-word text-uppercase">
+                        {{displayWord}}
+                    </div>
+                    <div class="timer">
+                        {{timerValue}}
+                    </div>
+                </div>
+                <div class="drawing-board">
+                    <canvas id="drawingboard" #drawingboard 
+                    (document:mousemove)="onMouseMove($event)"
+                    (document:click)="drawDot($event)"
+                    (mousedown)="beginDrawing($event)"
+                    (document:mouseout)="stopDrawing($event)" 
+                    (document:mouseup)="stopDrawing($event)"
+                    ></canvas>
+                </div>
+                <ng-container *ngIf="canUserDraw()">
+                    <div class="color">
+                        <div id="black" (click)="changeDrawingColor('black')"></div>
+                        <div id="darkgrey" (click)="changeDrawingColor('darkgrey')"></div>
+                        <div id="darkred" (click)="changeDrawingColor('darkred')"></div>
+                        <div id="red" (click)="changeDrawingColor('red')"></div>
+                        <div id="orange" (click)="changeDrawingColor('orange')"></div>
+                        <div id="yellow" (click)="changeDrawingColor('yellow')"></div>
+                        <div id="green" (click)="changeDrawingColor('green')"></div>
+                        <div id="deepskyblue" (click)="changeDrawingColor('deepskyblue')"></div>
+                        <div id="blue" (click)="changeDrawingColor('blue')"></div>
+                        <div id="blueviolet" (click)="changeDrawingColor('blueviolet')"></div>
+                
+                        <div id="white" (click)="changeDrawingColor('whitesmoke')"></div>
+                        <div id="lightgrey" (click)="changeDrawingColor('lightgrey')"></div>
+                        <div id="peru" (click)="changeDrawingColor('peru')"></div>
+                        <div id="pink" (click)="changeDrawingColor('pink')"></div>
+                        <div id="lightsalmon" (click)="changeDrawingColor('lightsalmon')"></div>
+                        <div id="lightyellow" (click)="changeDrawingColor('lightyellow')"></div>
+                        <div id="lightgreen" (click)="changeDrawingColor('lightgreen')"></div>
+                        <div id="lightcyan" (click)="changeDrawingColor('lightcyan')"></div>
+                        <div id="darkslategray" (click)="changeDrawingColor('darkslategray')"></div>
+                        <div id="thistle" (click)="changeDrawingColor('thistle')"></div>
+                    </div>
+                    <div class="size">
+                        <div class="circleContainer" (click)="changeDrawingSize(1)"><div id="small"></div></div>
+                        <div class="circleContainer" (click)="changeDrawingSize(2)"><div id="medium"></div></div>
+                        <div class="circleContainer" (click)="changeDrawingSize(4)"><div id="big"></div></div>
+                    </div>
+                    <div id="clear" (click)="clearCanvas(true)"><i class="bi bi-eraser-fill"></i></div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="menu right-menu">
+                <div class="chat overflow-scroll w-100 p-3">
+                    <div id="messages" *ngFor="let message of messages">
+                        {{message.from}}{{message.message}}
+                    </div>
+                    <input [(ngModel)]="messageContent" name="messageContent" (keyup.enter)="sendMessage()"/><button (click)="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+-->
