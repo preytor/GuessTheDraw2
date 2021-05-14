@@ -1,27 +1,131 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var server_1 = require("./server");
-var words = ["Far", "Oil", "Cow", "Murky", "Closed",
-    "Sheep", "Hard", "Crab", "Tight", "Meat", "Immense", "Tree",
-    "School", "Addition", "Division", "Sleep", "Music", "Butter", "Corn",
-    "Animal", "Observe", "Steam", "Fear", "Cotton", "Lift", "Owner",
-    "Puzzle", "Turtle", "Fish", "Road",
-    "Windmill", "Lamp", "Ocean", "Beach", "Noise", "Sunflower", "Quiet",
-    "Thirsty", "Fear", "Tractor", "Happy", "Vagabond", "Ill", "Many",
-    "Deep", "Space", "Present", "Tall", "House", "Clean", "Tired",
-    "Plane", "Ten", "Computer",
-    "Stone", "Wood", "Late", "Scattered", "Sad", "Wise", "Yellow", "Nasty",
-    "Folder", "Girl", "Boy", "Family", "Unknown", "Ghost",
-    "Flower", "Smell", "Point", "Duck", "Drunk", "Barbarian",
-    "Rainy", "Aboard", "Ship", "Bed", "Hell", "Snow",
-    "Mountain", "River", "Earthquake", "Book", "Toilet",
-    "Run", "Door", "Key", "Trash", "Console", "Water", "Moon",
-    "Drunk", "Rain", "Acid", "Toxic",
-    "Car", "Dog", "Cat", "Pencil", "Paper", "Helicopter",
-    "Guitar", "Gym", "Ice Cream", "Beautiful", "Tourist",
-    "Handsome", "Army", "Heavy", "Thought", "Old", "Absent",
-    "Ugly", "Quick", "Worried", "Sun",
-    "Cloudy", "Hungry", "Cold", "Church", "Zealous", "Hospital"];
+var words = [
+    "Far",
+    "Oil",
+    "Cow",
+    "Murky",
+    "Closed",
+    "Sheep",
+    "Hard",
+    "Crab",
+    "Tight",
+    "Meat",
+    "Fat",
+    "Tree",
+    "School",
+    "Addition",
+    "Division",
+    "Sleep",
+    "Music",
+    "Butter",
+    "Corn",
+    "Animal",
+    "Observe",
+    "Steam",
+    "Fear",
+    "Cotton",
+    "Lift",
+    "Milk",
+    "Puzzle",
+    "Turtle",
+    "Fish",
+    "Road",
+    "Windmill",
+    "Lamp",
+    "Ocean",
+    "Beach",
+    "Noise",
+    "Sunflower",
+    "Radio",
+    "Sponge",
+    "Soda can",
+    "Tractor",
+    "Flag",
+    "Vagabond",
+    "Tomato",
+    "Nail",
+    "Bottle",
+    "Space",
+    "Clothes",
+    "Tall",
+    "House",
+    "Dirty",
+    "Glass",
+    "Plane",
+    "Magnet",
+    "Computer",
+    "Stone",
+    "Wood",
+    "Fork",
+    "Pen",
+    "Toy",
+    "Fridge",
+    "Yellow",
+    "Card",
+    "Folder",
+    "Girl",
+    "Boy",
+    "Family",
+    "Orange",
+    "Tank",
+    "Ghost",
+    "Flower",
+    "Smell",
+    "Point",
+    "Duck",
+    "Barbarian",
+    "Rain",
+    "Pirate",
+    "Ship",
+    "Bed",
+    "Hell",
+    "Snow",
+    "Mountain",
+    "River",
+    "Earthquake",
+    "Book",
+    "Toilet",
+    "Camera",
+    "Door",
+    "Key",
+    "Trash",
+    "Console",
+    "Water",
+    "Moon",
+    "Drink",
+    "Rain",
+    "Lemon",
+    "Toxic",
+    "Car",
+    "Dog",
+    "Cat",
+    "Pencil",
+    "Paper",
+    "Helicopter",
+    "Guitar",
+    "Gym",
+    "Ice Cream",
+    "Television",
+    "Tourist",
+    "Hand",
+    "Army",
+    "Heavy",
+    "Pig",
+    "Old",
+    "Baby",
+    "Ugly",
+    "Heater",
+    "Smile",
+    "Sun",
+    "Cloudy",
+    "Keyboard",
+    "Cold",
+    "Church",
+    "Religion",
+    "Hospital",
+];
 var currentGames = [];
 var getCurrentGames = function () {
     return currentGames;
@@ -110,9 +214,9 @@ var getGameLobbies = function (index, offset) {
             break;
         var game = {
             name: games[i].roomName,
-            hasPassword: (games[i].roomPassword.length == 0) ? false : true,
+            hasPassword: games[i].roomPassword.length == 0 ? false : true,
             numPlayers: games[i].gameUsers.length,
-            id: games[i].id
+            id: games[i].id,
         };
         lobbies.push(game);
     }
@@ -120,10 +224,10 @@ var getGameLobbies = function (index, offset) {
 };
 var getDisplaySecretWord = function (id) {
     var _a;
-    return (gameExists(id)) ? (_a = getGameFromID(id)) === null || _a === void 0 ? void 0 : _a.displaySecretWord : "";
+    return gameExists(id) ? (_a = getGameFromID(id)) === null || _a === void 0 ? void 0 : _a.displaySecretWord : "";
 };
 var getSecretWord = function (id) {
-    return (gameExists(id)) ? getGameFromID(id).secretWord : "";
+    return gameExists(id) ? getGameFromID(id).secretWord : "";
 };
 var beginGame = function (id, timerSeconds, gameRound) {
     var _a;
@@ -134,14 +238,14 @@ var beginGame = function (id, timerSeconds, gameRound) {
         return;
     //reset timers
     //  let lowerTimerVar: any;
-    //  clearTimeout(lowerTimerVar); 
+    //  clearTimeout(lowerTimerVar);
     if (timerSeconds != null) {
         clearInterval(timerSeconds);
     }
     if (gameRound != null) {
         clearTimeout(gameRound);
     }
-    //calculate the score math of all the players in the room 
+    //calculate the score math of all the players in the room
     //and set the current score to 0
     restartScores(id);
     //set timer to 60
@@ -172,11 +276,17 @@ var beginGame = function (id, timerSeconds, gameRound) {
         console.log("timer: " + getGameFromID(id).timer);
     }, 1000);
     //discover word at 30 seconds
-    setTimeout(function () { discoverLetterInRoom(id); }, 30000);
+    setTimeout(function () {
+        discoverLetterInRoom(id);
+    }, 30000);
     //discover word at 50 seconds
-    setTimeout(function () { discoverLetterInRoom(id); }, 50000);
+    setTimeout(function () {
+        discoverLetterInRoom(id);
+    }, 50000);
     //do an "if (!hasFinished) {"
-    var _gameRound = setTimeout(function () { beginGame(id, _timerSeconds, _gameRound); }, _seconds);
+    var _gameRound = setTimeout(function () {
+        beginGame(id, _timerSeconds, _gameRound);
+    }, _seconds);
 };
 var discoverLetterInRoom = function (id) {
     var _a;
@@ -210,8 +320,11 @@ var setPlayerHost = function (id) {
                     //currentGames[id].gameUsers[i].hasBeenHost=true;
                     players[i].hasBeenHost = true;
                     foundHost = true;
-                    //TODO: make the player the host 
-                    server_1.io.to("room_" + id).emit("host_change", { roomid: id, newHost: players[i].username });
+                    //TODO: make the player the host
+                    server_1.io.to("room_" + id).emit("host_change", {
+                        roomid: id,
+                        newHost: players[i].username,
+                    });
                     getGameFromID(id).hostName = players[i].username;
                     break;
                 }
@@ -228,12 +341,15 @@ var setPlayerHost = function (id) {
                     getGameFromID(id).gameUsers[i].hasBeenHost = false;
                 }
                 else {
-                    //TODO: make the player the host 
+                    //TODO: make the player the host
                     _newHost = players[i].username;
                     getGameFromID(id).hostName = _newHost;
                 }
             }
-            server_1.io.to("room_" + id).emit("host_change", { roomid: id, newHost: _newHost });
+            server_1.io.to("room_" + id).emit("host_change", {
+                roomid: id,
+                newHost: _newHost,
+            });
         }
         server_1.io.to("room_" + id).emit("show_hint", { roomid: id });
         server_1.io.to("room_" + id).emit("clear", { roomid: id });
@@ -247,6 +363,7 @@ var generateSecretWord = function () {
 };
 //utils
 function randomIntFromInterval(min, max) {
+    // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 function setCharAt(str, index, chr) {
@@ -258,14 +375,14 @@ var playerCanDraw = function (id, userName) {
     if (!gameExists(id)) {
         return false;
     }
-    var canDraw = (getGameFromID(id).hostName === userName) ? true : false;
+    var canDraw = getGameFromID(id).hostName === userName ? true : false;
     return canDraw;
 };
 var isTheRightPassword = function (id, password) {
     if (!gameExists(id)) {
         return false;
     }
-    var rightPassword = (getGameFromID(id).roomPassword === password) ? true : false;
+    var rightPassword = getGameFromID(id).roomPassword === password ? true : false;
     return rightPassword;
 };
 var giveScoreToPlayer = function (id, userName) {
@@ -339,5 +456,5 @@ exports.default = {
     playerCanDraw: playerCanDraw,
     giveScoreToPlayer: giveScoreToPlayer,
     restartScores: restartScores,
-    isTheRightPassword: isTheRightPassword
+    isTheRightPassword: isTheRightPassword,
 };

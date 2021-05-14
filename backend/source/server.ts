@@ -42,10 +42,10 @@ export const io = new Server(httpServer, {
 
 const newgame: GameData = {
   gameUsers: [],
-  roomName: "ddd",
+  roomName: "Sala de prueba con contraseña",
   roomPassword: "d",
   id: 1,
-  secretWord: "meme",
+  secretWord: "test",
   displaySecretWord: "____",
   hasFinished: false,
   hostName: "",
@@ -54,7 +54,7 @@ const newgame: GameData = {
 
 const newgame2: GameData = {
   gameUsers: [],
-  roomName: "meme2",
+  roomName: "Sala de prueba sin contraseña",
   roomPassword: "",
   id: 2,
   secretWord: "as",

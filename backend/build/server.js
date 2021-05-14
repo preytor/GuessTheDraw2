@@ -25,6 +25,7 @@ var router = express_1.default();
 var httpServer = http_1.default.createServer(router);
 /** Create the socket server */
 exports.io = new socket_io_1.Server(httpServer, {
+    //httpServer instead of 4200
     //ponerle aqui la ip del cliente
     cors: {
         origin: CORS_ORIGIN,
@@ -39,25 +40,25 @@ exports.io = new socket_io_1.Server(httpServer, {
 /** Holding the game data */
 var newgame = {
     gameUsers: [],
-    roomName: "ddd",
+    roomName: "Sala de prueba con contraseña",
     roomPassword: "d",
     id: 1,
-    secretWord: "meme",
+    secretWord: "test",
     displaySecretWord: "____",
     hasFinished: false,
     hostName: "",
-    timer: 60
+    timer: 60,
 };
 var newgame2 = {
     gameUsers: [],
-    roomName: "meme2",
+    roomName: "Sala de prueba sin contraseña",
     roomPassword: "",
     id: 2,
     secretWord: "as",
     displaySecretWord: "__",
     hasFinished: false,
     hostName: "",
-    timer: 60
+    timer: 60,
 };
 gamedata_1.default.addGame(newgame);
 gamedata_1.default.addGame(newgame2);
@@ -135,28 +136,28 @@ exports.io.on("connection", function (socket) {
   
       //console.log(reason); // "ping timeout"
     });*/
-    socket.on('disconnecting', function () {
+    socket.on("disconnecting", function () {
         var rooms = socket.rooms;
         var _roomID = -1;
         var _userN = "";
         rooms.forEach(function (room) {
-            if (room.indexOf('room_') > -1) {
+            if (room.indexOf("room_") > -1) {
                 _roomID = parseInt(room.split("_", 2)[1]);
                 console.log("roomID split: ", _roomID);
                 //with this we have the room id of the player who just left
             }
-            if (room.indexOf('user_') > -1) {
+            if (room.indexOf("user_") > -1) {
                 _userN = room.split("_", 2)[1];
                 console.log("userN split: ", _userN);
                 //with this we have the user name of the player who just left
             }
         });
         if (gamedata_1.default.removeUserInRoom(_roomID, _userN)) {
-            socket.to("room_" + _roomID).emit('left', { roomID: _roomID });
+            socket.to("room_" + _roomID).emit("left", { roomID: _roomID });
             var newMessage = {
                 from: "",
                 message: _userN + " has left the game",
-                room: _roomID
+                room: _roomID,
             };
             socket.to("room_" + _roomID).emit("chat_message", newMessage);
         }
@@ -168,7 +169,7 @@ exports.io.on("connection", function (socket) {
         var newMessage = {
             from: message.from,
             message: ": " + message.message,
-            room: message.room
+            room: message.room,
         };
         if (gamedata_1.default.gameExists(message.room)) {
             var guess = message.message;
@@ -186,16 +187,22 @@ exports.io.on("connection", function (socket) {
                 var successMessage = {
                     from: message.from,
                     message: " has guessed the word right!",
-                    room: message.room
+                    room: message.room,
                 };
                 exports.io.to("room_" + message.room).emit("chat_message", successMessage);
-                exports.io.to("room_" + message.room).emit("update_score", { room: successMessage.room });
-                exports.io.to("room_" + message.room).emit("forbid_guessing", { playerName: message.from });
+                exports.io.to("room_" + message.room).emit("update_score", {
+                    room: successMessage.room,
+                });
+                exports.io.to("room_" + message.room).emit("forbid_guessing", {
+                    playerName: message.from,
+                });
             }
             else {
                 console.log("message to room: ", "room_" + message.room);
                 socket.to("room_" + message.room).emit("chat_message", newMessage); //just in case
-                socket.rooms.forEach(function (object) { return console.log("rooms message: " + object); });
+                socket.rooms.forEach(function (object) {
+                    return console.log("rooms message: " + object);
+                });
                 //socket.emit("chat_message", newMessage);
             }
         }
@@ -204,7 +211,7 @@ exports.io.on("connection", function (socket) {
         console.log("player ", socket.id, " joined  the room ", message.id);
         //socket.rooms.add(`${id}`);
         //also join a room that is the user name
-        //so later i can check the rooms he is, 
+        //so later i can check the rooms he is,
         //if it has the room_number you get the room and if it has the user_userName you get the user name
         var nameRoom = "room_" + message.id;
         console.log("nameroom: " + nameRoom);
@@ -216,7 +223,7 @@ exports.io.on("connection", function (socket) {
         var newMessage = {
             from: "",
             message: "A new player has joined",
-            room: message.id
+            room: message.id,
         };
         socket.to(nameRoom).emit("join", { roomID: message.id });
         socket.to(nameRoom).emit("chat_message", newMessage);
