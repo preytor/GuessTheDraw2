@@ -52,7 +52,7 @@ var register = function (req, res, next) {
                 .save()
                 .then(function (user) {
                 return res.status(201).json({
-                    dataUser: dataUser,
+                    username: username,
                 });
             })
                 .catch(function (error) {
@@ -65,6 +65,7 @@ var register = function (req, res, next) {
     }
 };
 var login = function (req, res, next) {
+    console.log(req.body);
     var _a = req.body, email = _a.email, password = _a.password;
     user_1.default.find({ email: email })
         .exec()
@@ -125,4 +126,29 @@ var getAllUsers = function (req, res, next) {
         });
     });
 };
-exports.default = { validateToken: validateToken, register: register, login: login, getAllUsers: getAllUsers };
+var getRanking = function (req, res, next) {
+    var limit = req.params.limit;
+    var offset = req.params.offset;
+    var _limit = parseInt(limit);
+    var _offset = parseInt(offset);
+    user_1.default.find()
+        .sort({ score: -1 })
+        .select("username")
+        .select("score")
+        .skip(_offset > 0 ? (_offset - 1) * _limit : 0)
+        .limit(_limit) //limit
+        .exec()
+        .then(function (users) {
+        return res.status(200).json({
+            users: users,
+            count: users.length,
+        });
+    })
+        .catch(function (error) {
+        return res.status(500).json({
+            message: error.message,
+            error: error,
+        });
+    });
+};
+exports.default = { validateToken: validateToken, register: register, login: login, getAllUsers: getAllUsers, getRanking: getRanking };

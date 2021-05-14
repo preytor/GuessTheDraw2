@@ -1,7 +1,7 @@
 export interface UserRoom {
-    username: string,
-    isRegistered: boolean
-    score: number,
-    totalScore: number,
-    hasBeenHost: boolean
+  username: string;
+  isRegistered: boolean;
+  score: number;
+  totalScore: number;
+  hasBeenHost: boolean;
 }

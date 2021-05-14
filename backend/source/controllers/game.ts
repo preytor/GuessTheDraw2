@@ -10,17 +10,14 @@ const getRoomUsers = (req: Request, res: Response, next: NextFunction) => {
   logging.info(NAMESPACE, "getting room users");
   let roomNumber: any = req.body.roomID;
   let id: number = parseInt(roomNumber);
-  
-  return res.status(200).json(
-    gamedata.getRoomUsers(id)
-  );
+
+  return res.status(200).json(gamedata.getRoomUsers(id));
 };
 
 const beginGame = (req: Request, res: Response, next: NextFunction) => {
-
-  //we dont care about this for now 
+  //we dont care about this for now
   //because it would have an empty player in it
-/*  let userHost: UserRoom = {
+  /*  let userHost: UserRoom = {
     username: req.body.username,
     isRegistered: req.body.isRegistered,
     score: 0,
@@ -31,7 +28,7 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
   let _id = gamedata.getCurrentGames().length + 1;
 
   const newgame: GameData = {
-    gameUsers: [],//gameUsers: [userHost], //without any player for now
+    gameUsers: [], //gameUsers: [userHost], //without any player for now
     roomName: req.body.roomName,
     roomPassword: req.body.roomPassword,
     id: _id,
@@ -39,11 +36,11 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
     displaySecretWord: "",
     hasFinished: false,
     hostName: "",
-    timer: 60
+    timer: 60,
   };
 
   gamedata.addGame(newgame);
-  console.log("begignning asdas das ",_id)
+  console.log("begignning asdas das ", _id);
   gamedata.beginGame(_id, null, null);
 
   logging.info(
@@ -52,7 +49,7 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
   );
   return res.status(200).json({
     result: true,
-    id: _id
+    id: _id,
   });
 };
 
@@ -61,36 +58,28 @@ const getGameData = (req: Request, res: Response, next: NextFunction) => {
   let id: number = parseInt(roomNumber);
   logging.info(NAMESPACE, `Game is ${roomNumber}`);
 
-
   //temporally
-  return res.status(200).json(
-    gamedata.getGameFromID(id)
-  );
+  return res.status(200).json(gamedata.getGameFromID(id));
 };
-
 
 const roomExists = (req: Request, res: Response, next: NextFunction) => {
   let _roomID: any = req.params.id;
   let id: number = +_roomID;
   logging.info(NAMESPACE, `Game is ${id}`);
-  
+
   let exists = gamedata.gameExists(id);
-  
-  return res.status(200).json(
-    exists
-  );
+
+  return res.status(200).json(exists);
 };
 
 const roomHasPassword = (req: Request, res: Response, next: NextFunction) => {
   let _roomID: any = req.params.id;
   let id: number = +_roomID;
-  
-  let exists = gamedata.getGameFromID(id);
-  let hasPassword = exists?.roomPassword!=="";
 
-  return res.status(200).json(
-    hasPassword
-  );
+  let exists = gamedata.getGameFromID(id);
+  let hasPassword = exists?.roomPassword !== "";
+
+  return res.status(200).json(hasPassword);
 };
 
 const addUserToRoom = (req: Request, res: Response, next: NextFunction) => {
@@ -100,21 +89,21 @@ const addUserToRoom = (req: Request, res: Response, next: NextFunction) => {
   let _user: any = req.body.user;
   let user: UserRoom = _user;
 
-  return res.status(200).json(
-    gamedata.addUserInRoom(id, user)
-  );
+  return res.status(200).json(gamedata.addUserInRoom(id, user));
 };
 
-const removeUserFromRoom = (req: Request, res: Response, next: NextFunction) => {
+const removeUserFromRoom = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let _roomID: any = req.body.roomID;
   let id: number = parseInt(_roomID);
 
   let _user: any = req.body.user;
   let userName: string = _user;
-  console.log("BALBALABLA REMOVING USER FROM ROOM ", id, userName)
-  return res.status(200).json(
-    gamedata.removeUserInRoom(id, userName)
-  );
+  console.log("BALBALABLA REMOVING USER FROM ROOM ", id, userName);
+  return res.status(200).json(gamedata.removeUserInRoom(id, userName));
 };
 
 const getGameLobbies = (req: Request, res: Response, next: NextFunction) => {
@@ -123,28 +112,28 @@ const getGameLobbies = (req: Request, res: Response, next: NextFunction) => {
 
   let _offset: any = req.params.offset;
   let offset: number = _offset;
-  
-  return res.status(200).json(
-    gamedata.getGameLobbies(index, offset)
-  );
+
+  return res.status(200).json(gamedata.getGameLobbies(index, offset));
 };
 
-const getDisplaySecretWord = (req: Request, res: Response, next: NextFunction) => {
+const getDisplaySecretWord = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let _roomID: any = req.body.roomID;
   let id: number = parseInt(_roomID);
 
-  return res.status(200).json(
-    { displayWord: gamedata.getDisplaySecretWord(id) }
-  );
+  return res
+    .status(200)
+    .json({ displayWord: gamedata.getDisplaySecretWord(id) });
 };
 
 const getSecretWord = (req: Request, res: Response, next: NextFunction) => {
   let _roomID: any = req.body.roomID;
   let id: number = parseInt(_roomID);
 
-  return res.status(200).json(
-    { secretWord: gamedata.getSecretWord(id) }
-  );
+  return res.status(200).json({ secretWord: gamedata.getSecretWord(id) });
 };
 
 const getuserCanDraw = (req: Request, res: Response, next: NextFunction) => {
@@ -154,9 +143,7 @@ const getuserCanDraw = (req: Request, res: Response, next: NextFunction) => {
   let _user: any = req.body.userName;
   let userName: string = _user;
 
-  return res.status(200).json(
-    gamedata.playerCanDraw(id, userName)
-  );
+  return res.status(200).json(gamedata.playerCanDraw(id, userName));
 };
 
 const isRightPassword = (req: Request, res: Response, next: NextFunction) => {
@@ -166,23 +153,20 @@ const isRightPassword = (req: Request, res: Response, next: NextFunction) => {
   let _password: any = req.body.password;
   let password: string = _password;
 
-  return res.status(200).json(
-    gamedata.isTheRightPassword(id, password)
-  );
+  return res.status(200).json(gamedata.isTheRightPassword(id, password));
 };
 
-
-export default { 
-  beginGame, 
-  getRoomUsers, 
-  getGameData, 
-  roomExists, 
-  roomHasPassword, 
-  addUserToRoom, 
-  removeUserFromRoom, 
-  getGameLobbies, 
-  getDisplaySecretWord, 
-  getSecretWord, 
+export default {
+  beginGame,
+  getRoomUsers,
+  getGameData,
+  roomExists,
+  roomHasPassword,
+  addUserToRoom,
+  removeUserFromRoom,
+  getGameLobbies,
+  getDisplaySecretWord,
+  getSecretWord,
   getuserCanDraw,
-  isRightPassword
+  isRightPassword,
 };

@@ -74,7 +74,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body)
+  console.log(req.body);
   let { email, password } = req.body;
 
   User.find({ email: email })
@@ -145,10 +145,10 @@ const getRanking = (req: Request, res: Response, next: NextFunction) => {
   let _offset: number = parseInt(offset);
 
   User.find()
-    .sort({score: -1})
+    .sort({ score: -1 })
     .select("username")
     .select("score")
-    .skip(_offset > 0 ? ( ( _offset - 1 ) * _limit ) : 0)
+    .skip(_offset > 0 ? (_offset - 1) * _limit : 0)
     .limit(_limit) //limit
     .exec()
     .then((users) => {

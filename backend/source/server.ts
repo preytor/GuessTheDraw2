@@ -8,7 +8,7 @@ import userRoutes from "./routes/user";
 import gameRoutes from "./routes/game";
 import gamedata from "./gamedata";
 import GameLogic from "./game-logic";
-import  Chat from "./controllers/chat";
+import Chat from "./controllers/chat";
 import { Server, Socket } from "socket.io";
 import { GameData } from "./models/gameData";
 //import { createAdapter } from 'socket.io-redis';
@@ -17,13 +17,14 @@ import { GameData } from "./models/gameData";
 var cors = require("cors");
 
 const NAMESPACE = "Server";
-const CORS_ORIGIN = ["http://localhost:4200"];  //add here the other ip
-const router = express(); 
+const CORS_ORIGIN = ["http://localhost:4200"]; //add here the other ip
+const router = express();
 
 /** Create the server */
 const httpServer = http.createServer(router);
 /** Create the socket server */
-export const io = new Server(httpServer, { //httpServer instead of 4200
+export const io = new Server(httpServer, {
+  //httpServer instead of 4200
   //ponerle aqui la ip del cliente
   cors: {
     origin: CORS_ORIGIN,
@@ -48,7 +49,7 @@ const newgame: GameData = {
   displaySecretWord: "____",
   hasFinished: false,
   hostName: "",
-  timer: 60
+  timer: 60,
 };
 
 const newgame2: GameData = {
@@ -60,8 +61,8 @@ const newgame2: GameData = {
   displaySecretWord: "__",
   hasFinished: false,
   hostName: "",
-  timer: 60
-}
+  timer: 60,
+};
 
 gamedata.addGame(newgame);
 gamedata.addGame(newgame2);
@@ -127,9 +128,7 @@ const options = {
 };
 
 //use cors middleware
-router.use(
-  cors(options)
-);
+router.use(cors(options));
 
 /** Routes */
 router.use("/sample", sampleRoutes);
@@ -164,72 +163,85 @@ io.on("connection", function (socket: Socket) {
     //console.log(reason); // "ping timeout"
   });*/
 
-  socket.on('disconnecting', function() {
+  socket.on("disconnecting", function () {
     let rooms = socket.rooms;
-    
+
     let _roomID = -1;
     let _userN = "";
-    rooms.forEach(function(room) {
-        if(room.indexOf('room_') > -1){
-          _roomID = parseInt(room.split("_", 2)[1]);
-          console.log("roomID split: ",_roomID)
-          //with this we have the room id of the player who just left
-        }
-        if(room.indexOf('user_') > -1){
-          _userN = room.split("_", 2)[1];
-          console.log("userN split: ",_userN)
-          //with this we have the user name of the player who just left
-        }
+    rooms.forEach(function (room) {
+      if (room.indexOf("room_") > -1) {
+        _roomID = parseInt(room.split("_", 2)[1]);
+        console.log("roomID split: ", _roomID);
+        //with this we have the room id of the player who just left
+      }
+      if (room.indexOf("user_") > -1) {
+        _userN = room.split("_", 2)[1];
+        console.log("userN split: ", _userN);
+        //with this we have the user name of the player who just left
+      }
     });
 
-    if(gamedata.removeUserInRoom(_roomID, _userN)){
-      socket.to(`room_${_roomID}`).emit('left', {roomID: _roomID})
+    if (gamedata.removeUserInRoom(_roomID, _userN)) {
+      socket.to(`room_${_roomID}`).emit("left", { roomID: _roomID });
       let newMessage = {
         from: "",
         message: `${_userN} has left the game`,
-        room: _roomID
-      }
+        room: _roomID,
+      };
       socket.to(`room_${_roomID}`).emit("chat_message", newMessage);
     }
-});
+  });
 
   socket.on("chat_message", (message) => {
     console.log("message: ", message, "socketid: ", socket.id);
-  //  socket.to(message.roomid).emit("chat_message", message.message); //only sends to himself
-  //  socket.emit("chat_message", message.message);
-      let newMessage = {
-        from: message.from,
-        message: `: ${message.message}`,
-        room: message.room
-      }
+    //  socket.to(message.roomid).emit("chat_message", message.message); //only sends to himself
+    //  socket.emit("chat_message", message.message);
+    let newMessage = {
+      from: message.from,
+      message: `: ${message.message}`,
+      room: message.room,
+    };
 
-      if(gamedata.gameExists(message.room)){
-        let guess: string = message.message;
-        let secretWord: string | undefined = gamedata!.getSecretWord(message.room);
-        if(secretWord===undefined){ return }
-        console.log("guess: ",guess.toLowerCase())
-        console.log("secretword: ",secretWord.toLowerCase())
-        console.log("same?: ",guess.toLowerCase().includes(secretWord!.toLowerCase()))
-        
-        if(guess.toLowerCase().includes(secretWord!.toLowerCase())){
-          //gamedata give score
-          gamedata.giveScoreToPlayer(message.room, message.from);
-          //guessed right
-          let successMessage = {
-            from: message.from,
-            message: ` has guessed the word right!`,
-            room: message.room
-          }
-          io.to(`room_${message.room}`).emit("chat_message", successMessage);
-          io.to(`room_${message.room}`).emit("update_score", {room: successMessage.room});
-          io.to(`room_${message.room}`).emit("forbid_guessing", {playerName: message.from});
-        }else{
-          console.log("message to room: ", `room_${message.room}`)
-          socket.to(`room_${message.room}`).emit("chat_message", newMessage); //just in case
-          socket.rooms.forEach(object => console.log("rooms message: "+object))
-          //socket.emit("chat_message", newMessage);
-        }
+    if (gamedata.gameExists(message.room)) {
+      let guess: string = message.message;
+      let secretWord: string | undefined = gamedata!.getSecretWord(
+        message.room
+      );
+      if (secretWord === undefined) {
+        return;
       }
+      console.log("guess: ", guess.toLowerCase());
+      console.log("secretword: ", secretWord.toLowerCase());
+      console.log(
+        "same?: ",
+        guess.toLowerCase().includes(secretWord!.toLowerCase())
+      );
+
+      if (guess.toLowerCase().includes(secretWord!.toLowerCase())) {
+        //gamedata give score
+        gamedata.giveScoreToPlayer(message.room, message.from);
+        //guessed right
+        let successMessage = {
+          from: message.from,
+          message: ` has guessed the word right!`,
+          room: message.room,
+        };
+        io.to(`room_${message.room}`).emit("chat_message", successMessage);
+        io.to(`room_${message.room}`).emit("update_score", {
+          room: successMessage.room,
+        });
+        io.to(`room_${message.room}`).emit("forbid_guessing", {
+          playerName: message.from,
+        });
+      } else {
+        console.log("message to room: ", `room_${message.room}`);
+        socket.to(`room_${message.room}`).emit("chat_message", newMessage); //just in case
+        socket.rooms.forEach((object) =>
+          console.log("rooms message: " + object)
+        );
+        //socket.emit("chat_message", newMessage);
+      }
+    }
   });
 
   socket.on("join", (message) => {
@@ -237,44 +249,43 @@ io.on("connection", function (socket: Socket) {
     //socket.rooms.add(`${id}`);
 
     //also join a room that is the user name
-    //so later i can check the rooms he is, 
+    //so later i can check the rooms he is,
     //if it has the room_number you get the room and if it has the user_userName you get the user name
     const nameRoom = `room_${message.id}`;
-    console.log(`nameroom: ${nameRoom}`)
+    console.log(`nameroom: ${nameRoom}`);
     socket.join(nameRoom);
-    socket.join(message.userName)
+    socket.join(message.userName);
 
-    console.log("joined: "+nameRoom)
-    socket.rooms.forEach(object => console.log("rooms: "+object))
-    console.log("end rooms")
+    console.log("joined: " + nameRoom);
+    socket.rooms.forEach((object) => console.log("rooms: " + object));
+    console.log("end rooms");
     let newMessage = {
       from: "",
       message: "A new player has joined",
-      room: message.id
-    }
-    socket.to(nameRoom).emit("join", {roomID: message.id});
+      room: message.id,
+    };
+    socket.to(nameRoom).emit("join", { roomID: message.id });
     socket.to(nameRoom).emit("chat_message", newMessage);
   });
 
   socket.on("leave", (id) => {
     console.log("Player ", socket.id, " left the game");
     socket.leave(`${id}`);
-    socket.rooms.forEach(object => console.log("rooms leave: "+object))
-      
+    socket.rooms.forEach((object) => console.log("rooms leave: " + object));
   });
 
   //** Drawing */
 
   socket.on("drawing", (message) => {
-    console.log("dasdasdsd: ", message.roomid)
+    console.log("dasdasdsd: ", message.roomid);
     socket.to(`room_${message.roomid}`).emit("drawing", message);
-    socket.rooms.forEach(object => console.log("rooms drawing: "+object))
-      
+    socket.rooms.forEach((object) => console.log("rooms drawing: " + object));
+
     //io.emit("drawing", message);
   });
 
   socket.on("clear", (message) => {
-    console.log("dasdasdsd clear: ", message.roomid)
+    console.log("dasdasdsd clear: ", message.roomid);
     socket.to(`room_${message.roomid}`).emit("clear", message);
     //io.emit("clear", message);
   });

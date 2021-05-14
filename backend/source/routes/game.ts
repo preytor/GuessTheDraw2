@@ -16,6 +16,4 @@ router.post("/game/getSecretWord", controller.getSecretWord);
 router.post("/game/userCanDraw", controller.getuserCanDraw);
 router.post("/game/isRightPassword", controller.isRightPassword);
 
-
-
 export = router;
