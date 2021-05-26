@@ -24,6 +24,7 @@ var UserSchema = new mongoose_1.Schema({
     username: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true },
     password: { type: String, required: true, trim: true },
+    score: { type: Number, required: false, default: 0 },
 }, {
     timestamps: true,
 });

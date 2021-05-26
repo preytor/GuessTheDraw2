@@ -11,13 +11,25 @@ import GameLogic from "./game-logic";
 import Chat from "./controllers/chat";
 import { Server, Socket } from "socket.io";
 import { GameData } from "./models/gameData";
+import initDBData from "./config/initDBData";
 //import { createAdapter } from 'socket.io-redis';
 //import { RedisClient } from 'redis';
 
 var cors = require("cors");
 
 const NAMESPACE = "Server";
-const CORS_ORIGIN = ["http://localhost:4200"]; //add here the other ip
+const CORS_ORIGIN = [
+  config.server.host_origin!,
+  //pending to test add here and/or
+  //in the angular app the docker ip
+  "92.186.61.227:4200",
+  "http://frontend:4200",
+  "http://frontend:80",
+  "frontend:4200",
+  "frontend:80",
+  "localhost:4200",
+  "localhost:80",
+]; //add here the other ip
 const router = express();
 
 /** Create the server */
@@ -27,16 +39,33 @@ export const io = new Server(httpServer, {
   //httpServer instead of 4200
   //ponerle aqui la ip del cliente
   cors: {
-    origin: CORS_ORIGIN,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["gtd-socket"],
-    credentials: true,
+    origin: "*",
+    //origin: CORS_ORIGIN,
+    //methods: ["GET", "POST"],
+    /*    allowedHeaders: ["gtd-socket"],
+    credentials: false,*/
   },
 });
 //const pubClient = new RedisClient({ host: 'localhost', port: 4200 });
 //const subClient = pubClient.duplicate();
 
 //io.adapter(createAdapter({ pubClient, subClient }));
+
+//test for docker env variables
+/*
+- MONGO_USERNAME=myUserAdmin
+- MONGO_PASSWORD=abc123
+- MONGO_HOST=database
+- SERVER_HOSTNAME=backend
+- HOST_ORIGIN=http://frontend:80
+*/
+console.log("MONGO_USERNAME: ", process.env.MONGO_USERNAME);
+console.log("MONGO_PASSWORD: ", process.env.MONGO_PASSWORD);
+console.log("MONGO_URL: ", process.env.MONGO_URL);
+console.log("SERVER_HOSTNAME: ", process.env.SERVER_HOSTNAME);
+console.log("HOST_ORIGIN: ", process.env.HOST_ORIGIN);
+
+console.log(CORS_ORIGIN);
 
 /** Holding the game data */
 
@@ -78,10 +107,13 @@ mongoose
   .connect(config.mongo.url, config.mongo.options)
   .then((result) => {
     logging.info(NAMESPACE, "Connected to mongoDB!");
+    initDBData.initDBData();
   })
   .catch((error) => {
     logging.error(NAMESPACE, error.message, error);
   });
+
+router.use(cors());
 
 /** Logging the request */
 router.use((req, res, next) => {
@@ -96,7 +128,16 @@ router.use((req, res, next) => {
       `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}], STATUS - [${res.statusCode}]`
     );
   });
-
+  /*
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }*/
   next();
 });
 
@@ -105,7 +146,14 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 
 /** Rules of our API */
-const originsWhitelist = ["http://localhost:4200", "http://localhost:80", "*"];
+const originsWhitelist = [
+  config.server.host_origin,
+  "http://frontend:4200",
+  "http://frontend:80",
+  "http://localhost:4200",
+  "http://localhost:80",
+  "*",
+];
 
 const options = {
   //: cors.CorsOptions
@@ -128,7 +176,7 @@ const options = {
 };
 
 //use cors middleware
-router.use(cors(options));
+//router.use(cors(options));
 
 /** Routes */
 router.use("/sample", sampleRoutes);
@@ -292,7 +340,7 @@ io.on("connection", function (socket: Socket) {
 });
 
 //enable pre-flight
-router.options("*", cors(options));
+//router.options("*", cors(options));
 
 /** Listen to the server */
 httpServer.listen(config.server.port, () =>

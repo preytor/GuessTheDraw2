@@ -15,11 +15,23 @@ var game_1 = __importDefault(require("./routes/game"));
 var gamedata_1 = __importDefault(require("./gamedata"));
 var chat_1 = __importDefault(require("./controllers/chat"));
 var socket_io_1 = require("socket.io");
+var initDBData_1 = __importDefault(require("./config/initDBData"));
 //import { createAdapter } from 'socket.io-redis';
 //import { RedisClient } from 'redis';
 var cors = require("cors");
 var NAMESPACE = "Server";
-var CORS_ORIGIN = ["http://localhost:4200"]; //add here the other ip
+var CORS_ORIGIN = [
+    config_1.default.server.host_origin,
+    //pending to test add here and/or
+    //in the angular app the docker ip
+    "92.186.61.227:4200",
+    "http://frontend:4200",
+    "http://frontend:80",
+    "frontend:4200",
+    "frontend:80",
+    "localhost:4200",
+    "localhost:80",
+]; //add here the other ip
 var router = express_1.default();
 /** Create the server */
 var httpServer = http_1.default.createServer(router);
@@ -28,15 +40,30 @@ exports.io = new socket_io_1.Server(httpServer, {
     //httpServer instead of 4200
     //ponerle aqui la ip del cliente
     cors: {
-        origin: CORS_ORIGIN,
-        methods: ["GET", "POST"],
-        allowedHeaders: ["gtd-socket"],
-        credentials: true,
+        origin: "*",
+        //origin: CORS_ORIGIN,
+        //methods: ["GET", "POST"],
+        /*    allowedHeaders: ["gtd-socket"],
+        credentials: false,*/
     },
 });
 //const pubClient = new RedisClient({ host: 'localhost', port: 4200 });
 //const subClient = pubClient.duplicate();
 //io.adapter(createAdapter({ pubClient, subClient }));
+//test for docker env variables
+/*
+- MONGO_USERNAME=myUserAdmin
+- MONGO_PASSWORD=abc123
+- MONGO_HOST=database
+- SERVER_HOSTNAME=backend
+- HOST_ORIGIN=http://frontend:80
+*/
+console.log("MONGO_USERNAME: ", process.env.MONGO_USERNAME);
+console.log("MONGO_PASSWORD: ", process.env.MONGO_PASSWORD);
+console.log("MONGO_URL: ", process.env.MONGO_URL);
+console.log("SERVER_HOSTNAME: ", process.env.SERVER_HOSTNAME);
+console.log("HOST_ORIGIN: ", process.env.HOST_ORIGIN);
+console.log(CORS_ORIGIN);
 /** Holding the game data */
 var newgame = {
     gameUsers: [],
@@ -70,23 +97,42 @@ mongoose_1.default
     .connect(config_1.default.mongo.url, config_1.default.mongo.options)
     .then(function (result) {
     logging_1.default.info(NAMESPACE, "Connected to mongoDB!");
+    initDBData_1.default.initDBData();
 })
     .catch(function (error) {
     logging_1.default.error(NAMESPACE, error.message, error);
 });
+router.use(cors());
 /** Logging the request */
 router.use(function (req, res, next) {
     logging_1.default.info(NAMESPACE, "METHOD - [" + req.method + "], URL - [" + req.url + "], IP - [" + req.socket.remoteAddress + "]");
     res.on("finish", function () {
         logging_1.default.info(NAMESPACE, "METHOD - [" + req.method + "], URL - [" + req.url + "], IP - [" + req.socket.remoteAddress + "], STATUS - [" + res.statusCode + "]");
     });
+    /*
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Authorization"
+    );
+    if (req.method === "OPTIONS") {
+      res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+      return res.status(200).json({});
+    }*/
     next();
 });
 /** Parse the request */
 router.use(express_1.default.urlencoded({ extended: false }));
 router.use(express_1.default.json());
 /** Rules of our API */
-var originsWhitelist = ["http://localhost:4200", "http://localhost:80", "*"];
+var originsWhitelist = [
+    config_1.default.server.host_origin,
+    "http://frontend:4200",
+    "http://frontend:80",
+    "http://localhost:4200",
+    "http://localhost:80",
+    "*",
+];
 var options = {
     //: cors.CorsOptions
     allowedHeaders: [
@@ -107,7 +153,7 @@ var options = {
     preflightContinue: false,
 };
 //use cors middleware
-router.use(cors(options));
+//router.use(cors(options));
 /** Routes */
 router.use("/sample", sample_1.default);
 router.use(user_1.default);
@@ -247,7 +293,7 @@ exports.io.on("connection", function (socket) {
     });
 });
 //enable pre-flight
-router.options("*", cors(options));
+//router.options("*", cors(options));
 /** Listen to the server */
 httpServer.listen(config_1.default.server.port, function () {
     return logging_1.default.info(NAMESPACE, "Server running on " + config_1.default.server.hostname + ":" + config_1.default.server.port);

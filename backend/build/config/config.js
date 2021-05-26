@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv_1 = __importDefault(require("dotenv"));
 var NAMESPACE = "Server";
 dotenv_1.default.config();
+var HOST_ORIGIN = process.env.HOST_ORIGIN || "http://localhost:4200";
 var MONGO_OPTIONS = {
     useUnifiedTopology: true,
     useNewUrlParser: true,
@@ -38,6 +39,7 @@ var SERVER = {
         issuer: SERVER_TOKEN_ISSUER,
         secret: SERVER_TOKEN_SECRET,
     },
+    host_origin: HOST_ORIGIN,
 };
 var config = {
     mongo: MONGO,

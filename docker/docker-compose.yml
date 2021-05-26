@@ -1,0 +1,38 @@
+version: '3'
+
+services: 
+    frontend:
+        build: ../frontend
+        container_name: frontend
+        ports: 
+          - "80:4200"
+        external_links: 
+          - backend
+    backend:
+        build: ../backend 
+        container_name: backend
+        ports: 
+          - "3000:3000"
+        environment: 
+          - MONGO_USERNAME=myUserAdmin
+          - MONGO_PASSWORD=abc123
+          - MONGO_URL=database:27017
+          - HOST_ORIGIN=XX.XXX.XX.XXX:80:4200
+        links: 
+          - database
+        depends_on: 
+          - database
+          - frontend
+        external_links: 
+          - frontend
+    database:
+        image: mongo
+        container_name: database
+        environment:
+          - MONGO_INITDB_ROOT_USERNAME=myUserAdmin
+          - MONGO_INITDB_ROOT_PASSWORD=abc123
+          - MONGO_INITDB_DATABASE=test
+        volumes: 
+          - "/data/db:/data/db"
+        ports: 
+          - "27017:27017"

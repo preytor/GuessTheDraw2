@@ -3,17 +3,17 @@ import controller from "../controllers/game";
 
 const router = express.Router();
 
-router.post("/game/startroom", controller.beginGame);
-router.post("/game/getroomusers", controller.getRoomUsers);
-router.get("/game", controller.getGameData);
-router.get("/game/roomexists/:id", controller.roomExists);
-router.get("/game/roomhaspassword/:id", controller.roomHasPassword);
-router.post("/game/addusertoroom", controller.addUserToRoom);
-router.post("/game/removeusertoroom", controller.removeUserFromRoom);
-router.get("/game/gamelobby/:index/:offset", controller.getGameLobbies);
-router.post("/game/getDisplaySecretWord", controller.getDisplaySecretWord);
-router.post("/game/getSecretWord", controller.getSecretWord);
-router.post("/game/userCanDraw", controller.getuserCanDraw);
-router.post("/game/isRightPassword", controller.isRightPassword);
+router.post("/api/game/startroom", controller.beginGame);
+router.post("/api/game/getroomusers", controller.getRoomUsers);
+router.get("/api/game", controller.getGameData);
+router.get("/api/game/roomexists/:id", controller.roomExists);
+router.get("/api/game/roomhaspassword/:id", controller.roomHasPassword);
+router.post("/api/game/addusertoroom", controller.addUserToRoom);
+router.post("/api/game/removeusertoroom", controller.removeUserFromRoom);
+router.get("/api/game/gamelobby/:index/:offset", controller.getGameLobbies);
+router.post("/api/game/getDisplaySecretWord", controller.getDisplaySecretWord);
+router.post("/api/game/getSecretWord", controller.getSecretWord);
+router.post("/api/game/userCanDraw", controller.getuserCanDraw);
+router.post("/api/game/isRightPassword", controller.isRightPassword);
 
 export = router;

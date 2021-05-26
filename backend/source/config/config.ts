@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 const NAMESPACE = "Server";
 dotenv.config();
 
+const HOST_ORIGIN = process.env.HOST_ORIGIN || "http://localhost:4200";
+
 const MONGO_OPTIONS = {
   useUnifiedTopology: true,
   useNewUrlParser: true,
@@ -41,6 +43,7 @@ const SERVER = {
     issuer: SERVER_TOKEN_ISSUER,
     secret: SERVER_TOKEN_SECRET,
   },
+  host_origin: HOST_ORIGIN,
 };
 
 const config = {

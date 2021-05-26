@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './services/auth.service';
+import { Title } from '@angular/platform-browser';
 /// <reference path="../../typings/globals/socket.io-client/index.d.ts" /> 
 
 @Component({
@@ -10,7 +11,10 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   
-  constructor(private AuthService: AuthService, private HttpClient: HttpClient) {}
+  constructor(private AuthService: AuthService, private HttpClient: HttpClient, private titleService: Title) {
+    this.titleService.setTitle("Guess The Draw");
+
+  }
 
   getauthService(){
     return this.AuthService;

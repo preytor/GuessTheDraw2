@@ -3,6 +3,7 @@ import { fromEvent, Observable } from 'rxjs';
 //import { io } from 'socket.io-client';
 //import * as io from 'socket.io-client';
 import { io, Socket } from 'socket.io-client/build/index';
+import { environment } from 'src/environments/environment';
 import { ChatMessage } from '../models/chatMessage';
 import { DrawLine } from '../models/drawLine';
 import { Event } from '../models/event';
@@ -16,21 +17,21 @@ export class SocketService {
   private socket: any;
 
   constructor() { 
-    this.socket = io("ws://localhost:3000", { //io("ws://localhost:3000", { //localhost one
-      withCredentials: true,
+    this.socket = io(environment.socketUrl, { //io("ws://localhost:3000", { //localhost one
+/*      withCredentials: true,
       extraHeaders: {
         "gtd-socket": "gtd"
-      }
+      }*/
     });
   }
 
   public initSocket(): void{
     try {
-      this.socket = io("ws://localhost:3000", {// io("ws://localhost:3000", { //localhost one
-      withCredentials: true,
+      this.socket = io(environment.socketUrl, {// io("ws://localhost:3000", { //localhost one
+/*      withCredentials: true,
       extraHeaders: {
         "gtd-socket": "gtd"
-      }
+      }*/
     });
     }catch(e){
       console.log('Could not connect to the server')

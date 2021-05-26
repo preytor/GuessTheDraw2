@@ -10,11 +10,12 @@ import { JwtResponse } from '../models/jwt-response';
 import { tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { PlayerScore } from '../models/playerScore';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable()
 export class AuthService {
-  AUTH_SERVER: string = 'http://localhost:3000';//'http://localhost:3000';  //the backend server
+  AUTH_SERVER: string = environment.apiUrl;//'http://localhost:3000';  //the backend server
   authSubject = new BehaviorSubject(false);
   private token: string | null | undefined;
 
@@ -24,7 +25,7 @@ export class AuthService {
   constructor(private httpClient: HttpClient, private Router: Router) { }
 
   signIn(loginUser: loginUser){
-    return this.httpClient.post(`${this.AUTH_SERVER}/login`, loginUser)
+    return this.httpClient.post(`${this.AUTH_SERVER}/api/login`, loginUser)
     .pipe(
       tap(
         (res) => {
@@ -39,7 +40,7 @@ export class AuthService {
   }
 
   signUp(registerUser: registerUser){
-    return this.httpClient.post(`${this.AUTH_SERVER}/register`, registerUser)
+    return this.httpClient.post(`${this.AUTH_SERVER}/api/register`, registerUser)
     .pipe(
       tap(
         (res) => {
@@ -82,7 +83,7 @@ export class AuthService {
   }
 
   getRanking(index: number, offset: number): Observable<PlayerScore>{
-    return this.httpClient.get<PlayerScore>(`${this.AUTH_SERVER}/ranking/${index}/${offset}`);
+    return this.httpClient.get<PlayerScore>(`${this.AUTH_SERVER}/api/ranking/${index}/${offset}`);
   }
 
   generateRandomUserName(): string{
@@ -93,7 +94,7 @@ export class AuthService {
   //old stuff
   register(user: User):Observable<JwtResponse> {
     return this.httpClient.post<JwtResponse>(
-      `${this.AUTH_SERVER}/register`, user
+      `${this.AUTH_SERVER}/api/register`, user
     ).pipe(
       tap(
         (res: JwtResponse) => {
@@ -107,7 +108,7 @@ export class AuthService {
 
   login(user: User):Observable<JwtResponse> {
     return this.httpClient.post<JwtResponse>(
-      `${this.AUTH_SERVER}/login`, user
+      `${this.AUTH_SERVER}/api/login`, user
     ).pipe(
       tap(
         (res: JwtResponse) => {

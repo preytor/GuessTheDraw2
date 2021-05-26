@@ -165,4 +165,5 @@ const getRanking = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+
 export default { validateToken, register, login, getAllUsers, getRanking };
