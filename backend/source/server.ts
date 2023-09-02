@@ -22,7 +22,9 @@ const CORS_ORIGIN = [
   config.server.host_origin!,
   //pending to test add here and/or
   //in the angular app the docker ip
-  "92.186.61.227:4200",
+  "185.237.99.127:4200",
+  "185.237.99.127:81",
+  "185.237.99.127:80",
   "http://frontend:4200",
   "http://frontend:80",
   "frontend:4200",
