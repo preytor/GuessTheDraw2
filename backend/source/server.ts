@@ -93,14 +93,14 @@ const newgame2: GameData = {
   timer: 60,
 };
 
-gamedata.addGame(newgame);
-gamedata.addGame(newgame2);
+//gamedata.addGame(newgame);
+//gamedata.addGame(newgame2);
 
 logging.info("GAME", `Started module to handle the games`);
 
 var x: any = gamedata.getCurrentGames().entries();
 
-logging.info("get current games:", gamedata.getGameAt(0).secretWord); //this works
+//logging.info("get current games:", gamedata.getGameAt(0).secretWord); //this works
 
 /** Connect to Mongo */
 mongoose
@@ -119,13 +119,13 @@ router.use(cors());
 router.use((req, res, next) => {
   logging.info(
     NAMESPACE,
-    `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}]`
+    `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}]`,
   );
 
   res.on("finish", () => {
     logging.info(
       NAMESPACE,
-      `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}], STATUS - [${res.statusCode}]`
+      `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}], STATUS - [${res.statusCode}]`,
     );
   });
   /*
@@ -237,6 +237,13 @@ io.on("connection", function (socket: Socket) {
         room: _roomID,
       };
       socket.to(`room_${_roomID}`).emit("chat_message", newMessage);
+      console.log("Removing room ", _roomID, " since it has no more users");
+      if (
+        gamedata.getRoomUsers(_roomID).length == 0 ||
+        gamedata.getRoomUsers(_roomID).length == -1
+      ) {
+        gamedata.removeGameById(_roomID);
+      }
     }
   });
 
@@ -253,7 +260,7 @@ io.on("connection", function (socket: Socket) {
     if (gamedata.gameExists(message.room)) {
       let guess: string = message.message;
       let secretWord: string | undefined = gamedata!.getSecretWord(
-        message.room
+        message.room,
       );
       if (secretWord === undefined) {
         return;
@@ -262,7 +269,7 @@ io.on("connection", function (socket: Socket) {
       console.log("secretword: ", secretWord.toLowerCase());
       console.log(
         "same?: ",
-        guess.toLowerCase().includes(secretWord!.toLowerCase())
+        guess.toLowerCase().includes(secretWord!.toLowerCase()),
       );
 
       if (guess.toLowerCase().includes(secretWord!.toLowerCase())) {
@@ -285,7 +292,7 @@ io.on("connection", function (socket: Socket) {
         console.log("message to room: ", `room_${message.room}`);
         socket.to(`room_${message.room}`).emit("chat_message", newMessage); //just in case
         socket.rooms.forEach((object) =>
-          console.log("rooms message: " + object)
+          console.log("rooms message: " + object),
         );
         //socket.emit("chat_message", newMessage);
       }
@@ -346,6 +353,6 @@ io.on("connection", function (socket: Socket) {
 httpServer.listen(config.server.port, () =>
   logging.info(
     NAMESPACE,
-    `Server running on ${config.server.hostname}:${config.server.port}`
-  )
+    `Server running on ${config.server.hostname}:${config.server.port}`,
+  ),
 );

@@ -37,7 +37,7 @@ var beginGame = function (req, res, next) {
     gamedata_1.default.addGame(newgame);
     console.log("begignning asdas das ", _id);
     gamedata_1.default.beginGame(_id, null, null);
-    logging_1.default.info(NAMESPACE, "beginning a game, id: " + newgame.id + ", room name: " + newgame.roomName + ", room password: " + newgame.roomPassword + ", username host: " + req.body.username + ", is registered account: " + req.body.isRegistered);
+    logging_1.default.info(NAMESPACE, "beginning a game, id: ".concat(newgame.id, ", room name: ").concat(newgame.roomName, ", room password: ").concat(newgame.roomPassword, ", username host: ").concat(req.body.username, ", is registered account: ").concat(req.body.isRegistered));
     return res.status(200).json({
         result: true,
         id: _id,
@@ -46,14 +46,14 @@ var beginGame = function (req, res, next) {
 var getGameData = function (req, res, next) {
     var roomNumber = req.query.room;
     var id = parseInt(roomNumber);
-    logging_1.default.info(NAMESPACE, "Game is " + roomNumber);
+    logging_1.default.info(NAMESPACE, "Game is ".concat(roomNumber));
     //temporally
     return res.status(200).json(gamedata_1.default.getGameFromID(id));
 };
 var roomExists = function (req, res, next) {
     var _roomID = req.params.id;
     var id = +_roomID;
-    logging_1.default.info(NAMESPACE, "Game is " + id);
+    logging_1.default.info(NAMESPACE, "Game is ".concat(id));
     var exists = gamedata_1.default.gameExists(id);
     return res.status(200).json(exists);
 };

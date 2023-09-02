@@ -152,6 +152,14 @@ var removeGame = function (gameToRemove) {
         }
     }
 };
+var removeGameById = function (id) {
+    for (var i = 0, iLen = getCurrentGames().length; i < iLen; i++) {
+        if (getCurrentGames()[i].id == id) {
+            getCurrentGames().splice(i, 1);
+            break;
+        }
+    }
+};
 var gameExists = function (id) {
     //  logging.info("GAME_EXISTS", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     //  logging.info("GAME_EXISTS", `Game exists?: ${currentGames.some((x) => x.id === id)}`)
@@ -231,7 +239,7 @@ var getSecretWord = function (id) {
 };
 var beginGame = function (id, timerSeconds, gameRound) {
     var _a;
-    console.log("begingame in game " + id + " is working - BEFORE");
+    console.log("begingame in game ".concat(id, " is working - BEFORE"));
     if (!gameExists(id))
         return;
     if (((_a = getGameFromID(id)) === null || _a === void 0 ? void 0 : _a.hasFinished) == true)
@@ -249,12 +257,17 @@ var beginGame = function (id, timerSeconds, gameRound) {
     //and set the current score to 0
     restartScores(id);
     //set timer to 60
-    getGameFromID(id).timer = 60;
+    try {
+        getGameFromID(id).timer = 60;
+    }
+    catch (e) {
+        return;
+    }
     //console.log("listeners and shit",io.sockets.adapter.rooms)
     //io.sockets.emit("clear", {roomid: 1});  //works
     //let players = io.sockets.adapter.rooms.get(`room_${id}`);
     //console.log("players in listener and shit: ", players);
-    console.log("begingame in game " + id + " is working - AFTER");
+    console.log("begingame in game ".concat(id, " is working - AFTER"));
     //io.to(`room_${id}`).emit("host_change", {roomid: id});//works, below is 1 for testing
     //io.to(`room_1`).emit("host_change", {roomid: id});
     //TODO PENDING, ERROR: TypeError: Cannot read property 'gameUsers' of undefined
@@ -272,8 +285,14 @@ var beginGame = function (id, timerSeconds, gameRound) {
     console.log("blabla ", getGameFromID(id));
     //update timer every second
     var _timerSeconds = setInterval(function () {
-        getGameFromID(id).timer -= 1;
-        console.log("timer: " + getGameFromID(id).timer);
+        try {
+            getGameFromID(id).timer -= 1;
+            console.log("timer: " + getGameFromID(id).timer);
+        }
+        catch (e) {
+            clearInterval(_timerSeconds);
+            return;
+        }
     }, 1000);
     //discover word at 30 seconds
     setTimeout(function () {
@@ -305,7 +324,7 @@ var discoverLetterInRoom = function (id) {
             getGameFromID(id).displaySecretWord = newDisplay;
             replaced = true;
             console.log("new display in room " + id + " is: ", getGameFromID(id).displaySecretWord);
-            server_1.io.to("room_" + id).emit("show_hint", { roomid: id });
+            server_1.io.to("room_".concat(id)).emit("show_hint", { roomid: id });
         }
     } while (!replaced);
 };
@@ -321,7 +340,7 @@ var setPlayerHost = function (id) {
                     players[i].hasBeenHost = true;
                     foundHost = true;
                     //TODO: make the player the host
-                    server_1.io.to("room_" + id).emit("host_change", {
+                    server_1.io.to("room_".concat(id)).emit("host_change", {
                         roomid: id,
                         newHost: players[i].username,
                     });
@@ -346,20 +365,20 @@ var setPlayerHost = function (id) {
                     getGameFromID(id).hostName = _newHost;
                 }
             }
-            server_1.io.to("room_" + id).emit("host_change", {
+            server_1.io.to("room_".concat(id)).emit("host_change", {
                 roomid: id,
                 newHost: _newHost,
             });
         }
-        server_1.io.to("room_" + id).emit("show_hint", { roomid: id });
-        server_1.io.to("room_" + id).emit("clear", { roomid: id });
+        server_1.io.to("room_".concat(id)).emit("show_hint", { roomid: id });
+        server_1.io.to("room_".concat(id)).emit("clear", { roomid: id });
     }
 };
 var generateSecretWord = function () {
     ///
     var randomN = randomIntFromInterval(0, words.length);
     var word = words[randomN];
-    return "" + word;
+    return "".concat(word);
 };
 //utils
 function randomIntFromInterval(min, max) {
@@ -410,7 +429,8 @@ var restartScores = function (id) {
     }
     for (var i = 0; i < ((_a = getGameFromID(id)) === null || _a === void 0 ? void 0 : _a.gameUsers.length); i++) {
         if (getGameFromID(id).gameUsers[i] != undefined) {
-            getGameFromID(id).gameUsers[i].totalScore += getGameFromID(id).gameUsers[i].score;
+            getGameFromID(id).gameUsers[i].totalScore +=
+                getGameFromID(id).gameUsers[i].score;
             getGameFromID(id).gameUsers[i].score = 0;
         }
     }
@@ -457,4 +477,5 @@ exports.default = {
     giveScoreToPlayer: giveScoreToPlayer,
     restartScores: restartScores,
     isTheRightPassword: isTheRightPassword,
+    removeGameById: removeGameById,
 };

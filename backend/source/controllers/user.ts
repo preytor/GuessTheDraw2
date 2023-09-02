@@ -46,7 +46,7 @@ const register = (req: Request, res: Response, next: NextFunction) => {
         config.server.token.secret,
         {
           expiresIn: config.server.token.expireTime,
-        }
+        },
       );
 
       const dataUser = {
@@ -164,6 +164,5 @@ const getRanking = (req: Request, res: Response, next: NextFunction) => {
       });
     });
 };
-
 
 export default { validateToken, register, login, getAllUsers, getRanking };

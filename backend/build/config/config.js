@@ -24,7 +24,7 @@ var MONGO = {
     username: MONGO_USERNAME,
     password: MONGO_PASSWORD,
     options: MONGO_OPTIONS,
-    url: "mongodb://" + MONGO_USERNAME + ":" + MONGO_PASSWORD + "@" + MONGO_HOST,
+    url: "mongodb://".concat(MONGO_USERNAME, ":").concat(MONGO_PASSWORD, "@").concat(MONGO_HOST),
 };
 var SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || "localhost";
 var SERVER_PORT = process.env.SERVER_PORT || 3000;

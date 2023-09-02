@@ -83,7 +83,7 @@ var login = function (req, res, next) {
                 });
             }
             else if (result) {
-                signJWT_1.default(users[0], function (_error, token) {
+                (0, signJWT_1.default)(users[0], function (_error, token) {
                     if (_error) {
                         logging_1.default.error(NAMESPACE, "Unable to sign token: ", error);
                         return res.status(401).json({

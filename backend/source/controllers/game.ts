@@ -45,7 +45,7 @@ const beginGame = (req: Request, res: Response, next: NextFunction) => {
 
   logging.info(
     NAMESPACE,
-    `beginning a game, id: ${newgame.id}, room name: ${newgame.roomName}, room password: ${newgame.roomPassword}, username host: ${req.body.username}, is registered account: ${req.body.isRegistered}`
+    `beginning a game, id: ${newgame.id}, room name: ${newgame.roomName}, room password: ${newgame.roomPassword}, username host: ${req.body.username}, is registered account: ${req.body.isRegistered}`,
   );
   return res.status(200).json({
     result: true,
@@ -95,7 +95,7 @@ const addUserToRoom = (req: Request, res: Response, next: NextFunction) => {
 const removeUserFromRoom = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   let _roomID: any = req.body.roomID;
   let id: number = parseInt(_roomID);
@@ -119,7 +119,7 @@ const getGameLobbies = (req: Request, res: Response, next: NextFunction) => {
 const getDisplaySecretWord = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   let _roomID: any = req.body.roomID;
   let id: number = parseInt(_roomID);

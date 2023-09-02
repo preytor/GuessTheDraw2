@@ -32,7 +32,7 @@ var CORS_ORIGIN = [
     "localhost:4200",
     "localhost:80",
 ]; //add here the other ip
-var router = express_1.default();
+var router = (0, express_1.default)();
 /** Create the server */
 var httpServer = http_1.default.createServer(router);
 /** Create the socket server */
@@ -87,11 +87,11 @@ var newgame2 = {
     hostName: "",
     timer: 60,
 };
-gamedata_1.default.addGame(newgame);
-gamedata_1.default.addGame(newgame2);
+//gamedata.addGame(newgame);
+//gamedata.addGame(newgame2);
 logging_1.default.info("GAME", "Started module to handle the games");
 var x = gamedata_1.default.getCurrentGames().entries();
-logging_1.default.info("get current games:", gamedata_1.default.getGameAt(0).secretWord); //this works
+//logging.info("get current games:", gamedata.getGameAt(0).secretWord); //this works
 /** Connect to Mongo */
 mongoose_1.default
     .connect(config_1.default.mongo.url, config_1.default.mongo.options)
@@ -105,9 +105,9 @@ mongoose_1.default
 router.use(cors());
 /** Logging the request */
 router.use(function (req, res, next) {
-    logging_1.default.info(NAMESPACE, "METHOD - [" + req.method + "], URL - [" + req.url + "], IP - [" + req.socket.remoteAddress + "]");
+    logging_1.default.info(NAMESPACE, "METHOD - [".concat(req.method, "], URL - [").concat(req.url, "], IP - [").concat(req.socket.remoteAddress, "]"));
     res.on("finish", function () {
-        logging_1.default.info(NAMESPACE, "METHOD - [" + req.method + "], URL - [" + req.url + "], IP - [" + req.socket.remoteAddress + "], STATUS - [" + res.statusCode + "]");
+        logging_1.default.info(NAMESPACE, "METHOD - [".concat(req.method, "], URL - [").concat(req.url, "], IP - [").concat(req.socket.remoteAddress, "], STATUS - [").concat(res.statusCode, "]"));
     });
     /*
     res.header("Access-Control-Allow-Origin", "*");
@@ -199,13 +199,18 @@ exports.io.on("connection", function (socket) {
             }
         });
         if (gamedata_1.default.removeUserInRoom(_roomID, _userN)) {
-            socket.to("room_" + _roomID).emit("left", { roomID: _roomID });
+            socket.to("room_".concat(_roomID)).emit("left", { roomID: _roomID });
             var newMessage = {
                 from: "",
-                message: _userN + " has left the game",
+                message: "".concat(_userN, " has left the game"),
                 room: _roomID,
             };
-            socket.to("room_" + _roomID).emit("chat_message", newMessage);
+            socket.to("room_".concat(_roomID)).emit("chat_message", newMessage);
+            console.log("Removing room ", _roomID, " since it has no more users");
+            if (gamedata_1.default.getRoomUsers(_roomID).length == 0 ||
+                gamedata_1.default.getRoomUsers(_roomID).length == -1) {
+                gamedata_1.default.removeGameById(_roomID);
+            }
         }
     });
     socket.on("chat_message", function (message) {
@@ -214,7 +219,7 @@ exports.io.on("connection", function (socket) {
         //  socket.emit("chat_message", message.message);
         var newMessage = {
             from: message.from,
-            message: ": " + message.message,
+            message: ": ".concat(message.message),
             room: message.room,
         };
         if (gamedata_1.default.gameExists(message.room)) {
@@ -235,17 +240,17 @@ exports.io.on("connection", function (socket) {
                     message: " has guessed the word right!",
                     room: message.room,
                 };
-                exports.io.to("room_" + message.room).emit("chat_message", successMessage);
-                exports.io.to("room_" + message.room).emit("update_score", {
+                exports.io.to("room_".concat(message.room)).emit("chat_message", successMessage);
+                exports.io.to("room_".concat(message.room)).emit("update_score", {
                     room: successMessage.room,
                 });
-                exports.io.to("room_" + message.room).emit("forbid_guessing", {
+                exports.io.to("room_".concat(message.room)).emit("forbid_guessing", {
                     playerName: message.from,
                 });
             }
             else {
-                console.log("message to room: ", "room_" + message.room);
-                socket.to("room_" + message.room).emit("chat_message", newMessage); //just in case
+                console.log("message to room: ", "room_".concat(message.room));
+                socket.to("room_".concat(message.room)).emit("chat_message", newMessage); //just in case
                 socket.rooms.forEach(function (object) {
                     return console.log("rooms message: " + object);
                 });
@@ -259,8 +264,8 @@ exports.io.on("connection", function (socket) {
         //also join a room that is the user name
         //so later i can check the rooms he is,
         //if it has the room_number you get the room and if it has the user_userName you get the user name
-        var nameRoom = "room_" + message.id;
-        console.log("nameroom: " + nameRoom);
+        var nameRoom = "room_".concat(message.id);
+        console.log("nameroom: ".concat(nameRoom));
         socket.join(nameRoom);
         socket.join(message.userName);
         console.log("joined: " + nameRoom);
@@ -276,19 +281,19 @@ exports.io.on("connection", function (socket) {
     });
     socket.on("leave", function (id) {
         console.log("Player ", socket.id, " left the game");
-        socket.leave("" + id);
+        socket.leave("".concat(id));
         socket.rooms.forEach(function (object) { return console.log("rooms leave: " + object); });
     });
     //** Drawing */
     socket.on("drawing", function (message) {
         console.log("dasdasdsd: ", message.roomid);
-        socket.to("room_" + message.roomid).emit("drawing", message);
+        socket.to("room_".concat(message.roomid)).emit("drawing", message);
         socket.rooms.forEach(function (object) { return console.log("rooms drawing: " + object); });
         //io.emit("drawing", message);
     });
     socket.on("clear", function (message) {
         console.log("dasdasdsd clear: ", message.roomid);
-        socket.to("room_" + message.roomid).emit("clear", message);
+        socket.to("room_".concat(message.roomid)).emit("clear", message);
         //io.emit("clear", message);
     });
 });
@@ -296,5 +301,5 @@ exports.io.on("connection", function (socket) {
 //router.options("*", cors(options));
 /** Listen to the server */
 httpServer.listen(config_1.default.server.port, function () {
-    return logging_1.default.info(NAMESPACE, "Server running on " + config_1.default.server.hostname + ":" + config_1.default.server.port);
+    return logging_1.default.info(NAMESPACE, "Server running on ".concat(config_1.default.server.hostname, ":").concat(config_1.default.server.port));
 });

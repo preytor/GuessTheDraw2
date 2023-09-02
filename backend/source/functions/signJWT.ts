@@ -7,7 +7,7 @@ const NAMESPACE = "Auth";
 
 const signJWT = (
   user: IUser,
-  callback: (error: Error | null, token: string | null) => void
+  callback: (error: Error | null, token: string | null) => void,
 ): void => {
   var timeSinchEpoch = new Date().getTime();
   var expirationTime =
@@ -33,7 +33,7 @@ const signJWT = (
         } else if (token) {
           callback(null, token);
         }
-      }
+      },
     );
   } catch (error) {
     logging.error(NAMESPACE, error.message, error);

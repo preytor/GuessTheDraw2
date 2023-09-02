@@ -22,7 +22,7 @@ const error = (namespace: string, message: string, object?: any) => {
   if (object) {
     console.log(
       `[${getTimeStamp()}] [ERROR] [${namespace}] ${message}`,
-      object
+      object,
     );
   } else {
     console.log(`[${getTimeStamp()}] [ERROR] [${namespace}] ${message}`);
@@ -33,7 +33,7 @@ const debug = (namespace: string, message: string, object?: any) => {
   if (object) {
     console.log(
       `[${getTimeStamp()}] [DEBUG] [${namespace}] ${message}`,
-      object
+      object,
     );
   } else {
     console.log(`[${getTimeStamp()}] [DEBUG] [${namespace}] ${message}`);

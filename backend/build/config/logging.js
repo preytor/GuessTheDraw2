@@ -5,34 +5,34 @@ var getTimeStamp = function () {
 };
 var info = function (namespace, message, object) {
     if (object) {
-        console.log("[" + getTimeStamp() + "] [INFO] [" + namespace + "] " + message, object);
+        console.log("[".concat(getTimeStamp(), "] [INFO] [").concat(namespace, "] ").concat(message), object);
     }
     else {
-        console.log("[" + getTimeStamp() + "] [INFO] [" + namespace + "] " + message);
+        console.log("[".concat(getTimeStamp(), "] [INFO] [").concat(namespace, "] ").concat(message));
     }
 };
 var warn = function (namespace, message, object) {
     if (object) {
-        console.log("[" + getTimeStamp() + "] [WARN] [" + namespace + "] " + message, object);
+        console.log("[".concat(getTimeStamp(), "] [WARN] [").concat(namespace, "] ").concat(message), object);
     }
     else {
-        console.log("[" + getTimeStamp() + "] [WARN] [" + namespace + "] " + message);
+        console.log("[".concat(getTimeStamp(), "] [WARN] [").concat(namespace, "] ").concat(message));
     }
 };
 var error = function (namespace, message, object) {
     if (object) {
-        console.log("[" + getTimeStamp() + "] [ERROR] [" + namespace + "] " + message, object);
+        console.log("[".concat(getTimeStamp(), "] [ERROR] [").concat(namespace, "] ").concat(message), object);
     }
     else {
-        console.log("[" + getTimeStamp() + "] [ERROR] [" + namespace + "] " + message);
+        console.log("[".concat(getTimeStamp(), "] [ERROR] [").concat(namespace, "] ").concat(message));
     }
 };
 var debug = function (namespace, message, object) {
     if (object) {
-        console.log("[" + getTimeStamp() + "] [DEBUG] [" + namespace + "] " + message, object);
+        console.log("[".concat(getTimeStamp(), "] [DEBUG] [").concat(namespace, "] ").concat(message), object);
     }
     else {
-        console.log("[" + getTimeStamp() + "] [DEBUG] [" + namespace + "] " + message);
+        console.log("[".concat(getTimeStamp(), "] [DEBUG] [").concat(namespace, "] ").concat(message));
     }
 };
 exports.default = {

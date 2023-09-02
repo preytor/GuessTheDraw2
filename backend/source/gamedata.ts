@@ -162,6 +162,15 @@ const removeGame = (gameToRemove: GameLogic): void => {
   }
 };
 
+const removeGameById = (id: number): void => {
+  for (var i = 0, iLen = getCurrentGames().length; i < iLen; i++) {
+    if (getCurrentGames()[i].id == id) {
+      getCurrentGames().splice(i, 1);
+      break;
+    }
+  }
+};
+
 const gameExists = (id: number): boolean => {
   //  logging.info("GAME_EXISTS", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   //  logging.info("GAME_EXISTS", `Game exists?: ${currentGames.some((x) => x.id === id)}`)
@@ -267,8 +276,11 @@ const beginGame = (id: number, timerSeconds: any, gameRound: any) => {
   //and set the current score to 0
   restartScores(id);
   //set timer to 60
-  getGameFromID(id)!.timer = 60;
-
+  try {
+    getGameFromID(id)!.timer = 60;
+  } catch (e) {
+    return;
+  }
   //console.log("listeners and shit",io.sockets.adapter.rooms)
   //io.sockets.emit("clear", {roomid: 1});  //works
   //let players = io.sockets.adapter.rooms.get(`room_${id}`);
@@ -295,8 +307,13 @@ const beginGame = (id: number, timerSeconds: any, gameRound: any) => {
   console.log("blabla ", getGameFromID(id));
   //update timer every second
   let _timerSeconds = setInterval(() => {
-    getGameFromID(id)!.timer -= 1;
-    console.log("timer: " + getGameFromID(id)!.timer);
+    try {
+      getGameFromID(id)!.timer -= 1;
+      console.log("timer: " + getGameFromID(id)!.timer);
+    } catch (e) {
+      clearInterval(_timerSeconds);
+      return;
+    }
   }, 1000);
 
   //discover word at 30 seconds
@@ -330,13 +347,13 @@ const discoverLetterInRoom = (id: number) => {
       let newDisplay = setCharAt(
         display,
         randomLetter,
-        secret.charAt(randomLetter)
+        secret.charAt(randomLetter),
       );
       getGameFromID(id)!.displaySecretWord = newDisplay;
       replaced = true;
       console.log(
         "new display in room " + id + " is: ",
-        getGameFromID(id)!.displaySecretWord
+        getGameFromID(id)!.displaySecretWord,
       );
       io.to(`room_${id}`).emit("show_hint", { roomid: id });
     }
@@ -457,9 +474,8 @@ const restartScores = (id: number) => {
 
   for (let i = 0; i < getGameFromID(id)?.gameUsers.length!; i++) {
     if (getGameFromID(id)!.gameUsers[i] != undefined) {
-      getGameFromID(id)!.gameUsers[i]!.totalScore += getGameFromID(
-        id
-      )!.gameUsers[i]!.score;
+      getGameFromID(id)!.gameUsers[i]!.totalScore +=
+        getGameFromID(id)!.gameUsers[i]!.score;
       getGameFromID(id)!.gameUsers[i]!.score = 0;
     }
   }
@@ -508,4 +524,5 @@ export default {
   giveScoreToPlayer,
   restartScores,
   isTheRightPassword,
+  removeGameById,
 };

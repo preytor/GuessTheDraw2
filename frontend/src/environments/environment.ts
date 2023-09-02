@@ -8,8 +8,8 @@ export const environment = {
   socketUrl: 'ws://localhost:3000'*/
 
   production: false,
-  apiUrl: 'http://XX.XX.XX.XX:3000',
-  socketUrl: 'ws://XX.XX.XX.XX:3000'
+  apiUrl: 'http://localhost:3000',
+  socketUrl: 'ws://localhost:3000'
 };
 
 /*

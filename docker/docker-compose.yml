@@ -17,7 +17,7 @@ services:
           - MONGO_USERNAME=myUserAdmin
           - MONGO_PASSWORD=abc123
           - MONGO_URL=database:27017
-          - HOST_ORIGIN=XX.XXX.XX.XXX:80:4200
+          - HOST_ORIGIN=frontend:80:4200
         links: 
           - database
         depends_on: 
