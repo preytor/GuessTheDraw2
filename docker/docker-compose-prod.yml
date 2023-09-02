@@ -1,0 +1,44 @@
+version: '3'
+
+services: 
+    frontend:
+        build:
+          context: ../frontend
+          dockerfile: Dockerfile-angular
+        container_name: frontend
+        ports: 
+          - "4200:4200"
+          - "81:80"
+        external_links: 
+          - backend
+        restart: always
+    backend:
+        build: ../backend 
+        container_name: backend
+        ports: 
+          - "3000:3000"
+        environment: 
+          - MONGO_USERNAME=myUserAdmin
+          - MONGO_PASSWORD=abc123
+          - MONGO_URL=database:27017
+          - HOST_ORIGIN=frontend:80:4200
+        links: 
+          - database
+        depends_on: 
+          - database
+          - frontend
+        external_links: 
+          - frontend
+        restart: always
+    database:
+        image: mongo
+        container_name: database
+        environment:
+          - MONGO_INITDB_ROOT_USERNAME=myUserAdmin
+          - MONGO_INITDB_ROOT_PASSWORD=abc123
+          - MONGO_INITDB_DATABASE=test
+        volumes: 
+          - "/data/db:/data/db"
+        ports: 
+          - "27017:27017"
+        restart: always

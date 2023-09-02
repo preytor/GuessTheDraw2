@@ -64,4 +64,9 @@ Una vez estemos ahí solo hay que ejecutar el siguiente comando:
 docker-compose up
 ```
 
+En caso de querer ejecutar el servidor en modo produccion ejecutamos el siguiente comando:
+```bash	
+docker-compose -f docker-compose.prod.yml up --build
+```
+
 Y listo, el servidor debería descargarse todo lo necesario para que empiece a funcionar. Para acceder a el solo hace falta ir a la url que sea ip:puerto y ya funcionaría.
