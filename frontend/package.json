@@ -23,8 +23,8 @@
     "@ng-bootstrap/ng-bootstrap": "^9.1.0",
     "bootstrap": "^4.6.0",
     "rxjs": "~6.6.0",
-    "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2",
+    "socket.io": "^4.0.1",
+    "socket.io-client": "^4.0.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"
   },
