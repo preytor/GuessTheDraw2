@@ -16,7 +16,7 @@ RUN npm install
 COPY . .
 
 # Stage 2 build for creating smaller image
-FROM node:carbon-alpine
+FROM node:slim
 WORKDIR /usr/source
  
 COPY --from=builder /usr/source .
