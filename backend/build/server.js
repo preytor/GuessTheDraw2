@@ -26,13 +26,17 @@ var CORS_ORIGIN = [
     //in the angular app the docker ip
     "185.237.99.127:4200",
     "185.237.99.127:81",
-    "185.237.99.127:80",
+    "185.237.99.127:80",   
+    "185.237.99.127:81",
     "http://frontend:4200",
     "http://frontend:80",
+    "http://frontend:81",
     "frontend:4200",
     "frontend:80",
+    "frontend:81",
     "localhost:4200",
     "localhost:80",
+    "localhost:81",
 ]; //add here the other ip
 var router = (0, express_1.default)();
 /** Create the server */
