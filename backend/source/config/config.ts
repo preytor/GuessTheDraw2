@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 const NAMESPACE = "Server";
 dotenv.config();
 
-const HOST_ORIGIN = process.env.HOST_ORIGIN || "http://localhost:4200";
+const HOST_ORIGIN = process.env.HOST_ORIGIN || "http://localhost:81";
 
 const MONGO_OPTIONS = {
   useUnifiedTopology: true,
