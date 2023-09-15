@@ -152,8 +152,10 @@ const originsWhitelist = [
   config.server.host_origin,
   "http://frontend:4200",
   "http://frontend:80",
+  "http://frontend:81",
   "http://localhost:4200",
   "http://localhost:80",
+  "http://localhost:81",
   "*",
 ];
 
